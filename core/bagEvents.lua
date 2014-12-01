@@ -33,12 +33,7 @@
 
 
 local _, Addon = ...
-local BagEvents = {}
-BagEvents.SendMessage = LibStub('CallbackHandler-1.0'):New(BagEvents, 'Listen', 'Ignore', 'IgnoreAll').Fire
-Addon.BagEvents = BagEvents 
-
-
---[[ Locals ]]--
+local BagEvents = CreateFrame('Frame')
 
 local slots = {}
 local bagTypes = {}
@@ -50,159 +45,17 @@ end
 
 --[[ Startup ]]--
 
-function BagEvents:Load()
+function BagEvents:OnLoad()
 	self.atBank = false
 	self.firstVisit = true
-	self.frame = CreateFrame('Frame')
-	
-	self.RegisterEvent = function(self, event)
-		self.frame:RegisterEvent(event)
-	end
-	
-	self.OnEvent = function(f, event, ...)
-		if self[event] then
-			self[event](self, event, ...)
-		end		
-	end
-
-	self.frame:SetScript('OnEvent', self.OnEvent)
+	self:SetScript('OnEvent', self.OnEvent)
 	self:RegisterEvent('PLAYER_LOGIN')
 end
 
-
---[[ Update Functions ]]--
-
---all info
-function BagEvents:AddItem(bag, slot)
-	local index = ToIndex(bag,slot)
-	if not slots[index] then slots[index] = {} end
-
-	local data = slots[index]
-	local texture, count, locked, quality, readable, lootable, link = GetContainerItemInfo(bag, slot)
-	local start, duration, enable = GetContainerItemCooldown(bag, slot)
-	local onCooldown = (start > 0 and duration > 0 and enable > 0)
-
-	data[1] = link
-	data[2] = count
-	data[3] = locked
-	data[4] = onCooldown
-
-	self:SendMessage('ITEM_SLOT_ADD', bag, slot, link, count, locked, onCooldown)
-end
-
-function BagEvents:RemoveItem(bag, slot)
-	local data = slots[ToIndex(bag, slot)]
-
-	if data and next(data) then
-		local prevLink = data[1]
-		for i in pairs(data) do
-			data[i] = nil
-		end
-
-		self:SendMessage('ITEM_SLOT_REMOVE', bag, slot, prevLink)
-	end
-end
-
-function BagEvents:UpdateItems(bag)
-	for slot = 1, GetContainerNumSlots(bag) do
-		self:UpdateItem(bag, slot)
-	end
-end
-
-function BagEvents:UpdateItem(bag, slot)
-	local data = slots[ToIndex(bag, slot)]
-
-	if data then
-		local prevLink = data[1]
-		local prevCount = data[2]
-
-		local texture, count, locked, quality, readable, lootable, link = GetContainerItemInfo(bag, slot)
-		local start, duration, enable = GetContainerItemCooldown(bag, slot)
-		local onCooldown = (start > 0 and duration > 0 and enable > 0)
-
-		if not(prevLink == link and prevCount == count) then
-			data[1] = link
-			data[2] = count
-			data[3] = locked
-			data[4] = onCooldown
-
-			self:SendMessage('ITEM_SLOT_UPDATE', bag, slot, link, count, locked, onCooldown)
-		end
-	end
-end
-
-
---cooldowns
-function BagEvents:UpdateCooldown(bag, slot)
-	local data = slots[ToIndex(bag,slot)]
-
-	if data and data[1] then
-		local start, duration, enable = GetContainerItemCooldown(bag, slot)
-		local onCooldown = (start > 0 and duration > 0 and enable > 0)
-
-		if data[4] ~= onCooldown then
-			data[4] = onCooldown
-			self:SendMessage('ITEM_SLOT_UPDATE_COOLDOWN', bag, slot, onCooldown)
-		end
-	end
-end
-
-function BagEvents:UpdateCooldowns(bag)
-	for slot = 1, GetContainerNumSlots(bag) do
-		self:UpdateCooldown(bag, slot)
-	end
-end
-
---bag sizes
-function BagEvents:UpdateBagSize(bag)
-	local prevSize = slots[bag*100] or 0
-	local newSize = GetContainerNumSlots(bag) or 0
-	slots[bag*100] = newSize
-
-	if prevSize > newSize then
-		for slot = newSize+1, prevSize do
-			self:RemoveItem(bag, slot)
-		end
-	elseif prevSize < newSize then
-		for slot = prevSize+1, newSize do
-			self:AddItem(bag, slot)
-		end
-	end
-end
-
-function BagEvents:UpdateBagType(bag)
-	local _, newType = GetContainerNumFreeSlots(bag)
-	local prevType = bagTypes[bag]
-
-	if newType ~= prevType then
-		bagTypes[bag] = newType
-		self:SendMessage('BAG_UPDATE_TYPE', bag, newType)
-	end
-end
-
-
-function BagEvents:UpdateBagSizes()
-	if self.atBank then
-		for bag = 1, NUM_BAG_SLOTS + GetNumBankSlots() do
-			self:UpdateBagSize(bag)
-		end
-	else
-		for bag = 1, NUM_BAG_SLOTS do
-			self:UpdateBagSize(bag)
-		end
-	end
-end
-
-function BagEvents:UpdateBagTypes()
-	if self.atBank then
-		for bag = 1, NUM_BAG_SLOTS + GetNumBankSlots() do
-			self:UpdateBagType(bag)
-		end
-	else
-		for bag = 1, NUM_BAG_SLOTS do
-			self:UpdateBagType(bag)
-		end
-	end
+function BagEvents:OnEvent(event, ...)
+	if self[event] then
+		self[event](self, event, ...)
+	end		
 end
 
 
@@ -248,12 +101,12 @@ function BagEvents:BANKFRAME_OPENED()
 		self:UpdateBagSizes()
 	end
 
-	self:SendMessage('BANK_OPENED')
+	Addon:SendMessage('BANK_OPENED')
 end
 
 function BagEvents:BANKFRAME_CLOSED()
 	self.atBank = false
-	self:SendMessage('BANK_CLOSED')
+	Addon:SendMessage('BANK_CLOSED')
 end
 
 function BagEvents:BAG_UPDATE_COOLDOWN()
@@ -264,4 +117,140 @@ function BagEvents:BAG_UPDATE_COOLDOWN()
 	end
 end
 
-BagEvents:Load()
+
+--[[ Update Functions ]]--
+
+--entire item
+function BagEvents:AddItem(bag, slot)
+	local index = ToIndex(bag,slot)
+	if not slots[index] then slots[index] = {} end
+
+	local data = slots[index]
+	local texture, count, locked, quality, readable, lootable, link = GetContainerItemInfo(bag, slot)
+	local start, duration, enable = GetContainerItemCooldown(bag, slot)
+	local onCooldown = (start > 0 and duration > 0 and enable > 0)
+
+	data[1] = link
+	data[2] = count
+	data[3] = locked
+	data[4] = onCooldown
+
+	Addon:SendMessage('ITEM_SLOT_ADD', bag, slot, link, count, locked, onCooldown)
+end
+
+function BagEvents:RemoveItem(bag, slot)
+	local data = slots[ToIndex(bag, slot)]
+
+	if data and next(data) then
+		local prevLink = data[1]
+		for i in pairs(data) do
+			data[i] = nil
+		end
+
+		Addon:SendMessage('ITEM_SLOT_REMOVE', bag, slot, prevLink)
+	end
+end
+
+function BagEvents:UpdateItems(bag)
+	for slot = 1, GetContainerNumSlots(bag) do
+		self:UpdateItem(bag, slot)
+	end
+end
+
+function BagEvents:UpdateItem(bag, slot)
+	local data = slots[ToIndex(bag, slot)]
+
+	if data then
+		local prevLink = data[1]
+		local prevCount = data[2]
+
+		local texture, count, locked, quality, readable, lootable, link = GetContainerItemInfo(bag, slot)
+		local start, duration, enable = GetContainerItemCooldown(bag, slot)
+		local onCooldown = (start > 0 and duration > 0 and enable > 0)
+
+		if not(prevLink == link and prevCount == count) then
+			data[1] = link
+			data[2] = count
+			data[3] = locked
+			data[4] = onCooldown
+
+			Addon:SendMessage('ITEM_SLOT_UPDATE', bag, slot, link, count, locked, onCooldown)
+		end
+	end
+end
+
+
+--cooldowns
+function BagEvents:UpdateCooldown(bag, slot)
+	local data = slots[ToIndex(bag,slot)]
+
+	if data and data[1] then
+		local start, duration, enable = GetContainerItemCooldown(bag, slot)
+		local onCooldown = (start > 0 and duration > 0 and enable > 0)
+
+		if data[4] ~= onCooldown then
+			data[4] = onCooldown
+			Addon:SendMessage('ITEM_SLOT_UPDATE_COOLDOWN', bag, slot, onCooldown)
+		end
+	end
+end
+
+function BagEvents:UpdateCooldowns(bag)
+	for slot = 1, GetContainerNumSlots(bag) do
+		self:UpdateCooldown(bag, slot)
+	end
+end
+
+--bag sizes
+function BagEvents:UpdateBagSize(bag)
+	local prevSize = slots[bag*100] or 0
+	local newSize = GetContainerNumSlots(bag) or 0
+	slots[bag*100] = newSize
+
+	if prevSize > newSize then
+		for slot = newSize+1, prevSize do
+			self:RemoveItem(bag, slot)
+		end
+	elseif prevSize < newSize then
+		for slot = prevSize+1, newSize do
+			self:AddItem(bag, slot)
+		end
+	end
+end
+
+function BagEvents:UpdateBagType(bag)
+	local _, newType = GetContainerNumFreeSlots(bag)
+	local prevType = bagTypes[bag]
+
+	if newType ~= prevType then
+		bagTypes[bag] = newType
+		Addon:SendMessage('BAG_UPDATE_TYPE', bag, newType)
+	end
+end
+
+
+function BagEvents:UpdateBagSizes()
+	if self.atBank then
+		for bag = 1, NUM_BAG_SLOTS + GetNumBankSlots() do
+			self:UpdateBagSize(bag)
+		end
+	else
+		for bag = 1, NUM_BAG_SLOTS do
+			self:UpdateBagSize(bag)
+		end
+	end
+end
+
+function BagEvents:UpdateBagTypes()
+	if self.atBank then
+		for bag = 1, NUM_BAG_SLOTS + GetNumBankSlots() do
+			self:UpdateBagType(bag)
+		end
+	else
+		for bag = 1, NUM_BAG_SLOTS do
+			self:UpdateBagType(bag)
+		end
+	end
+end
+
+BagEvents:OnLoad()

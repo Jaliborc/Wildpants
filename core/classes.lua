@@ -19,22 +19,29 @@ function Addon:NewClass(name, type, parent)
 	class.Bind = function(self, obj)
 		return setmetatable(obj, self.mt)
 	end
-	
-	class.RegisterMessage = function(self, ...)
-		Addon.RegisterCallback(self, ...)
+
+	class.GetSettings = function(self)
+		if self.sets then
+			return self.sets
+		else
+			local parent = self:GetParent()
+			return parent and parent.GetSettings and parent:GetSettings()
+		end
 	end
-	
-	class.SendMessage = function(self, ...)
-		Addon:SendCallback(...)
+
+	class.GetPlayer = function(self)
+		if self.player then
+			return self.player
+		else
+			local parent = self:GetParent()
+			return parent and parent.GetPlayer and parent:GetPlayer()
+		end
 	end
-	
-	class.UnregisterMessage = function(self, ...)
-		Addon.UnregisterCallback(self, ...)
-	end
-	
-	class.UnregisterAllMessages = function(self)
-		Addon.UnregisterAllCallbacks(self)
-	end
+
+	class.RegisterMessage = Addon.RegisterMessage
+	class.SendMessage = Addon.SendMessage
+	class.UnregisterMessage = Addon.UnregisterMessage
+	class.UnregisterAllMessages = Addon.UnregisterAllMessages
 
 	self[name] = class
 	return class
