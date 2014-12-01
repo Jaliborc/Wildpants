@@ -3,4 +3,5 @@
 	<Script file="bags.lua"/>
 	<Script file="players.lua"/>
 	<Script file="bagEvents.lua"/>
+	<Script file="settings.lua"/>
 </Ui>
