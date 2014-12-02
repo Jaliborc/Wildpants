@@ -378,7 +378,7 @@ end
 
 function ItemSlot:SetFade(faded)
 	if faded then
-		SetItemButtonDesaturated(self, true)
+		self:SetLocked(true)
 		self:SetAlpha(0.4)
 		self:HideBorder()
 	else

@@ -1,22 +1,30 @@
 --[[
-	bagEvents.lua
-		Events for accessing and updating bag slot information
+	events.lua
+		Events for accessing and updating item information
 
-	ITEM_SLOT_ADD
+	ITEM_ADD
 	args:		bag, slot, link, count, locked, coolingDown
 		called when a new slot becomes available to the player
 
-	ITEM_SLOT_REMOVE
+	ITEM_REMOVE
 	args:		bag, slot
 		called when an item slot is removed from being in use
 
-	ITEM_SLOT_UPDATE
+	ITEM_UPDATE
 	args:		bag, slot, link, count, locked, coolingDown
 		called when an item slot's item or item count changes
 
-	ITEM_SLOT_UPDATE_COOLDOWN
+	ITEM_COOLDOWN_UPDATE
 	args:		bag, slot, coolingDown
 		called when an item's cooldown starts/ends
+
+	ITEM_LOCK_UPDATE
+	args:		bag, slot, locked
+		called when an item's locked status changes
+
+	BAG_UPDATE_TYPE
+	args:		bag, type
+		called when the type of a bag changes
 
 	BANK_OPENED
 	args:		none
@@ -25,15 +33,11 @@
 	BANK_CLOSED
 	args:		none
 		called when the bank is closed and all of the events have sent messages
-		
-	BAG_UPDATE_TYPE
-	args:		bag, type
-		called when the type of a bag changes
 --]]
 
 
 local _, Addon = ...
-local BagEvents = CreateFrame('Frame')
+local Events = CreateFrame('Frame')
 
 local slots = {}
 local bagTypes = {}
@@ -45,14 +49,14 @@ end
 
 --[[ Startup ]]--
 
-function BagEvents:OnLoad()
+function Events:OnLoad()
 	self.atBank = false
 	self.firstVisit = true
 	self:SetScript('OnEvent', self.OnEvent)
 	self:RegisterEvent('PLAYER_LOGIN')
 end
 
-function BagEvents:OnEvent(event, ...)
+function Events:OnEvent(event, ...)
 	if self[event] then
 		self[event](self, event, ...)
 	end		
@@ -61,7 +65,7 @@ end
 
 --[[ Events ]]--
 
-function BagEvents:PLAYER_LOGIN()
+function Events:PLAYER_LOGIN()
 	self:RegisterEvent('BAG_UPDATE')
 	self:RegisterEvent('BAG_UPDATE_COOLDOWN')
 	self:RegisterEvent('PLAYERBANKSLOTS_CHANGED')
@@ -73,23 +77,23 @@ function BagEvents:PLAYER_LOGIN()
 	self:UpdateItems(BACKPACK_CONTAINER)
 end
 
-function BagEvents:BAG_UPDATE(event, bag)
+function Events:BAG_UPDATE(event, bag)
 	self:UpdateBagTypes()
 	self:UpdateBagSizes()
 	self:UpdateItems(bag)
 end
 
-function BagEvents:PLAYERBANKSLOTS_CHANGED()
+function Events:PLAYERBANKSLOTS_CHANGED()
 	self:UpdateBagTypes()
 	self:UpdateBagSizes()
 	self:UpdateItems(BANK_CONTAINER)
 end
 
-function BagEvents:PLAYERREAGENTBANKSLOTS_CHANGED()
+function Events:PLAYERREAGENTBANKSLOTS_CHANGED()
 	self:UpdateItems(REAGENTBANK_CONTAINER)
 end
 
-function BagEvents:BANKFRAME_OPENED()
+function Events:BANKFRAME_OPENED()
 	self.atBank = true
 
 	if self.firstVisit then
@@ -104,12 +108,12 @@ function BagEvents:BANKFRAME_OPENED()
 	Addon:SendMessage('BANK_OPENED')
 end
 
-function BagEvents:BANKFRAME_CLOSED()
+function Events:BANKFRAME_CLOSED()
 	self.atBank = false
 	Addon:SendMessage('BANK_CLOSED')
 end
 
-function BagEvents:BAG_UPDATE_COOLDOWN()
+function Events:BAG_UPDATE_COOLDOWN()
 	self:UpdateCooldowns(BACKPACK_CONTAINER)
 		
 	for bag = 1, NUM_BAG_SLOTS do
@@ -121,7 +125,7 @@ end
 --[[ Update Functions ]]--
 
 --entire item
-function BagEvents:AddItem(bag, slot)
+function Events:AddItem(bag, slot)
 	local index = ToIndex(bag,slot)
 	if not slots[index] then slots[index] = {} end
 
@@ -138,7 +142,7 @@ function BagEvents:AddItem(bag, slot)
 	Addon:SendMessage('ITEM_SLOT_ADD', bag, slot, link, count, locked, onCooldown)
 end
 
-function BagEvents:RemoveItem(bag, slot)
+function Events:RemoveItem(bag, slot)
 	local data = slots[ToIndex(bag, slot)]
 
 	if data and next(data) then
@@ -151,13 +155,13 @@ function BagEvents:RemoveItem(bag, slot)
 	end
 end
 
-function BagEvents:UpdateItems(bag)
+function Events:UpdateItems(bag)
 	for slot = 1, GetContainerNumSlots(bag) do
 		self:UpdateItem(bag, slot)
 	end
 end
 
-function BagEvents:UpdateItem(bag, slot)
+function Events:UpdateItem(bag, slot)
 	local data = slots[ToIndex(bag, slot)]
 
 	if data then
@@ -181,7 +185,7 @@ end
 
 
 --cooldowns
-function BagEvents:UpdateCooldown(bag, slot)
+function Events:UpdateCooldown(bag, slot)
 	local data = slots[ToIndex(bag,slot)]
 
 	if data and data[1] then
@@ -195,14 +199,14 @@ function BagEvents:UpdateCooldown(bag, slot)
 	end
 end
 
-function BagEvents:UpdateCooldowns(bag)
+function Events:UpdateCooldowns(bag)
 	for slot = 1, GetContainerNumSlots(bag) do
 		self:UpdateCooldown(bag, slot)
 	end
 end
 
 --bag sizes
-function BagEvents:UpdateBagSize(bag)
+function Events:UpdateBagSize(bag)
 	local prevSize = slots[bag*100] or 0
 	local newSize = GetContainerNumSlots(bag) or 0
 	slots[bag*100] = newSize
@@ -218,7 +222,7 @@ function BagEvents:UpdateBagSize(bag)
 	end
 end
 
-function BagEvents:UpdateBagType(bag)
+function Events:UpdateBagType(bag)
 	local _, newType = GetContainerNumFreeSlots(bag)
 	local prevType = bagTypes[bag]
 
@@ -229,7 +233,7 @@ function BagEvents:UpdateBagType(bag)
 end
 
 
-function BagEvents:UpdateBagSizes()
+function Events:UpdateBagSizes()
 	if self.atBank then
 		for bag = 1, NUM_BAG_SLOTS + GetNumBankSlots() do
 			self:UpdateBagSize(bag)
@@ -241,7 +245,7 @@ function BagEvents:UpdateBagSizes()
 	end
 end
 
-function BagEvents:UpdateBagTypes()
+function Events:UpdateBagTypes()
 	if self.atBank then
 		for bag = 1, NUM_BAG_SLOTS + GetNumBankSlots() do
 			self:UpdateBagType(bag)
@@ -253,4 +257,4 @@ function BagEvents:UpdateBagTypes()
 	end
 end
 
-BagEvents:OnLoad()
+Events:OnLoad()
