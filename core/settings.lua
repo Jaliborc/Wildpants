@@ -25,7 +25,24 @@ function Addon:StartupSettings()
 	_G[SETS] = SetDefaults(_G[SETS] or {},
 		version = CURRENT_VERSION,
 		players = {},
-		frames = {}
+		frames = {
+			inventory = {
+				bags = {BACKPACK_CONTAINER, 1, 2, 3, 4},
+				point = {'RIGHT'},
+				layer = 'HIGH',
+				spacing = 2,
+				color = {0, 0, 0, 0.5},
+				borderColor = {1, 1, 1, 1},
+			},
+
+			bank = {
+				bags = {BANK_CONTAINER, 5, 6, 7, 8, 9, 10, 11, REAGENTBANK_CONTAINER},
+				layer = 'HIGH',
+				spacing = 2,
+				color = {0, 0, 0, 0.5},
+				borderColor = {1, 1, 0, 1},
+			}
+		}
 	})
 
 	self.sets = _G[SETS]
@@ -66,17 +83,20 @@ end
 function Addon:GetBaseProfile()
 	return {
 		inventory = {
-			position = {'RIGHT'},
-			showBags = false,
+			hiddenBags = {},
 			leftSideFilter = true,
-			w = 384,
-			h = 512,
+			itemScale = 1,
+			columns = 8,
+			width = 384,
+			height = 512,
 		},
 
 		bank = {
-			showBags = false,
-			w = 512,
-			h = 512,
+			hiddenBags = {},
+			itemScale = 0.8,
+			columns = 16,
+			width = 512,
+			height = 512,
 		}
 	}
 end
