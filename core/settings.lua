@@ -42,6 +42,29 @@ function Addon:StartupSettings()
 				color = {0, 0, 0, 0.5},
 				borderColor = {1, 1, 0, 1},
 			}
+		},
+
+		flashFind = true,
+    	tipCount = true,
+		fading = true,
+
+		glowAlpha = 0.5,
+		glowQuality = true, glowNew = true, glowQuest = true, glowSets = true, glowUnusable = true,
+
+		colorSlots = true,
+		emptySlots = true,
+		slotColors = {
+			leather = {1, .6, .45},
+			enchant = {0.64, 0.83, 1},
+			inscri = {.64, 1, .82},
+			engineer = {.68, .63, .25},
+			tackle = {0.42, 0.59, 1},
+			cooking = {1, .5, .5},
+			gem = {1, .65, .98},
+			mine = {1, .81, .38},
+			herb = {.5, 1, .5},
+			reagent = {1, .87, .68},
+			normal = {1, 1, 1},
 		}
 	})
 

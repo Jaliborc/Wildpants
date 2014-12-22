@@ -21,21 +21,13 @@ function Addon:NewClass(name, type, parent)
 	end
 
 	class.GetSettings = function(self)
-		if self.sets then
-			return self.sets
-		else
-			local parent = self:GetParent()
-			return parent and parent.GetSettings and parent:GetSettings()
-		end
+		local parent = self:GetParent()
+		return parent and parent.GetSettings and parent:GetSettings()
 	end
 
 	class.GetPlayer = function(self)
-		if self.player then
-			return self.player
-		else
-			local parent = self:GetParent()
-			return parent and parent.GetPlayer and parent:GetPlayer()
-		end
+		local parent = self:GetParent()
+		return parent and parent.GetPlayer and parent:GetPlayer()
 	end
 
 	class.RegisterMessage = Addon.RegisterMessage

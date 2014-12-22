@@ -71,7 +71,7 @@ function ItemSlot:ConstructNewItemSlot(id)
 end
 
 function ItemSlot:GetBlizzardItemSlot(id)
-	if not Addon:AreAllFramesEnabled() or not Addon.sets.useBlizzardBags then
+	if not Addon:AreAllFramesEnabled() or not Addon.sets.useBlizzardSlots then
 		return
 	end
 
@@ -229,14 +229,14 @@ function ItemSlot:SetTexture(texture)
 end
 
 function ItemSlot:GetEmptyItemIcon()
-	return Addon.sets.emptySlotTextures and 'Interface/PaperDoll/UI-Backpack-EmptySlot'
+	return Addon.sets.emptySlots and 'Interface/PaperDoll/UI-Backpack-EmptySlot'
 end
 
 
 --[[ Slot Color ]]--
 
 function ItemSlot:UpdateSlotColor()
-	if not self:GetItem() and Addon.sets.colorBagSlots then
+	if not self:GetItem() and Addon.sets.colorSlots then
 		self:SetSlotColor(Addon.sets.slotColors[self:GetBagType()])
 	else 
 		self:SetSlotColor(1, 1, 1)
@@ -287,7 +287,7 @@ function ItemSlot:UpdateBorder()
 			return
 		end
 
-		if Addon.sets.highlightNewItems and self:IsNew() then
+		if Addon.sets.glowNew and self:IsNew() then
 			if not self.flashAnim:IsPlaying() then
 				self.flashAnim:Play()
 				self.newitemglowAnim:SetLooping('NONE')
@@ -303,19 +303,19 @@ function ItemSlot:UpdateBorder()
 			end
 		end
 
-		if Addon.sets.highlightQuestItems and isQuestItem then
+		if Addon.sets.glowQuest and isQuestItem then
 			return self:SetBorderColor(1, .82, .2)
 		end
 
-		if Addon.sets.highlightSetItems and ItemSearch:InSet(item) then
+		if Addon.sets.glowSet and ItemSearch:InSet(item) then
 	   		return self:SetBorderColor(.1, 1, 1)
 	  	end
 
-		if Addon.sets.highlightUnusableItems and Unfit:IsItemUnusable(item) then
+		if Addon.sets.glowUnusable and Unfit:IsItemUnusable(item) then
 			return self:SetBorderColor(RED_FONT_COLOR.r, RED_FONT_COLOR.g, RED_FONT_COLOR.b)
 		end
 
-		if Addon.sets.highlightQualities and quality and quality > 1 then
+		if Addon.sets.glowQuality and quality and quality > 1 then
 			self:SetBorderColor(GetItemQualityColor(quality))
 		end
 	end
@@ -449,7 +449,7 @@ function ItemSlot:GetDummyBag(parent, bag)
 	parent.dummyBags = parent.dummyBags or {}
 
 	if not parent.dummyBags[bag] then
-		parent.dummyBags[bag] = CreateFrame('Frame', nil, parent)
+		parent.dummyBags[bag] = self:Bind(CreateFrame('Frame', nil, parent))
 		parent.dummyBags[bag]:SetID(tonumber(bag) or 1)
 	end
 
