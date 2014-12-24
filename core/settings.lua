@@ -7,6 +7,9 @@ local ADDON, Addon = ...
 local SETS = ADDON .. '_Sets'
 local CURRENT_VERSION = GetAddOnMetadata(ADDON, 'Version')
 
+local Cache = LibStub('LibItemCache-1.1')
+local L = LibStub('AceLocale-3.0'):GetLocale(ADDON)
+
 local function SetDefaults(target, defaults)
 	for k, v in pairs(defaults) do
 		if type(v) == 'table' then
@@ -22,7 +25,7 @@ end
 --[[ Settings ]]--
 
 function Addon:StartupSettings()
-	_G[SETS] = SetDefaults(_G[SETS] or {},
+	_G[SETS] = SetDefaults(_G[SETS] or {}, {
 		version = CURRENT_VERSION,
 		players = {},
 		frames = {
@@ -70,7 +73,6 @@ function Addon:StartupSettings()
 
 	self.sets = _G[SETS]
 	self:UpdateSettings()
-	self.sets.version = self:GetVersion()
 	
 	for player in Cache:IteratePlayers() do
 		self:StartupProfile(player)
@@ -85,8 +87,10 @@ function Addon:UpdateSettings()
 
 	-- nothing to do, yay!
 
-	self.sets.version = CURRENT_VERSION
-	self:Print(format(L.Updated, self.db.version))
+	if self.sets.version ~= CURRENT_VERSION then
+		self.sets.version = CURRENT_VERSION
+		self:Print(format(L.Updated, self.sets.version))
+	end
 end
 
 
