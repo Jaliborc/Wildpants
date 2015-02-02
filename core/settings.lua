@@ -12,7 +12,7 @@ local L = LibStub('AceLocale-3.0'):GetLocale(ADDON)
 
 local function SetDefaults(target, defaults)
 	for k, v in pairs(defaults) do
-		if type(v) == 'table' then
+		if type(v) == 'table'  and k ~= '__index' then
 			target[k] = SetDefaults(target[k] or {}, v)
 		end
 	end
@@ -20,6 +20,42 @@ local function SetDefaults(target, defaults)
 	defaults.__index = defaults
 	return setmetatable(target, defaults)
 end
+
+local FrameDefaults = {
+	movable = true,
+	money = true, broker = true,
+	bagFrame = true, sort = true, search = true, options = true,
+
+	layer = 'HIGH',
+	color = {0, 0, 0, 0.5},
+	spacing = 2,
+	alpha = 1,
+}
+
+local ProfileDefaults = {
+	brokerObject = 'BagnonLauncher',
+	hiddenBags = {},
+	scale = 1,
+}
+
+local BaseProfile = {
+	inventory = SetDefaults({
+		leftSideFilter = true,
+		point = 'RIGHT',
+		itemScale = 1,
+		columns = 8,
+		width = 384,
+		height = 512,
+	}, ProfileDefaults),
+
+	bank = SetDefaults({
+		point = 'LEFT',
+		itemScale = 0.8,
+		columns = 16,
+		width = 512,
+		height = 512,
+	}, ProfileDefaults)
+}
 
 
 --[[ Settings ]]--
@@ -29,22 +65,15 @@ function Addon:StartupSettings()
 		version = CURRENT_VERSION,
 		players = {},
 		frames = {
-			inventory = {
+			inventory = SetDefaults({
 				bags = {BACKPACK_CONTAINER, 1, 2, 3, 4},
-				point = {'RIGHT'},
-				layer = 'HIGH',
-				spacing = 2,
-				color = {0, 0, 0, 0.5},
 				borderColor = {1, 1, 1, 1},
-			},
+			}, FrameDefaults),
 
-			bank = {
+			bank = SetDefaults({
 				bags = {BANK_CONTAINER, 5, 6, 7, 8, 9, 10, 11, REAGENTBANK_CONTAINER},
-				layer = 'HIGH',
-				spacing = 2,
-				color = {0, 0, 0, 0.5},
 				borderColor = {1, 1, 0, 1},
-			}
+			}, FrameDefaults),
 		},
 
 		flashFind = true,
@@ -74,7 +103,7 @@ function Addon:StartupSettings()
 	self.sets = _G[SETS]
 	self:UpdateSettings()
 	
-	for player in Cache:IteratePlayers() do
+	for _, player in Cache:IteratePlayers() do
 		self:StartupProfile(player)
 	end
 
@@ -99,31 +128,10 @@ end
 function Addon:StartupProfile(player)
 	local realm, player = Cache:GetPlayerAddress(player)
 	self.sets.players[realm] = self.sets.players[realm] or {}
-	self.sets.players[realm][player] = SetDefaults(self.sets.players[realm][player] or {}, self:GetBaseProfile())
+	self.sets.players[realm][player] = SetDefaults(self.sets.players[realm][player] or {}, BaseProfile)
 end
 
 function Addon:GetProfile(player)
 	local realm, player = Cache:GetPlayerAddress(player)
 	return self.sets.players[realm][player]
-end
-
-function Addon:GetBaseProfile()
-	return {
-		inventory = {
-			hiddenBags = {},
-			leftSideFilter = true,
-			itemScale = 1,
-			columns = 8,
-			width = 384,
-			height = 512,
-		},
-
-		bank = {
-			hiddenBags = {},
-			itemScale = 0.8,
-			columns = 16,
-			width = 512,
-			height = 512,
-		}
-	}
 end

@@ -11,18 +11,13 @@ local ItemFrame = Addon:NewClass('ItemFrame', 'Frame')
 --[[ Constructor ]]--
 
 function ItemFrame:New(parent)
-	local f = self:Bind(CreateFrame('ScrollFrame', nil, parent))
-	f:SetScript('OnVerticalScroll', self.Reposition)
+	local f = self:Bind(CreateFrame('Frame', nil, parent))
 	f:SetScript('OnHide', f.UnregisterAllMessages)
 	f:SetScript('OnShow', f.RequestLayout)
 	f:SetSize(1,1)
 	f.buttons = {}
 
 	return f
-end
-
-function ItemFrame:OnScroll()
-	self:Reposition()
 end
 
 
@@ -55,50 +50,40 @@ end
 
 function ItemFrame:Layout()
 	self:SetScript('OnUpdate', nil)
-	self.rows = {{}}
+	self.bags = {}
 
-	local row
+	local x, y, i = 0,0,0
 	for bag in self:VisibleBags() do
+		self.bags[bag] = {}
+
 		for slot = 1, self:NumSlots(bag) do
-			row = self.rows[#self.rows]
-			tinsert(row, {bag, slot})
-
-			if #row == self:NumColumns() then
-				tinsert(self.rows, {})
+			if x == self:NumColumns() then
+				y = y + 1
+				x = 0
 			end
-		end
 
-		if self:HasBagBreak() and #row > 0 then
-			tinsert(self.rows, {})
-		end
-	end
-
-	self:Reposition()
-end
-
-function ItemFrame:Reposition()
-	local size = 36 + self:GetPadding()
-	local startRow = 0
-	local i = 1
-
-	for x = startRow, min(startRow + self:NumRows(), #self.rows) do
-		for y = 1, #self.rows[x] do
 			local button = self:GetButton(i)
 			button:ClearAllPoints()
-			button:SetTarget(unpack(self.rows[x][y])
+			button:SetTarget(bag, slot)
 			button:SetPoint('TOPLEFT', self, 'TOPLEFT', size * (x - 1), -size * (y - 1))
 			i = i + 1
+
+			self.bags[bag][slot] = button
+		end
+
+		if self:HasBagBreak() and x > 0 then
+			y = y + 1
+			x = 0
 		end
 	end
 
 	for k = i, #self.buttons do
-		self:RemoveButton()
+		tremove(self.buttons):Free()
 	end
 end
 
 function ItemFrame:ForBag(bag, method, ...)
-	for _, i in self:IterateBag(bag) do
-		local button = self:GetButton(i)
+	for slot, button in pairs(self.bags[bag] or {}) do
 		button[method](button, ...)
 	end
 end
@@ -111,8 +96,4 @@ function ItemFrame:GetButton(i)
 		self.buttons[i] = self.Button:New(self)
 	end
 	return self.buttons[i]
-end
-
-function ItemFrame:RemoveButton()
-	tremove(self.buttons):Free()
 end
