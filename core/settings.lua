@@ -66,12 +66,10 @@ function Addon:StartupSettings()
 		players = {},
 		frames = {
 			inventory = SetDefaults({
-				bags = {BACKPACK_CONTAINER, 1, 2, 3, 4},
 				borderColor = {1, 1, 1, 1},
 			}, FrameDefaults),
 
 			bank = SetDefaults({
-				bags = {BANK_CONTAINER, 5, 6, 7, 8, 9, 10, 11, REAGENTBANK_CONTAINER},
 				borderColor = {1, 1, 0, 1},
 			}, FrameDefaults),
 		},

@@ -21,23 +21,28 @@ function Addon:NewClass(name, type, parent)
 		end
 
 		class.GetSettings = function(self)
-			local parent = self:GetParent()
-			return parent and parent.GetSettings and parent:GetSettings()
+			return self:GetFrame():GetSettings()
 		end
 
 		class.GetProfile = function(self)
-			local parent = self:GetParent()
-			return parent and parent.GetProfile and parent:GetProfile()
+			return self:GetFrame():GetProfile()
 		end
 
 		class.GetPlayer = function(self)
-			local parent = self:GetParent()
-			return parent and parent.GetPlayer and parent:GetPlayer()
+			return self:GetFrame():GetPlayer()
 		end
 
 		class.GetFrameID = function(self)
+			return self:GetFrame():GetFrameID()
+		end
+
+		class.GetFrame = function(self)
 			local parent = self:GetParent()
-			return parent and parent.GetFrameID and parent:GetFrameID()
+			while parent and not parent.frameID do
+				parent = parent:GetParent()
+			end
+
+			return parent
 		end
 
 		class.RegisterMessage = Addon.RegisterMessage
