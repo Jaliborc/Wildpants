@@ -18,7 +18,7 @@ L.UpdatedIncompatible = 'Updating from an incompatible version, defaults loaded'
 
 
 --slash commands
-L.Commands = 'Commands:'
+L.Commands = 'Command list'
 L.CmdShowInventory = 'Toggles your inventory'
 L.CmdShowBank = 'Toggles your bank'
 L.CmdShowVersion = 'Prints the current verison'

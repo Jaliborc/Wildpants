@@ -1,10 +1,13 @@
 --[[
 	classes.lua
-		Utility method for constructing object classes
+		Utility method for constructing object classes and messaging between them
 --]]
 
-local _, Addon = ...
-Addon.SendMessage = LibStub('CallbackHandler-1.0'):New(Addon, 'RegisterMessage', 'UnregisterMessage', 'UnregisterAllMessages').Fire
+local ADDON, Addon = ...
+local Mixins = {'RegisterEvent', 'UnregisterEvent', 'UnregisterEvents', 'RegisterMessage', 'UnregisterMessage', 'UnregisterMessages', 'SendMessage'} 
+
+LibStub('AceAddon-3.0'):NewAddon(Addon, ADDON, 'AceEvent-3.0', 'AceConsole-3.0')
+Addon.SendMessage = LibStub('CallbackHandler-1.0'):New(Addon, 'RegisterMessage', 'UnregisterMessage', 'UnregisterMessages').Fire -- we only send internal messages
 
 function Addon:NewClass(name, type, parent)
 	local class = CreateFrame(type)
@@ -45,12 +48,16 @@ function Addon:NewClass(name, type, parent)
 			return parent
 		end
 
-		class.RegisterMessage = Addon.RegisterMessage
-		class.SendMessage = Addon.SendMessage
-		class.UnregisterMessage = Addon.UnregisterMessage
-		class.UnregisterAllMessages = Addon.UnregisterAllMessages
+		for i, func in ipairs(Mixins) do
+			class[func] = Addon[func]
+		end
 	end
 
 	self[name] = class
 	return class
+end
+
+function Addon:UnregisterEvents()
+	Addon.UnregisterAllEvents(self)
+	Addon.UnregisterMessages(self)
 end

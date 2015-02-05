@@ -41,7 +41,8 @@ local ProfileDefaults = {
 local BaseProfile = {
 	inventory = SetDefaults({
 		leftSideFilter = true,
-		point = 'RIGHT',
+		point = 'BOTTOMRIGHT',
+		x = -50, y = 100,
 		itemScale = 1,
 		columns = 8,
 		width = 384,

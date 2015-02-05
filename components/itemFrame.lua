@@ -6,13 +6,14 @@
 local ADDON, Addon = ...
 local Cache = LibStub('LibItemCache-1.1')
 local ItemFrame = Addon:NewClass('ItemFrame', 'Frame')
+ItemFrame.Button = Addon.ItemSlot
 
 
 --[[ Constructor ]]--
 
 function ItemFrame:New(parent)
 	local f = self:Bind(CreateFrame('Frame', nil, parent))
-	f:SetScript('OnHide', f.UnregisterAllMessages)
+	f:SetScript('OnHide', f.UnregisterEvents)
 	f:SetScript('OnShow', f.RegisterEvents)
 	f:RegisterEvents()
 	f:SetSize(1,1)
@@ -24,36 +25,82 @@ end
 
 --[[ Events ]]--
 
-function ItemFrame:BAG_UPDATE_SIZE(bag)
-	if self:IsShowing(bag) then
+function ItemFrame:RegisterEvents()
+	if not self:IsCached() then
+		self:RegisterMessage('BAG_UPDATE_SIZE')
+		self:RegisterMessage('BAG_UPDATE_CONTENT')
+		self:RegisterEvent('BAG_UPDATE_COOLDOWN')
+		self:RegisterEvent('UNIT_QUEST_LOG_CHANGED')
+		self:RegisterEvent('ITEM_LOCK_CHANGED')
+
+		self:RegisterEvent('QUEST_ACCEPTED', 'ForAll', 'UpdateBorder')
+		self:RegisterEvent('BAG_NEW_ITEMS_UPDATED', 'ForAll', 'UpdateBorder')
+		self:RegisterEvent('EQUIPMENT_SETS_CHANGED', 'ForAll', 'UpdateBorder')
+	else
+		self:RegisterEvent('GET_ITEM_INFO_RECEIVED', 'ForAll', 'Update')
+	end
+
+	self:RegisterMessage('BAG_TOGGLED')
+	self:RegisterMessage('FOCUS_BAG')
+	self:RequestLayout()
+end
+
+function ItemFrame:BAG_UPDATE_SIZE(_,bag)
+	if self.bags[bag] then
 		self:RequestLayout()
 	end
 end
 
-function ItemFrame:BAG_UPDATE_CONTENT(bag)
-	if not self:PendingLayout() then
+function ItemFrame:BAG_UPDATE_CONTENT(_,bag)
+	if self:CanUpdate(bag) then
 		self:ForBag(bag, 'Update')
 	end
 end
 
-function ItemFrame:BAG_UPDATE_COOLDOWN(bag)
-	if not self:PendingLayout() then
+function ItemFrame:BAG_UPDATE_COOLDOWN(_,bag)
+	if self:CanUpdate(bag) then
 		self:ForBag(bag, 'UpdateCooldown')
+	end
+end
+
+function ItemFrame:UNIT_QUEST_LOG_CHANGED(_,unit)
+	if not self:PendingLayout() and unit == 'player' then
+		self:ForAll('UpdateBorder')
+	end
+end
+
+function ItemFrame:ITEM_LOCK_CHANGED(_,bag, slot)
+	if not self:PendingLayout() then
+		bag = self.bags[bag]
+		slot = bag and bag[slot]
+
+		if slot then
+			slot:UpdateLocked()
+		end
+	end
+end
+
+function ItemFrame:BAG_TOGGLED(_,bag)
+	if self:CanUpdate(bag) then
+		self:RequestLayout()
+	end
+end
+
+function ItemFrame:FOCUS_BAG(_,bag)
+	for id in pairs(self.bags) do
+		self:ForBag(id, 'SetHighlight', id == bag)
 	end
 end
 
 
 --[[ Update ]]--
 
-function ItemFrame:RegisterEvents()
-	self:RegisterMessage('BAG_UPDATE_SIZE')
-	self:RegisterMessage('BAG_UPDATE_CONTENT')
-	self:RegisterMessage('BAG_UPDATE_COOLDOWN')
-	self:RequestLayout()
-end
-
 function ItemFrame:RequestLayout()
 	self:SetScript('OnUpdate', self.Layout)
+end
+
+function ItemFrame:PendingLayout()
+	return self:GetScript('OnUpdate')
 end
 
 function ItemFrame:Layout()
@@ -64,24 +111,25 @@ function ItemFrame:Layout()
 	local columns, size = self:NumColumns(), self:ButtonSize()
 
 	for _, bag in self:IterateBags() do
-		if self:IsBagVisible(bag) then
-			self.bags[bag] = {}
+		self.bags[bag] = {}
 
+		if self:IsShowing(bag) then
 			for slot = 1, self:NumSlots(bag) do
 				if x == columns then
 					y = y + 1
 					x = 0
 				end
 
-				local button = self:GetButton(i)
+				local button = self.buttons[i] or self.Button:New()
 				button:ClearAllPoints()
 				button:SetTarget(self, bag, slot)
 				button:SetPoint('TOPLEFT', self, 'TOPLEFT', size * x, -size * y)
 
+				self.bags[bag][slot] = button
+				self.buttons[i] = button
+
 				i = i + 1
 				x = x + 1
-
-				self.bags[bag][slot] = button
 			end
 
 			if self:BagBreak() and x > 0 then
@@ -91,6 +139,10 @@ function ItemFrame:Layout()
 		end
 	end
 
+	if x > 0 then
+		y = y + 1
+	end
+
 	for k = i, #self.buttons do
 		tremove(self.buttons):Free()
 	end
@@ -98,47 +150,52 @@ function ItemFrame:Layout()
 	self:SetSize(columns * size, y * size)
 end
 
+function ItemFrame:CanUpdate(bag)
+	return not self:PendingLayout() and self.bags[bag]
+end
+
+function ItemFrame:ForAll(method, ...)
+	for i, button in pairs(self.buttons) do
+		button[method](button, ...)
+	end
+end
+
 function ItemFrame:ForBag(bag, method, ...)
-	for slot, button in pairs(self.bags[bag] or {}) do
+	for slot, button in pairs(self.bags[bag]) do
 		button[method](button, ...)
 	end
 end
 
 
---[[ Misc ]]--
-
-function ItemFrame:GetButton(i)
-	if not self.buttons[i] then
-		self.buttons[i] = self.Button:New()
-	end
-	return self.buttons[i]
-end
+--[[ Proprieties ]]--
 
 function ItemFrame:IterateBags()
 	return ipairs(self:GetFrame().Bags)
 end
 
-function ItemFrame:BagBreak()
-	return self:GetSettings().bagBreak
+function ItemFrame:IsShowing(bag)
+	return not self:GetProfile().hiddenBags[bag] 
+end
+
+function ItemFrame:IsCached()
+	return Cache:IsPlayerCached(self:GetPlayer())
 end
 
 function ItemFrame:NumSlots(bag)
 	return Addon:GetBagSize(self:GetPlayer(), bag)
 end
 
+function ItemFrame:BagBreak()
+	return self:GetSettings().bagBreak
+end
+
 
 --[[ Specifics ]]--
-
-function ItemFrame:IsBagVisible(bag)
-	return not self:GetProfile().hiddenBags[bag] 
-end
 
 function ItemFrame:NumColumns()
 	return self:GetProfile().columns
 end
 
 function ItemFrame:ButtonSize()
-	return 36
+	return (37 + self:GetSettings().spacing) * self:GetProfile().scale
 end
-
-ItemFrame.Button = Addon.ItemSlot

@@ -66,39 +66,14 @@ function Bag:New(parent, id)
 	bag:SetScript('OnClick', bag.OnClick)
 	bag:SetScript('OnDragStart', bag.OnDrag)
 	bag:SetScript('OnReceiveDrag', bag.OnClick)
-	bag:SetScript('OnEvent', bag.OnEvent)
-	bag:SetScript('OnShow', bag.OnShow)
-	bag:SetScript('OnHide', bag.OnHide)
+	bag:SetScript('OnShow', bag.UpdateEverything)
+	bag:SetScript('OnHide', bag.UpdateEvents)
 
 	return bag
 end
 
 
---[[ Frame Events ]]--
-
-function Bag:OnEvent(event, ...)
-	if event == 'BANKFRAME_OPENED' or event == 'BANKFRAME_CLOSED' then
-		self:Update()
-	elseif not self:IsCached() then
-		if event == 'ITEM_LOCK_CHANGED' then
-			self:UpdateLock()
-		elseif event == 'CURSOR_UPDATE' then
-			self:UpdateCursor()
-		elseif event == 'BAG_UPDATE' or event == 'PLAYERBANKSLOTS_CHANGED' then
-			self:Update()
-		elseif event == 'PLAYERBANKBAGSLOTS_CHANGED' then
-			self:Update()
-		end
-	end
-end
-
-function Bag:OnShow()
-	self:UpdateEverything()
-end
-
-function Bag:OnHide()
-	self:UpdateEvents()
-end
+--[[ Events ]]--
 
 function Bag:OnClick(button)
 	if button == 'RightButton' then
@@ -162,21 +137,21 @@ function Bag:UpdateEvents()
 	self:UnregisterAllEvents()
 
 	if self:IsVisible() then
-		self:RegisterEvent('BAG_UPDATE')
+		self:RegisterEvent('BAG_UPDATE', 'Update')
 		
 		if self:IsCustomSlot() then
 			if not self:IsCached() then
-				self:RegisterEvent('PLAYERBANKSLOTS_UPDATED')
-				self:RegisterEvent('ITEM_LOCK_CHANGED')
-				self:RegisterEvent('CURSOR_UPDATE')
+				self:RegisterEvent('PLAYERBANKSLOTS_UPDATED', 'Update')
+				self:RegisterEvent('ITEM_LOCK_CHANGED', 'UpdateLock')
+				self:RegisterEvent('CURSOR_UPDATE', 'UpdateCursor')
 			else
-				self:RegisterEvent('GET_ITEM_INFO_RECEIVED')
+				self:RegisterEvent('GET_ITEM_INFO_RECEIVED', 'Update')
 			end
 
 			if self:IsBankBag() then
-				self:RegisterEvent('BANKFRAME_OPENED')
-				self:RegisterEvent('BANKFRAME_CLOSED')
-				self:RegisterEvent('PLAYERBANKBAGSLOTS_UPDATED')
+				self:RegisterEvent('BANKFRAME_OPENED', 'Update')
+				self:RegisterEvent('BANKFRAME_CLOSED', 'Update')
+				self:RegisterEvent('PLAYERBANKBAGSLOTS_UPDATED', 'Update')
 			end
 		elseif self:IsReagents() then
 			self:RegisterEvent('REAGENTBANK_PURCHASED')
@@ -311,7 +286,7 @@ function Bag:Purchase()
 end
 
 function Bag:Toggle()
-	self:GetSettings().hiddenBags[self:GetSlot()] = not self:IsHidden()
+	self:GetProfile().hiddenBags[self:GetSlot()] = not self:IsHidden()
 	self:SendMessage('BAG_TOGGLED', self:GetSlot())
 end
 
@@ -369,7 +344,7 @@ function Bag:IsPurchasable()
 end
 
 function Bag:IsHidden()
-	return self:GetSettings().hiddenBags[self:GetSlot()]
+	return self:GetProfile().hiddenBags[self:GetSlot()]
 end
 
 function Bag:IsLocked()
