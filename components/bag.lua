@@ -66,14 +66,15 @@ function Bag:New(parent, id)
 	bag:SetScript('OnClick', bag.OnClick)
 	bag:SetScript('OnDragStart', bag.OnDrag)
 	bag:SetScript('OnReceiveDrag', bag.OnClick)
-	bag:SetScript('OnShow', bag.UpdateEverything)
-	bag:SetScript('OnHide', bag.UpdateEvents)
+	bag:SetScript('OnShow', bag.RegisterEvents)
+	bag:SetScript('OnHide', bag.UnregisterEvents)
+	bag:RegisterEvents()
 
 	return bag
 end
 
 
---[[ Events ]]--
+--[[ Interaction ]]--
 
 function Bag:OnClick(button)
 	if button == 'RightButton' then
@@ -128,42 +129,31 @@ end
 
 --[[ Update ]]--
 
-function Bag:UpdateEverything()
-	self:UpdateEvents()
+function Bag:RegisterEvents()
 	self:Update()
-end
-
-function Bag:UpdateEvents()
-	self:UnregisterAllEvents()
-
-	if self:IsVisible() then
-		self:RegisterEvent('BAG_UPDATE', 'Update')
-		
-		if self:IsCustomSlot() then
-			if not self:IsCached() then
-				self:RegisterEvent('PLAYERBANKSLOTS_UPDATED', 'Update')
-				self:RegisterEvent('ITEM_LOCK_CHANGED', 'UpdateLock')
-				self:RegisterEvent('CURSOR_UPDATE', 'UpdateCursor')
-			else
-				self:RegisterEvent('GET_ITEM_INFO_RECEIVED', 'Update')
-			end
-
-			if self:IsBankBag() then
-				self:RegisterEvent('BANKFRAME_OPENED', 'Update')
-				self:RegisterEvent('BANKFRAME_CLOSED', 'Update')
-				self:RegisterEvent('PLAYERBANKBAGSLOTS_UPDATED', 'Update')
-			end
-		elseif self:IsReagents() then
-			self:RegisterEvent('REAGENTBANK_PURCHASED')
+	self:UnregisterEvents()
+	self:RegisterEvent('BAG_UPDATE', 'Update')
+	
+	if self:IsCustomSlot() then
+		if self:IsBankBag() then
+			self:RegisterEvent('BANKFRAME_OPENED', 'RegisterEvents')
+			self:RegisterEvent('BANKFRAME_CLOSED', 'RegisterEvents')
+			self:RegisterEvent('PLAYERBANKBAGSLOTS_CHANGED', 'Update')
+			self:RegisterEvent('PLAYERBANKSLOTS_CHANGED', 'Update')
 		end
+
+		if not self:IsCached() then
+			self:RegisterEvent('ITEM_LOCK_CHANGED', 'UpdateLock')
+			self:RegisterEvent('CURSOR_UPDATE', 'UpdateCursor')
+		else
+			self:RegisterEvent('GET_ITEM_INFO_RECEIVED', 'Update')
+		end
+	elseif self:IsReagents() then
+		self:RegisterEvent('REAGENTBANK_PURCHASED', 'Update')
 	end
 end
 
 function Bag:Update()
-	if not self:IsVisible() then
-    	return
-  	end
-
   	if self:IsBackpack() or self:IsBank() then
 		self:SetIcon('Interface/Buttons/Button-Backpack-Up')
 	elseif self:IsReagents() then

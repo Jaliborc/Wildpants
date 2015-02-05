@@ -10,7 +10,7 @@ local SILVER = '|cffc7c7cf%s|r'
 local HEARTHSTONE = tostring(HEARTHSTONE_ITEM_ID)
 local TOTAL = SILVER:format(L.Total)
 
-local ItemCache = LibStub('LibItemCache-1.1')
+local Cache = LibStub('LibItemCache-1.1')
 local ItemText, ItemCount, Enabled, Hooked = {}, {}
 
 
@@ -49,15 +49,15 @@ local function AddOwners(tooltip, link)
 	local players = 0
 	local total = 0
 	
-	for i, player in ItemCache:IterateAlliedPlayers() do
+	for i, player in Cache:IterateAlliedPlayers() do
 		local color = Addon:GetPlayerColorString(player)
 		local countText = ItemText[player][id]
 		local count = ItemCount[player][id]
 		
 		if countText == nil then
-			count, countText = FormatCounts(color, ItemCache:GetItemCounts(player, id))
+			count, countText = FormatCounts(color, Cache:GetItemCounts(player, id))
 
-			if ItemCache:IsPlayerCached(player) then
+			if Cache:IsPlayerCached(player) then
 				ItemText[player][id] = countText or false
 				ItemCount[player][id] = count
 			end
@@ -100,9 +100,9 @@ end
 --[[ Public Methods ]]--
 
 function Addon:HookTooltips()
-	if ItemCache:HasCache() and self.sets.tipCount then
+	if Cache:HasCache() and self.sets.tipCount then
 		if not Hooked then
-			for i, player in ItemCache:IterateAlliedPlayers() do
+			for i, player in Cache:IterateAlliedPlayers() do
 				ItemCount[player] = {}
 				ItemText[player] = {}
 			end

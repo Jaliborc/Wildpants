@@ -148,6 +148,7 @@ function ItemFrame:Layout()
 	end
 
 	self:SetSize(columns * size, y * size)
+	self:OnLayout()
 end
 
 function ItemFrame:CanUpdate(bag)

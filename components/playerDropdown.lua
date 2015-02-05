@@ -60,9 +60,9 @@ end
 
 --[[ Public Methods ]]--
 
-function Addon:TogglePlayerDropdown(anchor, frame, offX, offY)
+function Addon:TogglePlayerDropdown(anchor, offX, offY)
     if Cache:HasCache() then
-        CurrentFrame = frame
+        CurrentFrame = anchor:GetFrame()
         ToggleDropDownMenu(1, nil, Dropdown or Startup(), anchor, offX, offY)
     end
 end

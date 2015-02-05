@@ -53,7 +53,7 @@ function ItemSlot:Create()
 	item.newitemglowAnim:SetLooping('NONE')
 	item.QuestBorder = _G[name .. 'IconQuestTexture']
 	item.Cooldown = _G[name .. 'Cooldown']
-	item:SetScript('OnShow', item.Update)
+	item:SetScript('OnShow', item.OnShow)
 	item:SetScript('OnHide', item.OnHide)
 	item:SetScript('PreClick', item.OnPreClick)
 	item:HookScript('OnDragStart', item.OnDragStart)
@@ -61,7 +61,6 @@ function ItemSlot:Create()
 	item:SetScript('OnEnter', item.OnEnter)
 	item:SetScript('OnLeave', item.OnLeave)
 	item:SetScript('OnEvent', nil)
-	item:Hide()
 
 	return item
 end
@@ -71,9 +70,9 @@ function ItemSlot:ConstructNewItemSlot(id)
 end
 
 function ItemSlot:GetBlizzardItemSlot(id)
-	--if not Addon:AreAllFramesEnabled() or not Addon.sets.useBlizzardSlots then
-	--	return
-	--end
+	if not Addon:AreBasicFramesEnabled() or not Addon.sets.useBlizzardSlots then
+		return
+	end
 
 	local bag = ceil(id / MAX_CONTAINER_ITEMS)
 	local slot = (id-1) % MAX_CONTAINER_ITEMS + 1
@@ -103,7 +102,13 @@ function ItemSlot:Free()
 end
 
 
---[[ Events ]]--
+--[[ Interaction ]]--
+
+function ItemSlot:OnShow()
+	self:RegisterMessage('SEARCH_UPDATE', 'UpdateSearch')
+	self:RegisterMessage('FLASH_ITEM', 'OnItemFlashed')
+	self:Update()
+end
 
 function ItemSlot:OnHide()
 	if self.hasStackSplit == 1 then
@@ -113,6 +118,8 @@ function ItemSlot:OnHide()
 	if self:IsNew() then
 		C_NewItems.RemoveNewItem(self:GetBag(), self:GetID())
 	end
+
+	self:UnregisterMessages()
 end
 
 function ItemSlot:OnDragStart()
@@ -138,7 +145,7 @@ end
 
 function ItemSlot:OnClick(button)
 	if IsAltKeyDown() and button == 'LeftButton' then
-		Addon:FlashFind(self:GetItem())
+		self:SendMessage('FLASH_ITEM', self:GetItem())
 	elseif GetNumVoidTransferDeposit() > 0 and button == 'RightButton' then
 		if self.canDeposit and self.depositSlot then
 			ClickVoidTransferDepositSlot(self.depositSlot, true)
@@ -176,6 +183,15 @@ function ItemSlot:OnLeave()
 	ResetCursor()
 end
 
+function ItemSlot:OnItemFlashed(_,item)
+	self.Flash:Stop()
+
+	local link = self:GetItem()
+	if link and link:match('item:(%d+)') == item:match('item:(%d+)') then
+		self.Flash:Play()
+	end
+end
+
 
 --[[ Update ]]--
 
@@ -201,6 +217,7 @@ function ItemSlot:Update()
 	self:UpdateBorder()
 	self:UpdateCooldown()
 	self:UpdateSlotColor()
+	self:UpdateSearch()
 
 	if GameTooltip:IsOwned(self) then
 		self:UpdateTooltip()
@@ -341,6 +358,33 @@ function ItemSlot:UpdateCooldown()
 end
 
 
+--[[ Search ]]--
+
+function ItemSlot:UpdateSearch()
+	local search = Addon.search or ''
+	local matches = search == '' or ItemSearch:Matches(self:GetItem(), search)
+
+	if matches then
+		self:SetAlpha(1)
+		self:UpdateLocked()
+		self:UpdateSlotColor()
+		self:UpdateBorder()
+	else
+		self:SetLocked(true)
+		self:SetAlpha(0.4)
+		self:HideBorder()
+	end
+end
+
+function ItemSlot:SetHighlight(enable)
+	if enable then
+		self:LockHighlight()
+	else
+		self:UnlockHighlight()
+	end
+end
+
+
 --[[ Tooltip ]]--
 
 function ItemSlot:AnchorTooltip()
@@ -367,30 +411,6 @@ end
 
 function ItemSlot:UpdateTooltip()
 	self:OnEnter()
-end
-
-
---[[ Search ]]--
-
-function ItemSlot:SetFade(faded)
-	if faded then
-		self:SetLocked(true)
-		self:SetAlpha(0.4)
-		self:HideBorder()
-	else
-		self:SetAlpha(1)
-		self:UpdateLocked()
-		self:UpdateSlotColor()
-		self:UpdateBorder()
-	end
-end
-
-function ItemSlot:SetHighlight(enable)
-	if enable then
-		self:LockHighlight()
-	else
-		self:UnlockHighlight()
-	end
 end
 
 
