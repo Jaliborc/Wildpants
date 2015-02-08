@@ -11,7 +11,7 @@ local HEARTHSTONE = tostring(HEARTHSTONE_ITEM_ID)
 local TOTAL = SILVER:format(L.Total)
 
 local Cache = LibStub('LibItemCache-1.1')
-local ItemText, ItemCount, Enabled, Hooked = {}, {}
+local ItemText, ItemCount, Hooked = {}, {}
 
 
 --[[ Local Functions ]]--
@@ -85,7 +85,7 @@ local function hookTip(tooltip)
 	end)
 
 	tooltip:HookScript('OnTooltipSetItem', function(self)
-		if not modified and Enabled then
+		if not modified and Addon.sets.tipCount then
 			modified = true
 			
 			local name, link = self:GetItem()
@@ -111,9 +111,5 @@ function Addon:HookTooltips()
 			hookTip(ItemRefTooltip)
 			Hooked = true
 		end
-		
-		Enabled = true
-	else
-		Enabled = nil
 	end
 end

@@ -70,7 +70,7 @@ function ItemSlot:ConstructNewItemSlot(id)
 end
 
 function ItemSlot:GetBlizzardItemSlot(id)
-	if not Addon:AreBasicFramesEnabled() or not Addon.sets.useBlizzardSlots then
+	if not Addon:AreBasicFramesEnabled() or not Addon.sets.useBlizzard then
 		return
 	end
 
@@ -248,7 +248,7 @@ end
 
 function ItemSlot:UpdateSlotColor()
 	if not self:GetItem() and Addon.sets.colorSlots then
-		local color = Addon.sets.slotColors[self:GetBagType()]
+		local color = Addon.sets[self:GetBagType() .. 'Color']
 		self:SetSlotColor(color[1], color[2], color[3])
 	else 
 		self:SetSlotColor(1, 1, 1)

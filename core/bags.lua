@@ -60,14 +60,14 @@ end
 
 Addon.BAG_TYPES = {
 	[0x00008] = 'leather',
-	[0x00010] = 'inscri',
+	[0x00010] = 'inscribe',
 	[0x00020] = 'herb',
 	[0x00040] = 'enchant',
 	[0x00080] = 'engineer',
 	[0x00200] = 'gem',
 	[0x00400] = 'mine',
  	[0x08000] = 'tackle',
- 	[0x10000] = 'cooking',
+ 	[0x10000] = 'refrige',
  	[-1] = 'reagent'
 }
 

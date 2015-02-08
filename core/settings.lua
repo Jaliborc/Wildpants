@@ -21,21 +21,21 @@ local function SetDefaults(target, defaults)
 	return setmetatable(target, defaults)
 end
 
-local FrameDefaults = {
-	movable = true,
+local SettingsDefaults = {
+	enabled = true,
 	money = true, broker = true,
 	bagFrame = true, sort = true, search = true, options = true,
 
 	layer = 'HIGH',
 	color = {0, 0, 0, 0.5},
-	spacing = 2,
 	alpha = 1,
+	scale = 1,
 }
 
 local ProfileDefaults = {
 	brokerObject = 'BagnonLauncher',
 	hiddenBags = {},
-	scale = 1,
+	spacing = 2,
 }
 
 local BaseProfile = {
@@ -68,35 +68,31 @@ function Addon:StartupSettings()
 		frames = {
 			inventory = SetDefaults({
 				borderColor = {1, 1, 1, 1},
-			}, FrameDefaults),
+			}, SettingsDefaults),
 
 			bank = SetDefaults({
 				borderColor = {1, 1, 0, 1},
-			}, FrameDefaults),
+			}, SettingsDefaults),
 		},
 
-		flashFind = true,
-    	tipCount = true,
+		flashFind = true, tipCount = true,
 		fading = true,
 
 		glowAlpha = 0.5,
 		glowQuality = true, glowNew = true, glowQuest = true, glowSets = true, glowUnusable = true,
 
-		colorSlots = true,
-		emptySlots = true,
-		slotColors = {
-			leather = {1, .6, .45},
-			enchant = {0.64, 0.83, 1},
-			inscri = {.64, 1, .82},
-			engineer = {.68, .63, .25},
-			tackle = {0.42, 0.59, 1},
-			cooking = {1, .5, .5},
-			gem = {1, .65, .98},
-			mine = {1, .81, .38},
-			herb = {.5, 1, .5},
-			reagent = {1, .87, .68},
-			normal = {1, 1, 1},
-		}
+		emptySlots = true, colorSlots = true,
+		leatherColor = {1, .6, .45},
+		enchantColor = {0.64, 0.83, 1},
+		inscribeColor = {.64, 1, .82},
+		engineerColor = {.68, .63, .25},
+		tackleColor = {0.42, 0.59, 1},
+		refrigeColor = {1, .5, .5},
+		gemColor = {1, .65, .98},
+		mineColor = {1, .81, .38},
+		herbColor = {.5, 1, .5},
+		reagentColor = {1, .87, .68},
+		normalColor = {1, 1, 1},
 	})
 
 	self.sets = _G[SETS]

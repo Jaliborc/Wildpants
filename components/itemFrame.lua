@@ -40,6 +40,7 @@ function ItemFrame:RegisterEvents()
 		self:RegisterEvent('GET_ITEM_INFO_RECEIVED', 'ForAll', 'Update')
 	end
 
+	self:RegisterMessage('UPDATE_ALL', 'RequestLayout')
 	self:RegisterMessage('BAG_TOGGLED')
 	self:RegisterMessage('FOCUS_BAG')
 	self:RequestLayout()
@@ -108,7 +109,7 @@ function ItemFrame:Layout()
 	self.bags = {}
 
 	local x, y, i = 0,0,1
-	local columns, size = self:NumColumns(), self:ButtonSize()
+	local columns, size, scale = self:LayoutTraits()
 
 	for _, bag in self:IterateBags() do
 		self.bags[bag] = {}
@@ -124,6 +125,7 @@ function ItemFrame:Layout()
 				button:ClearAllPoints()
 				button:SetTarget(self, bag, slot)
 				button:SetPoint('TOPLEFT', self, 'TOPLEFT', size * x, -size * y)
+				button:SetScale(scale)
 
 				self.bags[bag][slot] = button
 				self.buttons[i] = button
@@ -147,7 +149,7 @@ function ItemFrame:Layout()
 		tremove(self.buttons):Free()
 	end
 
-	self:SetSize(columns * size, y * size)
+	self:SetSize(columns * size * scale, y * size * scale)
 	self:OnLayout()
 end
 
@@ -193,10 +195,7 @@ end
 
 --[[ Specifics ]]--
 
-function ItemFrame:NumColumns()
-	return self:GetProfile().columns
-end
-
-function ItemFrame:ButtonSize()
-	return (37 + self:GetSettings().spacing) * self:GetProfile().scale
+function ItemFrame:LayoutTraits()
+	local profile = self:GetProfile()
+	return profile.columns, (37 + profile.spacing), profile.itemScale
 end
