@@ -145,7 +145,9 @@ end
 
 function ItemSlot:OnClick(button)
 	if IsAltKeyDown() and button == 'LeftButton' then
-		self:SendMessage('FLASH_ITEM', self:GetItem())
+		if Addon.sets.flashFind then
+			self:SendMessage('FLASH_ITEM', self:GetItem())
+		end
 	elseif GetNumVoidTransferDeposit() > 0 and button == 'RightButton' then
 		if self.canDeposit and self.depositSlot then
 			ClickVoidTransferDepositSlot(self.depositSlot, true)
