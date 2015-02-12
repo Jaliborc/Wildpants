@@ -4,17 +4,12 @@
 --]]
 
 local ADDON, Addon = ...
-local Cache = LibStub('LibItemCache-1.1')
-
 local ALTERNATIVE_ICONS = 'Interface/CharacterFrame/TEMPORARYPORTRAIT-%s-%s'
 local ICONS = 'Interface/Icons/Achievement_Character_%s_%s'
 local CLASS_COLOR = '|cff%02x%02x%02x'
 
-
---[[ Methods ]]--
-
 function Addon:GetPlayerIcon(player)
-	local _, race, sex = Cache:GetPlayerInfo(player)
+	local _, race, sex = self.Cache:GetPlayerInfo(player)
 	if not race then
 		return
 	else
@@ -38,6 +33,6 @@ function Addon:GetPlayerColorString(player)
 end
 
 function Addon:GetPlayerColor(player)
-	local class = Cache:GetPlayerInfo(player) or 'PRIEST'
+	local class = self.Cache:GetPlayerInfo(player) or 'PRIEST'
 	return (CUSTOM_CLASS_COLORS or RAID_CLASS_COLORS)[class]
 end

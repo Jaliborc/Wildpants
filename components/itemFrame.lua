@@ -14,12 +14,17 @@ ItemFrame.Button = Addon.ItemSlot
 function ItemFrame:New(parent)
 	local f = self:Bind(CreateFrame('Frame', nil, parent))
 	f:SetScript('OnHide', f.UnregisterEvents)
-	f:SetScript('OnShow', f.RegisterEvents)
-	f:RegisterEvents()
+	f:SetScript('OnShow', f.Update)
 	f:SetSize(1,1)
 	f.buttons = {}
+	f:Update()
 
 	return f
+end
+
+function ItemFrame:Update()
+	self:RegisterEvents()
+	self:RequestLayout()
 end
 
 
@@ -27,10 +32,10 @@ end
 
 function ItemFrame:RegisterEvents()
 	self:UnregisterEvents()
+	self:RegisterMessage(self:GetFrameID() .. '_PLAYER_CHANGED', 'Update')
 	self:RegisterMessage('UPDATE_ALL', 'RequestLayout')
 	self:RegisterMessage('BAG_TOGGLED')
 	self:RegisterMessage('FOCUS_BAG')
-	self:RequestLayout()
 
 	if not self:IsCached() then
 		self:RegisterMessage('BAG_UPDATE_SIZE')
@@ -44,6 +49,7 @@ function ItemFrame:RegisterEvents()
 		self:RegisterEvent('EQUIPMENT_SETS_CHANGED', 'ForAll', 'UpdateBorder')
 	else
 		self:RegisterEvent('GET_ITEM_INFO_RECEIVED', 'ForAll', 'Update')
+		self:RegisterMessage('BANK_OPENED', 'RegisterEvents')
 	end
 end
 

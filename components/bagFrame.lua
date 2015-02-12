@@ -19,7 +19,9 @@ function BagFrame:New(parent, from, x, y)
 		button:SetPoint(from, x*k, y*k)
 	end
 
+	f:RegisterMessage(f:GetFrameID() .. '_PLAYER_CHANGED', 'Update')
 	f:SetSize(k * x + button:GetWidth(), k * y + button:GetHeight())
+	
 	return f
 end
 

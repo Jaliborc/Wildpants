@@ -1,7 +1,8 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/">
-	<Script file="bags.lua"/>
 	<Script file="classes.lua"/>
 	<Script file="events.lua"/>
-	<Script file="players.lua"/>
 	<Script file="settings.lua"/>
+
+	<Script file="bags.lua"/>
+	<Script file="players.lua"/>
 </Ui>

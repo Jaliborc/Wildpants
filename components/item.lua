@@ -98,6 +98,7 @@ function ItemSlot:Free()
 	self:Hide()
 	self:SetParent(nil)
 	self.depositSlot = nil
+	self.frame = nil
 	tinsert(self.unused, self)
 end
 
@@ -166,7 +167,7 @@ end
 
 function ItemSlot:OnEnter()
 	if self:IsCached() then
-		local dummy = self:GetDummySlot()
+		local dummy = ItemSlot:GetDummySlot()
 		dummy:SetParent(self)
 		dummy:SetAllPoints(self)
 		dummy:Show()
@@ -198,7 +199,7 @@ end
 --[[ Update ]]--
 
 function ItemSlot:SetTarget(parent, bag, slot)
-  	self:SetParent(self:GetDummyBag(parent, bag))
+  	self:SetParent(ItemSlot:GetDummyBag(parent, bag))
   	self:SetID(slot)
   	self.bag = bag
 
@@ -467,7 +468,7 @@ function ItemSlot:GetDummyBag(parent, bag)
 	parent.dummyBags = parent.dummyBags or {}
 
 	if not parent.dummyBags[bag] then
-		parent.dummyBags[bag] = ItemSlot:Bind(CreateFrame('Frame', nil, parent))
+		parent.dummyBags[bag] = self:Bind(CreateFrame('Frame', nil, parent))
 		parent.dummyBags[bag]:SetID(tonumber(bag) or 1)
 	end
 

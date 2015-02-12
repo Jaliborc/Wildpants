@@ -6,8 +6,6 @@
 local ADDON, Addon = ...
 local SETS = ADDON .. '_Sets'
 local CURRENT_VERSION = GetAddOnMetadata(ADDON, 'Version')
-
-local Cache = LibStub('LibItemCache-1.1')
 local L = LibStub('AceLocale-3.0'):GetLocale(ADDON)
 
 local function SetDefaults(target, defaults)
@@ -112,7 +110,7 @@ function Addon:StartupSettings()
 	self.sets = _G[SETS]
 	self:UpdateSettings()
 	
-	for _, player in Cache:IteratePlayers() do
+	for _, player in self.Cache:IteratePlayers() do
 		self:StartupProfile(player)
 	end
 
@@ -135,12 +133,12 @@ end
 --[[ Profiles ]]--
 
 function Addon:StartupProfile(player)
-	local realm, player = Cache:GetPlayerAddress(player)
+	local realm, player = self.Cache:GetPlayerAddress(player)
 	self.sets.players[realm] = self.sets.players[realm] or {}
 	self.sets.players[realm][player] = SetDefaults(self.sets.players[realm][player] or {}, BaseProfile)
 end
 
 function Addon:GetProfile(player)
-	local realm, player = Cache:GetPlayerAddress(player)
+	local realm, player = self.Cache:GetPlayerAddress(player)
 	return self.sets.players[realm][player]
 end
