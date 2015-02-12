@@ -17,8 +17,10 @@ local function SetPlayer(self)
 end
 
 local function DeletePlayer(self)
-    if self.value == CurrentFrame:GetPlayer() then
-        CurrentFrame:SetPlayer(UnitName('player'))
+    for i, frame in Addon:IterateFrames() do
+        if self.value == frame:GetPlayer() then
+            frame:SetPlayer(nil)
+        end
     end
 
     Cache:DeletePlayer(self.value)
@@ -60,9 +62,9 @@ end
 
 --[[ Public Methods ]]--
 
-function Addon:TogglePlayerDropdown(anchor, offX, offY)
+function Addon:TogglePlayerDropdown(anchor, frame, offX, offY)
     if Cache:HasCache() then
-        CurrentFrame = anchor:GetFrame()
+        CurrentFrame = frame
         ToggleDropDownMenu(1, nil, Dropdown or Startup(), anchor, offX, offY)
     end
 end

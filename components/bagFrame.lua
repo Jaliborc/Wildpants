@@ -22,3 +22,9 @@ function BagFrame:New(parent, from, x, y)
 	f:SetSize(k * x + button:GetWidth(), k * y + button:GetHeight())
 	return f
 end
+
+function BagFrame:Update()
+	for i, button in ipairs {self:GetChildren()} do
+		button:Update()
+	end
+end

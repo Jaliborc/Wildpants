@@ -33,7 +33,7 @@ end
 --[[ Bag State ]]--
 
 function Addon:GetBagInfo(...)
-  return Cache:GetBagInfo(...)
+ 	return Cache:GetBagInfo(...)
 end
 
 function Addon:IsBagLocked(player, bag)
@@ -44,7 +44,7 @@ function Addon:IsBagLocked(player, bag)
 end
 
 function Addon:IsBagCached(...)
-  return select(6, self:GetBagInfo(...))
+  return Cache:GetBagType(...)
 end
 
 function Addon:GetBagSize(player, bag)

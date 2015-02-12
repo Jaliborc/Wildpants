@@ -11,8 +11,10 @@ local Cache = LibStub('LibItemCache-1.1')
 local L = LibStub('AceLocale-3.0'):GetLocale(ADDON)
 
 local function SetDefaults(target, defaults)
+	defaults.__index = nil
+
 	for k, v in pairs(defaults) do
-		if type(v) == 'table'  and k ~= '__index' then
+		if type(v) == 'table' then
 			target[k] = SetDefaults(target[k] or {}, v)
 		end
 	end
@@ -52,9 +54,16 @@ local BaseProfile = {
 	bank = SetDefaults({
 		point = 'LEFT',
 		itemScale = 0.8,
-		columns = 16,
+		columns = 12,
 		width = 512,
 		height = 512,
+		x = 95, y = 0,
+	}, ProfileDefaults),
+
+	guild = SetDefaults({
+		point = 'CENTER',
+		itemScale = 1,
+		columns = 14,
 	}, ProfileDefaults)
 }
 
@@ -73,8 +82,13 @@ function Addon:StartupSettings()
 			bank = SetDefaults({
 				borderColor = {1, 1, 0, 1},
 			}, SettingsDefaults),
+
+			guild = SetDefaults({
+				borderColor = {0, 1, 0, 1},
+			}, SettingsDefaults),
 		},
 
+		displayBank = true, displayAuction = true, displayGuild = true, displayMail = true, displayTrade = true, displayCraft = true,
 		flashFind = true, tipCount = true,
 		fading = true,
 

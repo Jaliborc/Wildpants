@@ -11,13 +11,13 @@ ItemFrame.Button = Addon.ItemSlot
 
 --[[ Constructor ]]--
 
-function ItemFrame:New(parent, resizable)
+function ItemFrame:New(parent)
 	local f = self:Bind(CreateFrame('Frame', nil, parent))
 	f:SetScript('OnHide', f.UnregisterEvents)
 	f:SetScript('OnShow', f.RegisterEvents)
-	f.resizable, f.buttons = resizable, {}
 	f:RegisterEvents()
 	f:SetSize(1,1)
+	f.buttons = {}
 
 	return f
 end
@@ -26,6 +26,12 @@ end
 --[[ Events ]]--
 
 function ItemFrame:RegisterEvents()
+	self:UnregisterEvents()
+	self:RegisterMessage('UPDATE_ALL', 'RequestLayout')
+	self:RegisterMessage('BAG_TOGGLED')
+	self:RegisterMessage('FOCUS_BAG')
+	self:RequestLayout()
+
 	if not self:IsCached() then
 		self:RegisterMessage('BAG_UPDATE_SIZE')
 		self:RegisterMessage('BAG_UPDATE_CONTENT')
@@ -39,11 +45,6 @@ function ItemFrame:RegisterEvents()
 	else
 		self:RegisterEvent('GET_ITEM_INFO_RECEIVED', 'ForAll', 'Update')
 	end
-
-	self:RegisterMessage('UPDATE_ALL', 'RequestLayout')
-	self:RegisterMessage('BAG_TOGGLED')
-	self:RegisterMessage('FOCUS_BAG')
-	self:RequestLayout()
 end
 
 function ItemFrame:BAG_UPDATE_SIZE(_,bag)
@@ -157,7 +158,7 @@ function ItemFrame:Layout()
 	end
 
 	self:SetSize(columns * size * scale, y * size * scale)
-	self:OnLayout()
+	self:GetParent():UpdateSize()
 end
 
 function ItemFrame:CanUpdate(bag)
@@ -189,12 +190,12 @@ function ItemFrame:IsShowing(bag)
 	return not self:GetProfile().hiddenBags[bag] 
 end
 
-function ItemFrame:IsCached()
-	return Cache:IsPlayerCached(self:GetPlayer())
-end
-
 function ItemFrame:NumSlots(bag)
 	return Addon:GetBagSize(self:GetPlayer(), bag)
+end
+
+function ItemFrame:IsCached()
+	return Addon:IsBagCached(self:GetPlayer(), self:GetFrame().Bags[1])
 end
 
 function ItemFrame:BagBreak()
@@ -203,9 +204,5 @@ end
 
 function ItemFrame:LayoutTraits()
 	local profile = self:GetProfile()
-	if self.resizable then
-		return profile.columns, (37 + profile.spacing), profile.itemScale
-	else
-
-	end
+	return profile.columns, (37 + profile.spacing), profile.itemScale
 end

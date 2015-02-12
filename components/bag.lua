@@ -60,6 +60,7 @@ function Bag:New(parent, id)
 	bag:SetSize(self.SIZE, self.SIZE)
 	bag.Count, bag.FilterIcon = count, filter
 	bag.FilterIcon.Icon = filterIcon
+	bag.Icon = icon
 
 	bag:SetScript('OnEnter', bag.OnEnter)
 	bag:SetScript('OnLeave', bag.OnLeave)
