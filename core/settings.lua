@@ -28,14 +28,13 @@ local SettingsDefaults = {
 
 	layer = 'HIGH',
 	color = {0, 0, 0, 0.5},
-	alpha = 1,
-	scale = 1,
+	scale = 1, alpha = 1,
 }
 
 local ProfileDefaults = {
+	itemScale = 1, spacing = 2,
 	brokerObject = 'BagnonLauncher',
 	hiddenBags = {},
-	spacing = 2,
 }
 
 local BaseProfile = {
@@ -43,7 +42,6 @@ local BaseProfile = {
 		leftSideFilter = true,
 		point = 'BOTTOMRIGHT',
 		x = -50, y = 100,
-		itemScale = 1,
 		columns = 8,
 		width = 384,
 		height = 512,
@@ -51,16 +49,20 @@ local BaseProfile = {
 
 	bank = SetDefaults({
 		point = 'LEFT',
-		itemScale = 0.8,
 		columns = 12,
 		width = 512,
 		height = 512,
 		x = 95, y = 0,
 	}, ProfileDefaults),
 
+	vault = SetDefaults({
+		point = 'LEFT',
+		columns = 16,
+		x = 95, y = 0,
+	}, ProfileDefaults),
+
 	guild = SetDefaults({
 		point = 'CENTER',
-		itemScale = 1,
 		columns = 14,
 	}, ProfileDefaults)
 }
@@ -79,6 +81,10 @@ function Addon:StartupSettings()
 
 			bank = SetDefaults({
 				borderColor = {1, 1, 0, 1},
+			}, SettingsDefaults),
+
+			vault = SetDefaults({
+				borderColor = {1, 0, 0.98, 1},
 			}, SettingsDefaults),
 
 			guild = SetDefaults({

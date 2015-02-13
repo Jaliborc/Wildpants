@@ -32,6 +32,10 @@ function Addon:NewClass(name, type, parent)
 			return setmetatable(obj, self)
 		end
 
+		class.IsCached = function(self)
+			return self:GetFrame():IsCached()
+		end
+
 		class.GetSettings = function(self)
 			return self:GetFrame():GetSettings()
 		end

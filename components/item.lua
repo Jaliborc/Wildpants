@@ -441,10 +441,6 @@ function ItemSlot:IsPaid()
 	return IsBattlePayItem(self:GetBag(), self:GetID())
 end
 
-function ItemSlot:IsCached()
-	return select(8, self:GetInfo())
-end
-
 function ItemSlot:GetInfo()
 	return Cache:GetItemInfo(self:GetPlayer(), self:GetBag(), self:GetID())
 end

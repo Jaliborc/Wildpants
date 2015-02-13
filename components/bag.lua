@@ -133,6 +133,7 @@ end
 function Bag:RegisterEvents()
 	self:Update()
 	self:UnregisterEvents()
+	self:RegisterMessage(self:GetFrameID() .. '_PLAYER_CHANGED', 'RegisterEvents')
 	self:RegisterEvent('BAG_UPDATE', 'Update')
 	
 	if self:IsCustomSlot() then
@@ -143,11 +144,11 @@ function Bag:RegisterEvents()
 			self:RegisterEvent('PLAYERBANKSLOTS_CHANGED', 'Update')
 		end
 
-		if not self:IsCached() then
+		if self:IsCached() then
+			self:RegisterEvent('GET_ITEM_INFO_RECEIVED', 'Update')
+		else
 			self:RegisterEvent('ITEM_LOCK_CHANGED', 'UpdateLock')
 			self:RegisterEvent('CURSOR_UPDATE', 'UpdateCursor')
-		else
-			self:RegisterEvent('GET_ITEM_INFO_RECEIVED', 'Update')
 		end
 	elseif self:IsReagents() then
 		self:RegisterEvent('REAGENTBANK_PURCHASED', 'Update')
