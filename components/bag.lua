@@ -135,11 +135,14 @@ function Bag:RegisterEvents()
 	self:UnregisterEvents()
 	self:RegisterMessage(self:GetFrameID() .. '_PLAYER_CHANGED', 'RegisterEvents')
 	self:RegisterEvent('BAG_UPDATE', 'Update')
+
+	if self:IsBank() or self:IsBankBag() or self:IsReagents() then
+		self:RegisterMessage('BANK_OPENED', 'RegisterEvents')
+		self:RegisterEvent('BANKFRAME_CLOSED', 'RegisterEvents')
+	end
 	
 	if self:IsCustomSlot() then
 		if self:IsBankBag() then
-			self:RegisterEvent('BANKFRAME_OPENED', 'RegisterEvents')
-			self:RegisterEvent('BANKFRAME_CLOSED', 'RegisterEvents')
 			self:RegisterEvent('PLAYERBANKBAGSLOTS_CHANGED', 'Update')
 			self:RegisterEvent('PLAYERBANKSLOTS_CHANGED', 'Update')
 		end
@@ -156,10 +159,15 @@ function Bag:RegisterEvents()
 end
 
 function Bag:Update()
+	local link, count, texture, _,_, cached = self:GetInfo()
+
   	if self:IsBackpack() or self:IsBank() then
 		self:SetIcon('Interface/Buttons/Button-Backpack-Up')
 	elseif self:IsReagents() then
 		self:SetIcon('Interface/Icons/Achievement_GuildPerk_BountifulBags')
+	else
+		self:SetIcon(texture or link and GetItemIcon(link) or 'Interface/PaperDoll/UI-PaperDoll-Slot-Bag')
+	  	self.link = link
 	end
 
 	for i = LE_BAG_FILTER_FLAG_EQUIPMENT, NUM_LE_BAG_FILTER_FLAGS do
@@ -171,22 +179,12 @@ function Bag:Update()
 		end
 	end
 
-	self.FilterIcon:SetShown(not self:IsCached())
-	self:UpdateSlot()
+	self.FilterIcon:SetShown(not cached)
+	self.Count:SetText(not self:IsPurchasable() and count > 0 and count)
+	
 	self:UpdateLock()
 	self:UpdateCursor()
 	self:UpdateToggle()
-end
-
-function Bag:UpdateSlot()
-	local link, count, texture = self:GetInfo()
-
-	if self:IsCustomSlot() then
-		self:SetIcon(texture or link and GetItemIcon(link) or 'Interface/PaperDoll/UI-PaperDoll-Slot-Bag')
-	  	self.link = link
-	end
-
-	self.Count:SetText(not self:IsPurchasable() and count > 0 and count)
 end
 
 function Bag:UpdateLock()

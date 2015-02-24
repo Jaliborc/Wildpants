@@ -111,19 +111,27 @@ function ItemFrame:Layout()
 
 	local x, y, i = 0,0,1
 	local columns, size, scale = self:LayoutTraits()
-	local reverse, start, finish, step = self:GetSettings().reverseSlots
+	local reverseBags, reverseSlots = self:GetSettings().reverseBags, self:GetSettings().reverseSlots
 
-	for _, bag in self:IterateBags() do
+	local first, last, step
+	if reverseSlots then
+		last, step = 1, -1
+	else
+		first, step = 1, 1
+	end
+
+	for k = reverseBags and #self.bags or 1, reverseBags and 1 or #self.bags, reverseBags and -1 or 1 do
+		local bag = self.bags[k]
 		self.bagButtons[bag] = {}
 
 		if self:IsShowing(bag) then
-			if reverse then
-				start, finish, step = self:NumSlots(bag), 1, -1
+			if reverseSlots then
+				first = self:NumSlots(bag)
 			else
-				start, finish, step = 1, self:NumSlots(bag), 1
+				last = self:NumSlots(bag)
 			end
 
-			for slot = start, finish, step do
+			for slot = first, last, step do
 				if x == columns then
 					y = y + 1
 					x = 0
@@ -181,10 +189,6 @@ end
 
 
 --[[ Proprieties ]]--
-
-function ItemFrame:IterateBags()
-	return ipairs(self.bags)
-end
 
 function ItemFrame:IsShowing(bag)
 	return not self:GetProfile().hiddenBags[bag] 
