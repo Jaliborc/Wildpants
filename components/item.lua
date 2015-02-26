@@ -322,7 +322,7 @@ function ItemSlot:UpdateBorder()
 			return self:SetBorderColor(1, .82, .2)
 		end
 
-		if Addon.sets.glowSet and ItemSearch:InSet(item) then
+		if Addon.sets.glowSets and ItemSearch:InSet(item) then
 	   		return self:SetBorderColor(.1, 1, 1)
 	  	end
 

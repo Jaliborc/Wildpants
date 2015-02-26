@@ -191,7 +191,7 @@ end
 --[[ Proprieties ]]--
 
 function ItemFrame:IsShowing(bag)
-	return not self:GetProfile().hiddenBags[bag] 
+	return Addon:IsBagShown(self, bag)
 end
 
 function ItemFrame:NumSlots(bag)

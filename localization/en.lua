@@ -58,6 +58,6 @@ L.TipCount4 = 'Vault: %d'
 L.TipDelimiter = '|'
 
 --databroker tooltips
-L.TipShowBank = '<Shift Left Click> to toggle your bank.'
+L.TipShowBank = '<Right Click> to toggle your bank.'
 L.TipShowInventory = '<Left Click> to toggle your inventory.'
-L.TipShowOptions = '<Right Click> to open the options menu.'
+L.TipShowOptions = '<Shift Click> to open the options menu.'

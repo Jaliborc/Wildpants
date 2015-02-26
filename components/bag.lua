@@ -84,18 +84,16 @@ function Bag:OnClick(button)
 			PlaySound('igMainMenuOptionCheckBoxOn')
 			ToggleDropDownMenu(1, nil, ContainerFrame1FilterDropDown, self, 0, 0)
 		end
-	else
-		if self:IsPurchasable() then
-			self:Purchase()
-		elseif CursorHasItem() and not self:IsCached() then
-			if self:IsBackpack() then
-				PutItemInBackpack()
-			else
-				PutItemInBag(self:GetInventorySlot())
-			end
-		elseif self:CanToggle() then
-			self:Toggle()
+	elseif self:IsPurchasable() then
+		self:Purchase()
+	elseif CursorHasItem() and not self:IsCached() then
+		if self:IsBackpack() then
+			PutItemInBackpack()
+		else
+			PutItemInBag(self:GetInventorySlot())
 		end
+	elseif self:CanToggle() then
+		self:Toggle()
 	end
 
 	self:UpdateToggle()
@@ -128,13 +126,14 @@ function Bag:OnLeave()
 end
 
 
---[[ Update ]]--
+--[[ Events ]]--
 
 function Bag:RegisterEvents()
 	self:Update()
 	self:UnregisterEvents()
 	self:RegisterMessage(self:GetFrameID() .. '_PLAYER_CHANGED', 'RegisterEvents')
-	self:RegisterEvent('BAG_UPDATE', 'Update')
+	self:RegisterMessage('BAG_TOGGLED', 'UpdateToggle')
+	self:RegisterEvent('BAG_UPDATE')
 
 	if self:IsBank() or self:IsBankBag() or self:IsReagents() then
 		self:RegisterMessage('BANK_OPENED', 'RegisterEvents')
@@ -157,6 +156,15 @@ function Bag:RegisterEvents()
 		self:RegisterEvent('REAGENTBANK_PURCHASED', 'Update')
 	end
 end
+
+function Bag:BAG_UPDATE(_, bag)
+	if bag == self:GetSlot() then
+		self:Update()
+	end
+end
+
+
+--[[ Update ]]--
 
 function Bag:Update()
 	local link, count, texture, _,_, cached = self:GetInfo()
@@ -276,8 +284,11 @@ function Bag:Purchase()
 end
 
 function Bag:Toggle()
-	self:GetProfile().hiddenBags[self:GetSlot()] = not self:IsHidden()
-	self:SendMessage('BAG_TOGGLED', self:GetSlot())
+	local hidden = self:GetProfile().hiddenBags
+	local slot = self:GetSettings().exclusiveReagent and not hidden[REAGENTBANK_CONTAINER] and REAGENTBANK_CONTAINER or self:GetSlot()
+	hidden[slot] = not hidden[slot]
+	
+	self:SendMessage('BAG_TOGGLED', slot)
 end
 
 
@@ -334,7 +345,7 @@ function Bag:IsPurchasable()
 end
 
 function Bag:IsHidden()
-	return self:GetProfile().hiddenBags[self:GetSlot()]
+	return not Addon:IsBagShown(self, self:GetSlot())
 end
 
 function Bag:IsLocked()

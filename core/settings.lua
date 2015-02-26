@@ -92,7 +92,7 @@ function Addon:StartupSettings()
 			}, SettingsDefaults),
 		},
 
-		displayBank = true, displayAuction = true, displayGuild = true, displayMail = true, displayTrade = true, displayCraft = true,
+		displayBank = true, closeBank = true, displayAuction = true, displayGuild = true, displayMail = true, displayTrade = true, displayCraft = true,
 		flashFind = true, tipCount = true,
 		fading = true,
 

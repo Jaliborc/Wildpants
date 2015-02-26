@@ -41,13 +41,20 @@ end
 
 function Addon:IsBagLocked(player, bag)
 	if not self:IsBackpack(bag) and not self:IsBank(bag) then
-    local slot, size, cached = select(4, self:GetBagInfo(player, bag))
+    	local slot, size, cached = select(4, self:GetBagInfo(player, bag))
 		return not cached and IsInventoryItemLocked(slot)
 	end
 end
 
 function Addon:GetBagSize(player, bag)
   	return select(5, self:GetBagInfo(player, bag))
+end
+
+function Addon:IsBagShown(frame, bag)
+	local hidden = frame:GetProfile().hiddenBags
+	if not frame:GetSettings().exclusiveReagent or bag == REAGENTBANK_CONTAINER or hidden[REAGENTBANK_CONTAINER] then
+		return not hidden[bag]
+	end
 end
 
 function Addon:BagToInventorySlot(...)
