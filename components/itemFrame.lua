@@ -140,8 +140,13 @@ function ItemFrame:Layout()
 				local button = self.buttons[i] or self.Button:New()
 				button:ClearAllPoints()
 				button:SetTarget(self, bag, slot)
-				button:SetPoint('TOPLEFT', self, 'TOPLEFT', size * x, -size * y)
 				button:SetScale(scale)
+
+				if self.TransposeLayout then
+					button:SetPoint('TOPLEFT', self, 'TOPLEFT', size * y, -size * x)
+				else
+					button:SetPoint('TOPLEFT', self, 'TOPLEFT', size * x, -size * y)
+				end
 
 				self.bagButtons[bag][slot] = button
 				self.buttons[i] = button
@@ -165,7 +170,13 @@ function ItemFrame:Layout()
 		tremove(self.buttons):Free()
 	end
 
-	self:SetSize(max(columns * size * scale, 1), max(y * size * scale, 1))
+	local width, height = max(columns * size * scale, 1), max(y * size * scale, 1)
+	if self.TransposeLayout then
+		self:SetSize(height, width)
+	else
+		self:SetSize(width, height)
+	end
+
 	self:GetParent():UpdateSize()
 end
 

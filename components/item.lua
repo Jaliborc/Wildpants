@@ -355,6 +355,7 @@ function ItemSlot:UpdateCooldown()
 	if self:GetItem() and (not self:IsCached()) then
 		ContainerFrame_UpdateCooldown(self:GetBag(), self)
 	else
+		self.Cooldown:Hide()
 		CooldownFrame_SetTimer(self.Cooldown, 0, 0, 0)
 		SetItemButtonTextureVertexColor(self, 1, 1, 1)
 	end

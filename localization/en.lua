@@ -8,6 +8,7 @@ local L = LibStub('AceLocale-3.0'):NewLocale(ADDON, 'enUS', true)
 --keybinding text
 L.ToggleBags = 'Toggle Inventory'
 L.ToggleBank = 'Toggle Bank'
+L.ToggleGuild = 'Toggle Guild Bank'
 L.ToggleVault = 'Toggle Void Storage'
 
 
@@ -21,6 +22,8 @@ L.UpdatedIncompatible = 'Updating from an incompatible version, defaults loaded'
 L.Commands = 'Command list'
 L.CmdShowInventory = 'Toggles your inventory'
 L.CmdShowBank = 'Toggles your bank'
+L.CmdShowGuild = 'Toggles your guild bank'
+L.CmdShowVault = 'Toggles your void storage'
 L.CmdShowVersion = 'Prints the current verison'
 
 

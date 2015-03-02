@@ -26,7 +26,7 @@ local SettingsDefaults = {
 	money = true, broker = true,
 	bagFrame = true, sort = true, search = true, options = true,
 
-	layer = 'HIGH',
+	strata = 'HIGH',
 	color = {0, 0, 0, 0.5},
 	scale = 1, alpha = 1,
 }
@@ -57,13 +57,13 @@ local BaseProfile = {
 
 	vault = SetDefaults({
 		point = 'LEFT',
-		columns = 16,
+		columns = 8,
 		x = 95, y = 0,
 	}, ProfileDefaults),
 
 	guild = SetDefaults({
 		point = 'CENTER',
-		columns = 14,
+		columns = 7,
 	}, ProfileDefaults)
 }
 
