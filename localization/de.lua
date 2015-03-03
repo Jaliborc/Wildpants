@@ -64,4 +64,4 @@ L.TipDelimiter = '|'
 --databroker plugin tooltips
 L.TipShowBank = '<Rechtsklick> um die Bank umzuschalten'
 L.TipShowInventory = '<Klicken> um das Inventar umzuschalten'
-L.TipShowOptions = '<Schift-Klick> um das Konfigurationsmen\195\188 anzuzeigen'
+L.TipShowOptions = '<Shift-Klick> um das Konfigurationsmen\195\188 anzuzeigen'
