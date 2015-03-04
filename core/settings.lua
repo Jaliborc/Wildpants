@@ -32,6 +32,8 @@ local SettingsDefaults = {
 }
 
 local ProfileDefaults = {
+	x = 0, y = 0,
+	width = 512, height = 512,
 	itemScale = 1, spacing = 2,
 	brokerObject = 'BagnonLauncher',
 	hiddenBags = {},
@@ -44,21 +46,18 @@ local BaseProfile = {
 		x = -50, y = 100,
 		columns = 8,
 		width = 384,
-		height = 512,
 	}, ProfileDefaults),
 
 	bank = SetDefaults({
 		point = 'LEFT',
 		columns = 12,
-		width = 512,
-		height = 512,
-		x = 95, y = 0,
+		x = 95
 	}, ProfileDefaults),
 
 	vault = SetDefaults({
 		point = 'LEFT',
 		columns = 8,
-		x = 95, y = 0,
+		x = 95
 	}, ProfileDefaults),
 
 	guild = SetDefaults({

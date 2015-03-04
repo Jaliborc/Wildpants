@@ -141,11 +141,6 @@ function Bag:RegisterEvents()
 	end
 	
 	if self:IsCustomSlot() then
-		if self:IsBankBag() then
-			self:RegisterEvent('PLAYERBANKBAGSLOTS_CHANGED', 'Update')
-			self:RegisterEvent('PLAYERBANKSLOTS_CHANGED', 'Update')
-		end
-
 		if self:IsCached() then
 			self:RegisterEvent('GET_ITEM_INFO_RECEIVED', 'Update')
 		else
