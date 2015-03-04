@@ -24,7 +24,7 @@ L.CmdShowInventory = 'Toggles your inventory'
 L.CmdShowBank = 'Toggles your bank'
 L.CmdShowGuild = 'Toggles your guild bank'
 L.CmdShowVault = 'Toggles your void storage'
-L.CmdShowVersion = 'Prints the current verison'
+L.CmdShowVersion = 'Prints the current version'
 
 
 --frame text
