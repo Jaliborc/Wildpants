@@ -6,39 +6,31 @@ local ADDON = ...
 local L = LibStub('AceLocale-3.0'):NewLocale(ADDON, 'deDE')
 if not L then return end
 
---keybinding text
+--keybindings
 L.ToggleBags = 'Inventar umschalten'
 L.ToggleBank = 'Bank umschalten'
 L.ToggleGuild = 'Gildenbank umschalten'
 L.ToggleVault = 'Leerenlager umschalten'
 
-
---system messages
-L.NewUser = 'Neuen Benutzer erkannt. Standardeinstellungen wurden geladen'
-L.Updated = 'Aktualisiert auf v%s'
-L.UpdatedIncompatible = 'Aktualisierung von einer inkompatiblen Version. Standardeinstellungen wurden geladen'
-
-
---slash commands
+--terminal
 L.Commands = 'Befehlsliste'
 L.CmdShowInventory = 'Schaltet das Inventar um'
 L.CmdShowBank = 'Schaltet die Bank um'
 L.CmdShowGuild = 'Schaltet die Gildenbank um'
 L.CmdShowVault = 'Schaltet das Leerenlager um'
 L.CmdShowVersion = 'Zeigt die aktuelle Version an'
+L.Updated = 'Aktualisiert auf v%s'
 
-
---frame text
+--frames
 L.TitleBags = 'Inventar von %s'
 L.TitleBank = 'Bank von %s'
-
 
 --tooltips
 L.TipBags = 'Taschen'
 L.TipChangePlayer = '<Klicken> um die Gegenst\195\164nde anderer Charaktere anzuzeigen.'
 L.TipCleanBags = '<Klicken> um die Taschen aufräumen.'
-L.TipCleanBank = '<Klicken> um die Bank aufzuräumen.'
-L.TipDepositReagents = '<Rechtsklick> um alle Reagenzien einzulagern.'
+L.TipCleanBank = '<Rechtsklick> um die Bank aufzuräumen.'
+L.TipDepositReagents = '<Klicken> um alle Reagenzien einzulagern.'
 L.TipFrameToggle = '<Rechtsklick> um andere Fenster umzuschalten.'
 L.TipGoldOnRealm = 'Auf %s gesamt'
 L.TipHideBag = '<Klicken> um diese Tasche zu verstecken.'

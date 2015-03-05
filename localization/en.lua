@@ -5,39 +5,31 @@
 local ADDON = ...
 local L = LibStub('AceLocale-3.0'):NewLocale(ADDON, 'enUS', true)
 
---keybinding text
+--keybindings
 L.ToggleBags = 'Toggle Inventory'
 L.ToggleBank = 'Toggle Bank'
 L.ToggleGuild = 'Toggle Guild Bank'
 L.ToggleVault = 'Toggle Void Storage'
 
-
---system messages
-L.NewUser = 'New user detected, default settings loaded'
-L.Updated = 'Updated to v%s'
-L.UpdatedIncompatible = 'Updating from an incompatible version, defaults loaded'
-
-
---slash commands
+--terminal
 L.Commands = 'Command list'
 L.CmdShowInventory = 'Toggles your inventory'
 L.CmdShowBank = 'Toggles your bank'
 L.CmdShowGuild = 'Toggles your guild bank'
 L.CmdShowVault = 'Toggles your void storage'
 L.CmdShowVersion = 'Prints the current verison'
+L.Updated = 'Updated to v%s'
 
-
---frame text
+--frames
 L.TitleBags = '%s\'s Inventory'
 L.TitleBank = '%s\'s Bank'
-
 
 --tooltips
 L.TipBags = 'Bags'
 L.TipChangePlayer = 'Click to view another character\'s items'
 L.TipCleanBags = 'Click to clean up bags.'
-L.TipCleanBank = '<Left-Click> to to clean up bank.'
-L.TipDepositReagents = '<Right-Click> to deposit all reagents.'
+L.TipCleanBank = '<Right-Click> to to clean up bank.'
+L.TipDepositReagents = '<Left-Click> to deposit all reagents.'
 L.TipFrameToggle = '<Right-Click> to toggle other windows.'
 L.TipGoldOnRealm = '%s Totals'
 L.TipHideBag = 'Click to hide this bag.'
