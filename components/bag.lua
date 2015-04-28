@@ -280,7 +280,7 @@ end
 
 function Bag:Toggle()
 	local hidden = self:GetProfile().hiddenBags
-	local slot = self:GetSettings().exclusiveReagent and not hidden[REAGENTBANK_CONTAINER] and REAGENTBANK_CONTAINER or self:GetSlot()
+	local slot = self:GetProfile().exclusiveReagent and not hidden[REAGENTBANK_CONTAINER] and REAGENTBANK_CONTAINER or self:GetSlot()
 	hidden[slot] = not hidden[slot]
 	
 	self:SendMessage('BAG_TOGGLED', slot)

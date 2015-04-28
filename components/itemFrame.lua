@@ -111,7 +111,7 @@ function ItemFrame:Layout()
 
 	local x, y, i = 0,0,1
 	local columns, size, scale = self:LayoutTraits()
-	local reverseBags, reverseSlots = self:GetSettings().reverseBags, self:GetSettings().reverseSlots
+	local reverseBags, reverseSlots = self:GetProfile().reverseBags, self:GetProfile().reverseSlots
 
 	local first, last, step
 	if reverseSlots then
@@ -210,7 +210,7 @@ function ItemFrame:NumSlots(bag)
 end
 
 function ItemFrame:BagBreak()
-	return self:GetSettings().bagBreak
+	return self:GetProfile().bagBreak
 end
 
 function ItemFrame:LayoutTraits()

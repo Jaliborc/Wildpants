@@ -21,49 +21,51 @@ local function SetDefaults(target, defaults)
 	return setmetatable(target, defaults)
 end
 
-local SettingsDefaults = {
+local FrameDefaults = {
 	enabled = true,
 	money = true, broker = true,
 	bagFrame = true, sort = true, search = true, options = true,
 
 	strata = 'HIGH',
-	color = {0, 0, 0, 0.5},
 	scale = 1, alpha = 1,
-}
-
-local ProfileDefaults = {
-	x = 0, y = 0,
+	color = {0, 0, 0, 0.5},
 	width = 512, height = 512,
+	x = 0, y = 0,
+
 	itemScale = 1, spacing = 2,
 	brokerObject = 'BagnonLauncher',
 	hiddenBags = {},
 }
 
-local BaseProfile = {
+local ProfileDefaults = {
 	inventory = SetDefaults({
+		borderColor = {1, 1, 1, 1},
 		leftSideFilter = true,
 		point = 'BOTTOMRIGHT',
 		x = -50, y = 100,
 		columns = 8,
 		width = 384,
-	}, ProfileDefaults),
+	}, FrameDefaults),
 
 	bank = SetDefaults({
+		borderColor = {1, 1, 0, 1},
 		point = 'LEFT',
 		columns = 12,
 		x = 95
-	}, ProfileDefaults),
+	}, FrameDefaults),
 
 	vault = SetDefaults({
+		borderColor = {1, 0, 0.98, 1},
 		point = 'LEFT',
 		columns = 8,
 		x = 95
-	}, ProfileDefaults),
+	}, FrameDefaults),
 
 	guild = SetDefaults({
+		borderColor = {0, 1, 0, 1},
 		point = 'CENTER',
 		columns = 7,
-	}, ProfileDefaults)
+	}, FrameDefaults)
 }
 
 
@@ -72,24 +74,8 @@ local BaseProfile = {
 function Addon:StartupSettings()
 	_G[SETS] = SetDefaults(_G[SETS] or {}, {
 		version = CURRENT_VERSION,
+		global = SetDefaults({}, ProfileDefaults),
 		players = {},
-		frames = {
-			inventory = SetDefaults({
-				borderColor = {1, 1, 1, 1},
-			}, SettingsDefaults),
-
-			bank = SetDefaults({
-				borderColor = {1, 1, 0, 1},
-			}, SettingsDefaults),
-
-			vault = SetDefaults({
-				borderColor = {1, 0, 0.98, 1},
-			}, SettingsDefaults),
-
-			guild = SetDefaults({
-				borderColor = {0, 1, 0, 1},
-			}, SettingsDefaults),
-		},
 
 		displayBank = true, closeBank = true, displayAuction = true, displayGuild = true, displayMail = true, displayTrade = true, displayCraft = true,
 		flashFind = true, tipCount = true,
@@ -126,7 +112,13 @@ function Addon:UpdateSettings()
 	local expansion, patch, release = strsplit('.', self.sets.version)
 	local version = tonumber(expansion) * 10000 + tonumber(patch or 0) * 100 + tonumber(release or 0)
 
-	-- nothing to do, yay!
+	if self.sets.frames then
+		for frame, sets in pairs(self.sets.frames) do
+			self.sets.global[frame] = SetDefaults(sets, self.sets.global[frame])
+		end
+
+		self.sets.frames = nil
+	end
 
 	if self.sets.version ~= CURRENT_VERSION then
 		self.sets.version = CURRENT_VERSION
@@ -138,12 +130,21 @@ end
 --[[ Profiles ]]--
 
 function Addon:StartupProfile(player)
-	local realm, player = self.Cache:GetPlayerAddress(player)
-	self.sets.players[realm] = self.sets.players[realm] or {}
-	self.sets.players[realm][player] = SetDefaults(self.sets.players[realm][player] or {}, BaseProfile)
+	local realm, name = self.Cache:GetPlayerAddress(player)
+	self.sets.players[realm]  = self.sets.players[realm] or {}
+	self:SetProfile(self.sets.players[realm][name], player)
+end
+
+function Addon:SetProfile(profile, player)
+	local realm, name = self.Cache:GetPlayerAddress(player)
+	self.sets.players[realm][name] = profile and SetDefaults(profile, ProfileDefaults)
 end
 
 function Addon:GetProfile(player)
-	local realm, player = self.Cache:GetPlayerAddress(player)
-	return self.sets.players[realm][player]
+	return self:GetSpecificProfile(player) or self.sets.global
+end
+
+function Addon:GetSpecificProfile(player)
+	local realm, name = self.Cache:GetPlayerAddress(player)
+	return self.sets.players[realm][name]
 end

@@ -52,7 +52,7 @@ end
 
 function Addon:IsBagShown(frame, bag)
 	local hidden = frame:GetProfile().hiddenBags
-	if not frame:GetSettings().exclusiveReagent or bag == REAGENTBANK_CONTAINER or hidden[REAGENTBANK_CONTAINER] then
+	if not frame:GetProfile().exclusiveReagent or bag == REAGENTBANK_CONTAINER or hidden[REAGENTBANK_CONTAINER] then
 		return not hidden[bag]
 	end
 end

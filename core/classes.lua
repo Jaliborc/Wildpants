@@ -36,10 +36,6 @@ function Addon:NewClass(name, type, parent)
 			return self:GetFrame():IsCached()
 		end
 
-		class.GetSettings = function(self)
-			return self:GetFrame():GetSettings()
-		end
-
 		class.GetProfile = function(self)
 			return self:GetFrame():GetProfile()
 		end
