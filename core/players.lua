@@ -29,7 +29,10 @@ end
 
 function Addon:GetPlayerColorString(player)
 	local color = self:GetPlayerColor(player)
-	return CLASS_COLOR:format(color.r * 255, color.g * 255, color.b * 255) .. '%s|r'
+	local brightness = color.r + color.g + color.b
+	local scale = max(1.8 / brightness, 1.0) * 255
+
+	return CLASS_COLOR:format(min(color.r * scale, 255), min(color.g * scale, 255), min(color.b * scale, 255)) .. '%s|r'
 end
 
 function Addon:GetPlayerColor(player)
