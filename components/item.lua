@@ -11,7 +11,9 @@ ItemSlot.nextID = 0
 
 local ItemSearch = LibStub('LibItemSearch-1.2')
 local Unfit = LibStub('Unfit-1.0')
-local QuestSearch = format('t:%s|%s', select(10, GetAuctionItemClasses()), 'quest')
+
+local QUEST = select(10, GetAuctionItemClasses())
+local QUEST_LOWER = QUEST:lower()
 
 
 --[[ Constructor ]]--
@@ -60,6 +62,7 @@ function ItemSlot:Create()
 	item:SetScript('OnEnter', item.OnEnter)
 	item:SetScript('OnLeave', item.OnLeave)
 	item:SetScript('OnEvent', nil)
+	item:HideBorder()
 
 	return item
 end
@@ -215,10 +218,14 @@ function ItemSlot:Update()
 	self:SetCount(count)
 	self:SetLocked(locked)
 	self:SetReadable(readable)
-	self:UpdateBorder()
-	self:UpdateSlotColor()
 	self:UpdateCooldown()
+
+	C_Timer.After(0, function() self:DelayedUpdates() end)
+end
+
+function ItemSlot:DelayedUpdates()
 	self:UpdateSearch()
+	self:UpdateSlotColor()
 
 	if GameTooltip:IsOwned(self) then
 		self:UpdateTooltip()
@@ -416,11 +423,11 @@ end
 function ItemSlot:IsQuestItem()
 	local item = self:GetItem()
 	if not item then
-		return false
+		return
 	end
 
 	if self:IsCached() then
-		return ItemSearch:Matches(item, QuestSearch), false
+		return select(6, GetItemInfo(item)) == QUEST or ItemSearch:Tooltip(item, QUEST_LOWER), false
 	else
 		local isQuestItem, questID, isActive = GetContainerItemQuestInfo(self:GetBag(), self:GetID())
 		return isQuestItem, (questID and not isActive)
