@@ -14,7 +14,7 @@ local Cache = LibStub('LibItemCache-1.1')
 local ItemText, ItemCount, Hooked = {}, {}
 
 
---[[ Local Functions ]]--
+--[[ Adding Text ]]--
 
 local function FormatCounts(color, ...)
 	local places = 0
@@ -41,7 +41,11 @@ local function FormatCounts(color, ...)
 end
 
 local function AddOwners(tooltip, link)
-	local id = link and link:match('item:(%d+)')
+	if not Addon.sets.tipCount or tooltip.__tamedCounts then
+		return
+	end
+
+	local id = link and GetItemInfo(link) and link:match('item:(%d+)') -- Blizzard doing craziness when doing GetItemInfo
 	if not id or id == HEARTHSTONE then
 		return
 	end
@@ -74,26 +78,43 @@ local function AddOwners(tooltip, link)
 		tooltip:AddDoubleLine(TOTAL, SILVER:format(total))
 	end
 	
+	tooltip.__tamedCounts = true
 	tooltip:Show()
 end
 
-local function hookTip(tooltip)
-	local modified = false
 
-	tooltip:HookScript('OnTooltipCleared', function(self)
-		modified = false
-	end)
+--[[ Hooking ]]--
 
-	tooltip:HookScript('OnTooltipSetItem', function(self)
-		if not modified and Addon.sets.tipCount then
-			modified = true
-			
-			local name, link = self:GetItem()
-			if link and GetItemInfo(link) then -- fix for blizzard doing craziness when doing getiteminfo
-				AddOwners(self, link)
-			end
-		end
-	end)
+local function OnItem(tooltip)
+	local name, link = tooltip:GetItem()
+	if name ~= '' then -- Blizzard broke tooltip:GetItem() in 6.2
+		AddOwners(tooltip, link)
+	end
+end
+
+local function OnTradeSkill(tooltip, recipe, reagent)
+	if reagent then
+		AddOwners(tooltip, GetTradeSkillReagentItemLink(recipe, reagent))
+	else
+		AddOwners(tooltip, GetTradeSkillItemLink(recipe))
+	end
+end
+
+local function OnQuest(tooltip, type, quest)
+	AddOwners(self, GetQuestItemLink(type, quest))
+end
+
+local function OnClear(tooltip)
+	tooltip.__tamedCounts = false
+end
+
+local function HookTip(tooltip)
+	tooltip:HookScript('OnTooltipCleared', OnClear)
+	tooltip:HookScript('OnTooltipSetItem', OnItem)
+
+	hooksecurefunc(tooltip, 'SetTradeSkillItem', OnTradeSkill)
+	hooksecurefunc(tooltip, 'SetQuestItem', OnQuest)
+	hooksecurefunc(tooltip, 'SetQuestLogItem', OnQuest)
 end
 
 
@@ -107,8 +128,8 @@ function Addon:HookTooltips()
 				ItemText[player] = {}
 			end
 		
-			hookTip(GameTooltip)
-			hookTip(ItemRefTooltip)
+			HookTip(GameTooltip)
+			HookTip(ItemRefTooltip)
 			Hooked = true
 		end
 	end
