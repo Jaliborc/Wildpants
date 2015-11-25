@@ -38,14 +38,24 @@ local function UpdateDropdown(self, level)
     else
         local selected = CurrentFrame:GetPlayer()
 
+		local current = Cache.PLAYER
+		UIDropDownMenu_AddButton {
+			text = format('|T%s:14:14:-3:0|t', Addon:GetPlayerIcon(current)) .. Addon:GetPlayerColorString(current):format(current),
+			checked = current == selected,
+			func = SetPlayer,
+			value = current
+		}
+
         for i, player in Cache:IteratePlayers() do
-            UIDropDownMenu_AddButton {
-                text = format('|T%s:14:14:-3:0|t', Addon:GetPlayerIcon(player)) .. Addon:GetPlayerColorString(player):format(player),
-                hasArrow = Cache:IsPlayerCached(player),
-                checked = player == selected,
-                func = SetPlayer,
-                value = player
-            }
+			if player ~= current then
+				UIDropDownMenu_AddButton {
+					text = format('|T%s:14:14:-3:0|t', Addon:GetPlayerIcon(player)) .. Addon:GetPlayerColorString(player):format(player),
+					hasArrow = Cache:IsPlayerCached(player),
+					checked = player == selected,
+					func = SetPlayer,
+					value = player
+				}
+            end
         end
     end
 end
