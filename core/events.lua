@@ -51,6 +51,11 @@ function Events:REAGENTBANK_PURCHASED()
 end
 
 function Events:BANKFRAME_OPENED()
+	-- Always reset to current character when interacting with a banker NPC
+	if Addon:GetFrame('bank') then
+		Addon:GetFrame('bank'):SetPlayer(nil)
+	end
+
 	if self.firstVisit then
 		self.firstVisit = nil
 		self:UpdateSize(BANK_CONTAINER)
