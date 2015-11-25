@@ -101,7 +101,7 @@ local function OnTradeSkill(tooltip, recipe, reagent)
 end
 
 local function OnQuest(tooltip, type, quest)
-	AddOwners(self, GetQuestItemLink(type, quest))
+	AddOwners(tooltip, GetQuestItemLink(type, quest))
 end
 
 local function OnClear(tooltip)

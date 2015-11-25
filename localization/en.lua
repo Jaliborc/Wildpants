@@ -26,7 +26,7 @@ L.TitleBank = '%s\'s Bank'
 
 --tooltips
 L.TipBags = 'Bags'
-L.TipChangePlayer = '<Left-Click> to view another character\'s items'
+L.TipChangePlayer = '<Left-Click> to view another character\'s items.'
 L.TipCleanBags = 'Click to clean up bags.'
 L.TipCleanBank = '<Right-Click> to to clean up bank.'
 L.TipDepositReagents = '<Left-Click> to deposit all reagents.'

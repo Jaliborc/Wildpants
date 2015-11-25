@@ -220,7 +220,11 @@ function ItemSlot:Update()
 	self:SetReadable(readable)
 	self:UpdateCooldown()
 
-	C_Timer.After(0, function() self:DelayedUpdates() end)
+	C_Timer.After(0, function()
+		if self:GetFrame() then -- might have been released meanwhile
+			self:DelayedUpdates()
+		end
+	end)
 end
 
 function ItemSlot:DelayedUpdates()

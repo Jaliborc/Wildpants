@@ -35,31 +35,16 @@ function Addon:NewClass(name, type, parent)
 		class.IsCached = function(self)
 			local frame = self:GetFrame()
 			return frame and frame:IsCached()
-			-- ^ Workaround/hack to address a bug.
-			-- Steps to reproduce the bug with 100% reliability:
-			--
-			-- 1. Open the bag frame
-			-- 2. Select another character with more total bag slots than the current character
-			-- 3. Close the bag frame
-			--    3a. ...by pressing the Escape key in an unmodified Bagnon
-			--    3b. ...or by any means with the "auto reset player" modification (this fork/branch by Phanx)
-			-- 4. Open the bag frame
-			-- 5. Error overload
-			--
-			-- I (Phanx) have neither the time nor the interest to pore over thousands
-			-- of lines of unfamiliar code to track down exactly why this happens and
-			-- figure out a more "proper" fix, but this hack stops the errors and seems
-			-- to have no undesirable side effects, so here it is.
 		end
 
 		class.GetProfile = function(self)
-			return self:GetFrame():GetProfile()
+			local frame = self:GetFrame()
+			return frame and frame:GetProfile()
 		end
 
 		class.GetPlayer = function(self)
 			local frame = self:GetFrame()
 			return frame and frame:GetPlayer()
-			-- ^ See notes in 'IsCached' method above.
 		end
 
 		class.GetFrameID = function(self)
