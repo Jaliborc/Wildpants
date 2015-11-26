@@ -130,8 +130,26 @@ end
 
 function ItemSlot:OnPreClick(button)
 	if not IsModifiedClick() and button == 'RightButton' then
-		if Addon.Cache.AtBank and IsReagentBankUnlocked() and GetContainerNumFreeSlots(REAGENTBANK_CONTAINER) > 0 and ItemSearch:TooltipPhrase(self:GetItem(), PROFESSIONS_USED_IN_COOKING) then
-			return UseContainerItem(self:GetBag(), self:GetID(), nil, true)
+		if Addon.Cache.AtBank and IsReagentBankUnlocked() and GetContainerNumFreeSlots(REAGENTBANK_CONTAINER) > 0 then
+			if not Addon:IsReagents(self:GetBag()) and ItemSearch:TooltipPhrase(self:GetItem(), PROFESSIONS_USED_IN_COOKING) then
+				local stack = select(8, GetItemInfo(self:GetItem()))
+
+				for _, bag in ipairs {BANK_CONTAINER, 5, 6, 7, 8, 9, 10, 11} do
+					for slot = 1, GetContainerNumSlots(bag) do
+						if GetContainerItemLink(bag, slot) == self:GetItem() then
+							local _,count = GetContainerItemInfo(bag, slot)
+							local free = stack - count
+
+							if (free > 0) then
+								SplitContainerItem(self:GetBag(), self:GetID(), min(self.count, free))
+								PickupContainerItem(bag, slot) 
+							end
+						end
+					end
+				end
+
+				return UseContainerItem(self:GetBag(), self:GetID(), nil, true)
+			end
 		end
 
 		if not self.canDeposit then
