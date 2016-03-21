@@ -133,6 +133,7 @@ function Bag:RegisterEvents()
 	self:UnregisterEvents()
 	self:RegisterMessage(self:GetFrameID() .. '_PLAYER_CHANGED', 'RegisterEvents')
 	self:RegisterMessage('BAG_TOGGLED', 'UpdateToggle')
+	self:RegisterEvent('BAG_CLOSED', 'BAG_UPDATE')
 	self:RegisterEvent('BAG_UPDATE')
 
 	if self:IsBank() or self:IsBankBag() or self:IsReagents() then
@@ -169,7 +170,10 @@ function Bag:Update()
 	elseif self:IsReagents() then
 		self:SetIcon('Interface/Icons/Achievement_GuildPerk_BountifulBags')
 	else
-		self:SetIcon(texture or link and GetItemIcon(link) or 'Interface/PaperDoll/UI-PaperDoll-Slot-Bag')
+		texture = texture or link and GetItemIcon(link)
+		count = texture and count or 0
+
+		self:SetIcon(texture or 'Interface/PaperDoll/UI-PaperDoll-Slot-Bag')
 	  	self.link = link
 	end
 
@@ -183,7 +187,7 @@ function Bag:Update()
 	end
 
 	self.FilterIcon:SetShown(not cached)
-	self.Count:SetText(not self:IsPurchasable() and count > 0 and count)
+	self.Count:SetText(count > 0 and count)
 	
 	self:UpdateLock()
 	self:UpdateCursor()
