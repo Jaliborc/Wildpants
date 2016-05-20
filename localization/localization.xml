@@ -8,4 +8,5 @@
 	<Script file="ru.lua"/>
 	<Script file="tw.lua"/>
 	<Script file="it.lua"/>
+	<Script file="ko.lua"/>
 </Ui>
