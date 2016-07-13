@@ -93,11 +93,11 @@ local function OnItem(tooltip)
 end
 
 local function OnTradeSkill(tooltip, recipe, reagent)
-	if reagent then
-		AddOwners(tooltip, GetTradeSkillReagentItemLink(recipe, reagent))
-	else
-		AddOwners(tooltip, GetTradeSkillItemLink(recipe))
-	end
+    if reagent then
+        AddOwners(tooltip, C_TradeSkillUI.GetRecipeReagentItemLink(recipe, reagent))
+    else
+        AddOwners(tooltip, C_TradeSkillUI.GetRecipeItemLink(recipe))
+    end
 end
 
 local function OnQuest(tooltip, type, quest)
@@ -112,7 +112,8 @@ local function HookTip(tooltip)
 	tooltip:HookScript('OnTooltipCleared', OnClear)
 	tooltip:HookScript('OnTooltipSetItem', OnItem)
 
-	hooksecurefunc(tooltip, 'SetTradeSkillItem', OnTradeSkill)
+    hooksecurefunc(tooltip, 'SetRecipeReagentItem', OnTradeSkill)
+    hooksecurefunc(tooltip, 'SetRecipeResultItem', OnTradeSkill)
 	hooksecurefunc(tooltip, 'SetQuestItem', OnQuest)
 	hooksecurefunc(tooltip, 'SetQuestLogItem', OnQuest)
 end

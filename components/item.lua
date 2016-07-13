@@ -12,7 +12,7 @@ ItemSlot.nextID = 0
 local ItemSearch = LibStub('LibItemSearch-1.2')
 local Unfit = LibStub('Unfit-1.0')
 
-local QUEST = select(10, GetAuctionItemClasses())
+local QUEST = GetItemClassInfo(LE_ITEM_CLASS_QUESTITEM)
 local QUEST_LOWER = QUEST:lower()
 
 
@@ -39,14 +39,16 @@ function ItemSlot:Create()
 	local flash = item:CreateAnimationGroup()
 	for i = 1, 3 do
 		local fade = flash:CreateAnimation('Alpha')
-		fade:SetDuration(.2)
-		fade:SetChange(-.8)
 		fade:SetOrder(i * 2)
+		fade:SetDuration(.2)
+		fade:SetFromAlpha(.8)
+		fade:SetToAlpha(0)
 
 		local fade = flash:CreateAnimation('Alpha')
-		fade:SetDuration(.3)
-		fade:SetChange(.8)
 		fade:SetOrder(i * 2 + 1)
+		fade:SetDuration(.3)
+		fade:SetFromAlpha(0)
+		fade:SetToAlpha(.8)
 	end
 	
 	item.UpdateTooltip = nil
@@ -296,7 +298,7 @@ function ItemSlot:UpdateCooldown()
 		ContainerFrame_UpdateCooldown(self:GetBag(), self)
 	else
 		self.Cooldown:Hide()
-		CooldownFrame_SetTimer(self.Cooldown, 0, 0, 0)
+		CooldownFrame_Set(self.Cooldown, 0, 0, 0)
 	end
 end
 
@@ -449,7 +451,7 @@ function ItemSlot:IsQuestItem()
 	end
 
 	if self:IsCached() then
-		return select(6, GetItemInfo(item)) == QUEST or ItemSearch:Tooltip(item, QUEST_LOWER), false
+		return select(12, GetItemInfo(item)) == LE_ITEM_CLASS_QUESTITEM or ItemSearch:Tooltip(item, QUEST_LOWER), false
 	else
 		local isQuestItem, questID, isActive = GetContainerItemQuestInfo(self:GetBag(), self:GetID())
 		return isQuestItem, (questID and not isActive)
