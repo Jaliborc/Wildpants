@@ -193,7 +193,6 @@ function ItemSlot:OnEnter()
 		dummy:SetAllPoints(self)
 		dummy:Show()
 	elseif self:GetItem() then
-		self:AnchorTooltip()
 		self:ShowTooltip()
 		self:UpdateBorder()
 	else
@@ -415,25 +414,26 @@ end
 
 --[[ Tooltip ]]--
 
-function ItemSlot:AnchorTooltip()
-	if self:GetRight() >= (GetScreenWidth() / 2) then
-		GameTooltip:SetOwner(self, 'ANCHOR_LEFT')
-	else
-		GameTooltip:SetOwner(self, 'ANCHOR_RIGHT')
-	end
-end
-
 function ItemSlot:ShowTooltip()
 	local bag = self:GetBag()
 	local getSlot = Addon:IsBank(bag) and BankButtonIDToInvSlotID or Addon:IsReagents(bag) and ReagentBankButtonIDToInvSlotID
 	
 	if getSlot then
+		self:AnchorTooltip()
 		GameTooltip:SetInventoryItem('player', getSlot(self:GetID()))
 		GameTooltip:Show()
 		CursorUpdate(self)
 	else
 		ContainerFrameItemButton_OnEnter(self)
 	end	
+end
+
+function ItemSlot:AnchorTooltip()
+	if self:GetRight() >= (GetScreenWidth() / 2) then
+		GameTooltip:SetOwner(self, 'ANCHOR_LEFT')
+	else
+		GameTooltip:SetOwner(self, 'ANCHOR_RIGHT')
+	end
 end
 
 
