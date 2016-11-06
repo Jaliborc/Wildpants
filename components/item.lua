@@ -237,23 +237,23 @@ function ItemSlot:Update()
 	self:SetCount(count)
 	self:SetLocked(locked)
 	self:SetReadable(readable)
-	self:UpdateCooldown()
 
-	C_Timer.After(0, function()
-		if self:GetFrame() then -- might have been released meanwhile
-			self:DelayedUpdates()
-		end
-	end)
+	self:UpdateCooldown()
+	self:After(0.1, 'SecondaryUpdate')
 end
 
-function ItemSlot:DelayedUpdates()
+function ItemSlot:SecondaryUpdate()
 	self:UpdateSearch()
 	self:UpdateSlotColor()
+	self:UpdateUpgradeIcon()
 
 	if GameTooltip:IsOwned(self) then
 		self:UpdateTooltip()
 	end
 end
+
+
+--[[ Item ]]--
 
 function ItemSlot:SetItem(item)
 	self.hasItem = item -- CursorUpdate
@@ -298,6 +298,15 @@ function ItemSlot:UpdateCooldown()
 	else
 		self.Cooldown:Hide()
 		CooldownFrame_Set(self.Cooldown, 0, 0, 0)
+	end
+end
+
+function ItemSlot:UpdateUpgradeIcon()
+	local isUpgrade = self:IsUpgrade()
+	self.UpgradeIcon:SetShown(isUpgrade)
+
+	if isUpgrade == nil then
+		self:After(0.5, 'UpdateUpgradeIcon')
 	end
 end
 
@@ -442,7 +451,7 @@ function ItemSlot:UpdateTooltip()
 end
 
 
---[[ Accessor Methods ]]--
+--[[ Data ]]--
 
 function ItemSlot:IsQuestItem()
 	local item = self:GetItem()
@@ -466,6 +475,10 @@ function ItemSlot:IsPaid()
 	return IsBattlePayItem(self:GetBag(), self:GetID())
 end
 
+function ItemSlot:IsUpgrade()
+	return IsContainerItemAnUpgrade(self:GetBag(), self:GetID())
+end
+
 function ItemSlot:GetInfo()
 	return Addon.Cache:GetItemInfo(self:GetPlayer(), self:GetBag(), self:GetID())
 end
@@ -480,6 +493,25 @@ end
 
 function ItemSlot:GetBag()
 	return self.bag
+end
+
+
+--[[ Performance ]]--
+
+function ItemSlot:After(time, action)
+	local lock = 'scheduled' .. action
+	if self[lock] then
+		return
+	end
+
+	C_Timer.After(time, function()
+		if self:GetFrame() then -- might have been released meanwhile
+			self[action](self)
+		end
+		self[lock] = false
+	end)
+
+	self[lock] = true
 end
 
 

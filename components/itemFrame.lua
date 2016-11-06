@@ -47,6 +47,9 @@ function ItemFrame:RegisterEvents()
 		self:RegisterEvent('BAG_NEW_ITEMS_UPDATED', 'ForAll', 'UpdateBorder')
 		self:RegisterEvent('EQUIPMENT_SETS_CHANGED', 'ForAll', 'UpdateBorder')
 		self:RegisterEvent('QUEST_ACCEPTED', 'ForAll', 'UpdateBorder')
+
+		self:RegisterEvent('PLAYER_SPECIALIZATION_CHANGED', 'ForAll', 'UpdateUpgradeIcon')
+		self:RegisterEvent('UNIT_INVENTORY_CHANGED', 'ForAll', 'UpdateUpgradeIcon')
 	else
 		self:RegisterEvent('GET_ITEM_INFO_RECEIVED', 'ForAll', 'Update')
 		self:RegisterMessage('BANK_OPENED', 'RegisterEvents')
