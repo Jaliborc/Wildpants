@@ -53,7 +53,7 @@ local function UpdateDropdown(self, level)
 				UIDropDownMenu_AddButton {
 					text = format('|T%s:14:14:-3:0|t', Addon:GetPlayerIcon(player)) .. Addon:GetPlayerColorString(player):format(player),
 					hasArrow = Cache:IsPlayerCached(player),
-					checked = player == selected,
+					checked = player == CurrentFrame:GetPlayer(),
 					func = SetPlayer,
 					value = player
 				}
@@ -67,7 +67,7 @@ local function Startup()
     Dropdown.initialize = UpdateDropdown
     Dropdown.displayMode = 'MENU'
     Dropdown:SetID(1)
-    
+
 	return Dropdown
 end
 

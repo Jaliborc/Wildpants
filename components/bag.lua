@@ -140,7 +140,7 @@ function Bag:RegisterEvents()
 		self:RegisterMessage('BANK_OPENED', 'RegisterEvents')
 		self:RegisterEvent('BANKFRAME_CLOSED', 'RegisterEvents')
 	end
-	
+
 	if self:IsCustomSlot() then
 		if self:IsCached() then
 			self:RegisterEvent('GET_ITEM_INFO_RECEIVED', 'Update')
@@ -177,18 +177,9 @@ function Bag:Update()
 	  	self.link = link
 	end
 
-	for i = LE_BAG_FILTER_FLAG_EQUIPMENT, NUM_LE_BAG_FILTER_FLAGS do
-		local id = self:GetSlot()
-		local active = id > NUM_BAG_SLOTS and GetBankBagSlotFlag(id - NUM_BAG_SLOTS, i) or GetBagSlotFlag(id, i)
-
-		if active then
-			self.FilterIcon.Icon:SetAtlas(BAG_FILTER_ICONS[i])
-		end
-	end
-
-	self.FilterIcon:SetShown(not cached)
 	self.Count:SetText(count > 0 and count)
-	
+
+	self:UpdateFilterIcon()
 	self:UpdateLock()
 	self:UpdateCursor()
 	self:UpdateToggle()
@@ -196,7 +187,7 @@ end
 
 function Bag:UpdateLock()
 	if self:IsCustomSlot() then
-    	SetItemButtonDesaturated(self, self:IsLocked())
+		SetItemButtonDesaturated(self, self:IsLocked())
  	end
 end
 
@@ -212,6 +203,16 @@ end
 
 function Bag:UpdateToggle()
 	self:SetChecked(not self:IsHidden())
+end
+
+function Bag:UpdateFilterIcon()
+	local flag = self:GetFilterFlag()
+	if flag then
+		self.FilterIcon.Icon:SetAtlas(BAG_FILTER_ICONS[flag])
+		self.FilterIcon:Show()
+	else
+		self.FilterIcon:Hide()
+	end
 end
 
 function Bag:UpdateTooltip()
@@ -286,7 +287,7 @@ function Bag:Toggle()
 	local hidden = self:GetProfile().hiddenBags
 	local slot = self:GetProfile().exclusiveReagent and not hidden[REAGENTBANK_CONTAINER] and REAGENTBANK_CONTAINER or self:GetSlot()
 	hidden[slot] = not hidden[slot]
-	
+
 	self:SendMessage('BAG_TOGGLED', slot)
 end
 
@@ -353,4 +354,18 @@ end
 
 function Bag:IsCached()
  	return Addon:IsBagCached(self:GetPlayer(), self:GetSlot())
+end
+
+function Bag:GetFilterFlag()
+	if self:IsCached() then
+		return
+	end
+	for i = LE_BAG_FILTER_FLAG_EQUIPMENT, NUM_LE_BAG_FILTER_FLAGS do
+		local id = self:GetSlot()
+		local active = id > NUM_BAG_SLOTS and GetBankBagSlotFlag(id - NUM_BAG_SLOTS, i) or GetBagSlotFlag(id, i)
+
+		if active then
+			return i
+		end
+	end
 end
