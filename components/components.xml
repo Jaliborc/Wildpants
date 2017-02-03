@@ -5,6 +5,7 @@
 	<Script file="item.lua"/>
 	<Script file="itemFrame.lua"/>
 	
+	<Script file="moneyFrame.lua"/>
 	<Script file="playerDropdown.lua"/>
 	<Script file="tooltipCounts.lua"/>
 </Ui>
