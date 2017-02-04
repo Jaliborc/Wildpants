@@ -33,6 +33,7 @@ end
 function ItemFrame:RegisterEvents()
 	self:UnregisterEvents()
 	self:RegisterMessage(self:GetFrameID() .. '_PLAYER_CHANGED', 'OnShow')
+	self:RegisterMessage(self:GetFrameID() .. '_FILTERS_CHANGED', 'RequestLayout')
 	self:RegisterMessage('UPDATE_ALL', 'RequestLayout')
 	self:RegisterMessage('BAG_TOGGLED')
 	self:RegisterMessage('FOCUS_BAG')
@@ -127,7 +128,7 @@ function ItemFrame:Layout()
 		local bag = self.bags[k]
 		self.bagButtons[bag] = {}
 
-		if self:IsShowing(bag) then
+		if self:IsShowingBag(bag) then
 			if reverseSlots then
 				first = self:NumSlots(bag)
 			else
@@ -135,27 +136,29 @@ function ItemFrame:Layout()
 			end
 
 			for slot = first, last, step do
-				if x == columns then
-					y = y + 1
-					x = 0
+				if self:IsShowingItem(bag, slot) then
+					if x == columns then
+						y = y + 1
+						x = 0
+					end
+
+					local button = self.buttons[i] or self.Button:New()
+					button:ClearAllPoints()
+					button:SetTarget(self, bag, slot)
+					button:SetScale(scale)
+
+					if self.TransposeLayout then
+						button:SetPoint('TOPLEFT', self, 'TOPLEFT', size * y, -size * x)
+					else
+						button:SetPoint('TOPLEFT', self, 'TOPLEFT', size * x, -size * y)
+					end
+
+					self.bagButtons[bag][slot] = button
+					self.buttons[i] = button
+
+					i = i + 1
+					x = x + 1
 				end
-
-				local button = self.buttons[i] or self.Button:New()
-				button:ClearAllPoints()
-				button:SetTarget(self, bag, slot)
-				button:SetScale(scale)
-
-				if self.TransposeLayout then
-					button:SetPoint('TOPLEFT', self, 'TOPLEFT', size * y, -size * x)
-				else
-					button:SetPoint('TOPLEFT', self, 'TOPLEFT', size * x, -size * y)
-				end
-
-				self.bagButtons[bag][slot] = button
-				self.buttons[i] = button
-
-				i = i + 1
-				x = x + 1
 			end
 
 			if self:BagBreak() and x > 0 then
@@ -180,7 +183,7 @@ function ItemFrame:Layout()
 		self:SetSize(width, height)
 	end
 
-	self:GetParent():UpdateSize()
+	self:GetFrame():UpdateSize()
 end
 
 function ItemFrame:CanUpdate(bag)
@@ -204,8 +207,16 @@ end
 
 --[[ Proprieties ]]--
 
-function ItemFrame:IsShowing(bag)
+function ItemFrame:IsShowingBag(bag)
 	return Addon:IsBagShown(self, bag)
+end
+
+function ItemFrame:IsShowingItem(bag, slot)
+	local filters = self:GetProfile().filters
+	local icon, count, locked, quality, readable, lootable, link  = Addon.Cache:GetItemInfo(self:GetPlayer(), bag, slot)
+	local qualityFilter = filters.quality or 0
+
+	return qualityFilter == 0 or quality and bit.band(qualityFilter, Addon.QualityFilter.Flags[quality]) > 0
 end
 
 function ItemFrame:NumSlots(bag)

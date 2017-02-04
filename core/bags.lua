@@ -50,13 +50,6 @@ function Addon:GetBagSize(player, bag)
   	return select(5, self:GetBagInfo(player, bag))
 end
 
-function Addon:IsBagShown(frame, bag)
-	local hidden = frame:GetProfile().hiddenBags
-	if not frame:GetProfile().exclusiveReagent or bag == REAGENTBANK_CONTAINER or hidden[REAGENTBANK_CONTAINER] then
-		return not hidden[bag]
-	end
-end
-
 function Addon:BagToInventorySlot(...)
   return select(4, self:GetBagInfo(...))
 end

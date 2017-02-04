@@ -75,7 +75,7 @@ function ItemSlot:GetNextID()
 end
 
 function ItemSlot:Construct(id)
-	return CreateFrame('Button', ('%s%s%d'):format(ADDON, self.Name, id), nil, 'ContainerFrameItemButtonTemplate')
+	return CreateFrame('Button', ADDON..self.Name..id, nil, 'ContainerFrameItemButtonTemplate')
 end
 
 function ItemSlot:GetBlizzard(id)

@@ -33,8 +33,8 @@ local FrameDefaults = {
 	x = 0, y = 0,
 
 	itemScale = 1, spacing = 2,
-	brokerObject = 'BagnonLauncher',
-	hiddenBags = {},
+	brokerObject = ADDON .. 'Launcher',
+	hiddenBags = {}, filters = {},
 }
 
 local ProfileDefaults = {
