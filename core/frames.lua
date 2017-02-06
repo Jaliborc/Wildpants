@@ -4,13 +4,13 @@
 --]]
 
 local ADDON, Addon = ...
+Addon.frames = {}
 
 
---[[ Frame Display ]]--
+--[[ Frame Control ]]--
 
 function Addon:UpdateFrames()
 	self:SendMessage('UPDATE_ALL')
-	self:UpdateEvents()
 end
 
 function Addon:ToggleFrame(id)
@@ -49,6 +49,17 @@ function Addon:CreateFrame(id)
  	end
 end
 
+function Addon:CreateFrameLoader(module, method)
+	local addon = ADDON .. '_' .. module
+	if GetAddOnEnableState(UnitName('player'), addon) >= 2 then
+		_G[method] = function()
+			if LoadAddOn(addon) then
+				self:GetModule(module):OnOpen()
+			end
+		end
+	end
+end
+
 function Addon:AreBasicFramesEnabled()
 	return self:IsFrameEnabled('inventory') and self:IsFrameEnabled('bank')
 end
@@ -66,7 +77,7 @@ function Addon:IterateFrames()
 end
 
 
---[[ Bag Display ]]--
+--[[ Bag's Frame Control ]]--
 
 function Addon:ToggleBag(frame, bag)
 	if self:IsBagControlled(frame, bag) then
@@ -89,85 +100,4 @@ function Addon:IsBagShown(frame, bag)
 	if not frame:GetProfile().exclusiveReagent or bag == REAGENTBANK_CONTAINER or hidden[REAGENTBANK_CONTAINER] then
 		return not hidden[bag]
 	end
-end
-
-
---[[ Blizzard Functions Hooks ]]--
-
-function Addon:HookDefaultDisplayFunctions()
-	-- inventory
-	local canHide = true
-	local onMerchantHide = MerchantFrame:GetScript('OnHide')
-	local hideInventory = function()
-		if canHide then
-			self:HideFrame('inventory')
-		end
-	end
-
-	MerchantFrame:SetScript('OnHide', function(...)
-		canHide = false
-		onMerchantHide(...)
-		canHide = true
-	end)
-
-	hooksecurefunc('CloseBackpack', hideInventory)
-	hooksecurefunc('CloseAllBags', hideInventory)
-
-	-- backpack
-	local oToggleBackpack = ToggleBackpack
-	ToggleBackpack = function()
-		if not self:ToggleBag('inventory', BACKPACK_CONTAINER) then
-			oToggleBackpack()
-		end
-	end
-
-	local oOpenBackpack = OpenBackpack
-	OpenBackpack = function()
-		if not self:ShowBag('inventory', BACKPACK_CONTAINER) then
-			oOpenBackpack()
-		end
-	end
-
-	-- single bag
-	local oToggleBag = ToggleBag
-	ToggleBag = function(bag)
-		local frame = self:IsBankBag(bag) and 'bank' or 'inventory'
-		if not self:ToggleBag(frame, bag) then
-			oToggleBag(bag)
-		end
-	end
-
-	local oOpenBag = OpenBag
-	OpenBag = function(bag)
-		local frame = self:IsBankBag(bag) and 'bank' or 'inventory'
-		if not self:ShowBag(frame, bag) then
-			oOpenBag(bag)
-		end
-	end
-
-	-- all bags
-	local oOpenAllBags = OpenAllBags
-	OpenAllBags = function(frame)
-		if not self:ShowFrame('inventory') then
-			oOpenAllBags(frame)
-		end
-	end
-
-	if ToggleAllBags then
-		local oToggleAllBags = ToggleAllBags
-		ToggleAllBags = function()
-			if not self:ToggleFrame('inventory') then
-				oToggleAllBags()
-			end
-		end
-	end
-
-	local function checkIfInventoryShown(button)
-		if self:IsFrameEnabled('inventory') then
-			button:SetChecked(self:IsFrameShown('inventory'))
-		end
-	end
-
-	hooksecurefunc('BagSlotButton_UpdateChecked', checkIfInventoryShown)
-	hooksecurefunc('BackpackButton_UpdateChecked', checkIfInventoryShown)
 end

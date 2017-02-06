@@ -1,0 +1,5 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/">
+	<Script file="autoDisplay.lua"/>
+	<Script file="slashCommands.lua"/>
+	<Script file="tooltipCounts.lua"/>
+</Ui>

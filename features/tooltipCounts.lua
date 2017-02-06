@@ -1,5 +1,5 @@
 --[[
-	tooltips.lua
+	tooltipCounts.lua
 		Adds item counts to tooltips
 ]]--
 

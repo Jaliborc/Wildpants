@@ -1,6 +1,6 @@
 --[[
-	commands.lua
-		Sets up slash commands and keybindings
+	slashCommands.lua
+		Defines a slash command menu and keybindings
 --]]
 
 
@@ -24,11 +24,11 @@ end
 
 function Addon:AddSlashCommands(...)
 	for i = 1, select('#', ...) do
-		self:RegisterChatCommand(select(i, ...), 'HandleSlashCommand')
+		self:RegisterChatCommand(select(i, ...), 'OnSlashCommand')
 	end
 end
 
-function Addon:HandleSlashCommand(cmd)
+function Addon:OnSlashCommand(cmd)
 	cmd = cmd and cmd:lower() or ''
 	
 	if cmd == 'bank' then

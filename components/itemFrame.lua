@@ -183,7 +183,7 @@ function ItemFrame:Layout()
 		self:SetSize(width, height)
 	end
 
-	self:GetFrame():UpdateSize()
+	self:SendMessage(self:GetFrameID() .. '_LAYOUT_CHANGED')
 end
 
 function ItemFrame:CanUpdate(bag)
@@ -212,11 +212,7 @@ function ItemFrame:IsShowingBag(bag)
 end
 
 function ItemFrame:IsShowingItem(bag, slot)
-	local filters = self:GetProfile().filters
-	local icon, count, locked, quality, readable, lootable, link  = Addon.Cache:GetItemInfo(self:GetPlayer(), bag, slot)
-	local qualityFilter = filters.quality or 0
-
-	return qualityFilter == 0 or quality and bit.band(qualityFilter, Addon.QualityFilter.Flags[quality]) > 0
+	return true
 end
 
 function ItemFrame:NumSlots(bag)
@@ -226,7 +222,6 @@ end
 function ItemFrame:BagBreak()
 	return self:GetProfile().bagBreak
 end
-
 function ItemFrame:LayoutTraits()
 	local profile = self:GetProfile()
 	return profile.columns, (37 + profile.spacing), profile.itemScale
