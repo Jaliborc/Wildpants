@@ -18,6 +18,13 @@ function BagFrame:New(parent, from, x, y)
 		button:SetPoint(from, x*k, y*k)
 	end
 
-	f:SetSize(k * x + button:GetWidth(), k * y + button:GetHeight())
+	f:SetSize(k * abs(x) + button:GetWidth(), k * abs(y) + button:GetHeight())
+	f:RegisterFrameMessage('BAG_FRAME_TOGGLED', 'UpdateShown')
+	f:UpdateShown()
+	
 	return f
+end
+
+function BagFrame:UpdateShown()
+	self:SetShown(self:GetProfile().showBags)
 end

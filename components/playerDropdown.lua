@@ -12,14 +12,16 @@ local Dropdown
 --[[ Local Functions ]]--
 
 local function SetPlayer(self)
-    CurrentFrame:SetPlayer(self.value)
+    CurrentFrame.player = self.value
+    CurrentFrame:SendFrameMessage('PLAYER_CHANGED')
     CloseDropDownMenus()
 end
 
 local function DeletePlayer(self)
     for i, frame in Addon:IterateFrames() do
         if self.value == frame:GetPlayer() then
-            frame:SetPlayer(nil)
+            frame.player = nil
+            frame:SendFrameMessage('PLAYER_CHANGED')
         end
     end
 
@@ -50,13 +52,7 @@ local function UpdateDropdown(self, level)
 
         for i, player in Cache:IteratePlayers() do
 			if player ~= Cache.PLAYER then
-				UIDropDownMenu_AddButton {
-					text = format('|T%s:14:14:-3:0|t', Addon:GetPlayerIcon(player)) .. Addon:GetPlayerColorString(player):format(player),
-					hasArrow = Cache:IsPlayerCached(player),
-					checked = player == selected,
-					func = SetPlayer,
-					value = player
-				}
+				ShowPlayer(player)
             end
         end
     end

@@ -114,7 +114,7 @@ function Bag:OnEnter()
 	end
 
 	self:UpdateTooltip()
-	self:SendMessage('FOCUS_BAG', self:GetSlot())
+	self:SendFrameMessage('FOCUS_BAG', self:GetSlot())
 end
 
 function Bag:OnLeave()
@@ -122,7 +122,7 @@ function Bag:OnLeave()
 		GameTooltip:Hide()
 	end
 
-	self:SendMessage('FOCUS_BAG')
+	self:SendFrameMessage('FOCUS_BAG')
 end
 
 
@@ -130,9 +130,9 @@ end
 
 function Bag:RegisterEvents()
 	self:Update()
+
 	self:UnregisterEvents()
-	self:RegisterMessage(self:GetFrameID() .. '_PLAYER_CHANGED', 'RegisterEvents')
-	self:RegisterMessage('BAG_TOGGLED', 'UpdateToggle')
+	self:RegisterFrameMessage('PLAYER_CHANGED', 'RegisterEvents')
 	self:RegisterEvent('BAG_CLOSED', 'BAG_UPDATE')
 	self:RegisterEvent('BAG_UPDATE')
 
@@ -283,11 +283,12 @@ function Bag:Purchase()
 end
 
 function Bag:Toggle()
-	local hidden = self:GetProfile().hiddenBags
-	local slot = self:GetProfile().exclusiveReagent and not hidden[REAGENTBANK_CONTAINER] and REAGENTBANK_CONTAINER or self:GetSlot()
+	local profile = self:GetProfile()
+	local hidden = profile.hiddenBags
+	local slot = profile.exclusiveReagent and not hidden[REAGENTBANK_CONTAINER] and REAGENTBANK_CONTAINER or self:GetSlot()
 	hidden[slot] = not hidden[slot]
 	
-	self:SendMessage('BAG_TOGGLED', slot)
+	self:SendFrameMessage('BAG_TOGGLED', slot)
 end
 
 

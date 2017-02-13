@@ -8,7 +8,7 @@ local Mixins = {'RegisterEvent', 'UnregisterEvent', 'UnregisterEvents', 'Registe
 local Messages = {}
 
 LibStub('AceAddon-3.0'):NewAddon(Addon, ADDON, 'AceEvent-3.0', 'AceConsole-3.0')
-Addon.SendMessage = LibStub('CallbackHandler-1.0'):New(Messages, 'RegisterMessage', 'UnregisterMessage', 'UnregisterMessages').Fire -- we only send internal messages
+Addon.SendMessage = LibStub('CallbackHandler-1.0'):New(Messages, 'RegisterMessage', 'UnregisterMessage', 'UnregisterMessages').Fire
 Addon.Cache = LibStub('LibItemCache-1.1')
 
 for key, func in pairs(Messages) do
@@ -32,9 +32,21 @@ function Addon:NewClass(name, type, parent)
 			return setmetatable(obj, self)
 		end
 
-		class.IsCached = function(self)
+		class.RegisterFrameMessage = function(self, msg, ...)
+			self:RegisterMessage(self:GetFrameID() .. msg, ...)
+		end
+
+		class.UnregisterFrameMessage = function(self, msg, ...)
+			self:UnregisterMessage(self:GetFrameID() .. msg, ...)
+		end
+
+		class.SendFrameMessage = function(self, msg, ...)
+			self:SendMessage(self:GetFrameID() .. msg, ...)
+		end
+
+		class.GetFrameID = function(self)
 			local frame = self:GetFrame()
-			return frame and frame:IsCached()
+			return frame and frame.frameID
 		end
 
 		class.GetProfile = function(self)
@@ -47,8 +59,9 @@ function Addon:NewClass(name, type, parent)
 			return frame and frame:GetPlayer()
 		end
 
-		class.GetFrameID = function(self)
-			return self:GetFrame().frameID
+		class.IsCached = function(self)
+			local frame = self:GetFrame()
+			return frame and frame:IsCached()
 		end
 
 		class.GetFrame = function(self)

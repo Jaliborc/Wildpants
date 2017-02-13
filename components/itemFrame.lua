@@ -14,15 +14,15 @@ ItemFrame.Button = Addon.ItemSlot
 function ItemFrame:New(parent, bags)
 	local f = self:Bind(CreateFrame('Frame', nil, parent))
 	f:SetScript('OnHide', f.UnregisterEvents)
-	f:SetScript('OnShow', f.OnShow)
+	f:SetScript('OnShow', f.Update)
 	f.bags, f.buttons = bags, {}
 	f:SetSize(1,1)
-	f:OnShow()
+	f:Update()
 
 	return f
 end
 
-function ItemFrame:OnShow()
+function ItemFrame:Update()
 	self:RequestLayout()
 	self:RegisterEvents()
 end
@@ -32,11 +32,10 @@ end
 
 function ItemFrame:RegisterEvents()
 	self:UnregisterEvents()
-	self:RegisterMessage(self:GetFrameID() .. '_PLAYER_CHANGED', 'OnShow')
-	self:RegisterMessage(self:GetFrameID() .. '_FILTERS_CHANGED', 'RequestLayout')
 	self:RegisterMessage('UPDATE_ALL', 'RequestLayout')
-	self:RegisterMessage('BAG_TOGGLED')
-	self:RegisterMessage('FOCUS_BAG')
+	self:RegisterFrameMessage('BAG_TOGGLED', 'RequestLayout')
+	self:RegisterFrameMessage('FILTERS_CHANGED', 'RequestLayout')
+	self:RegisterFrameMessage('PLAYER_CHANGED', 'Update')
 
 	if not self:IsCached() then
 		self:RegisterMessage('BAG_UPDATE_SIZE')
@@ -83,18 +82,6 @@ end
 function ItemFrame:UNIT_QUEST_LOG_CHANGED(_,unit)
 	if unit == 'player' then
 		self:ForAll('UpdateBorder')
-	end
-end
-
-function ItemFrame:BAG_TOGGLED(_,bag)
-	if self:CanUpdate(bag) then
-		self:RequestLayout()
-	end
-end
-
-function ItemFrame:FOCUS_BAG(_,bag)
-	for _, id in ipairs(self.bags) do
-		self:ForBag(id, 'SetHighlight', id == bag)
 	end
 end
 
@@ -183,7 +170,7 @@ function ItemFrame:Layout()
 		self:SetSize(width, height)
 	end
 
-	self:SendMessage(self:GetFrameID() .. '_LAYOUT_CHANGED')
+	self:SendFrameMessage('ITEM_FRAME_RESIZED')
 end
 
 function ItemFrame:CanUpdate(bag)

@@ -30,7 +30,7 @@ function BagToggle:OnClick(button)
 	if button == 'LeftButton' then
 		local profile = self:GetProfile()
 		profile.showBags = not profile.showBags or nil
-		self:SendMessage(self:GetFrameID() .. '_LAYOUT_CHANGED')
+		self:SendFrameMessage('BAG_FRAME_TOGGLED')
 	else
 		local menu = {}
 		local function addLine(id, name, addon)

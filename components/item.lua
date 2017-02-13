@@ -109,6 +109,7 @@ end
 --[[ Interaction ]]--
 
 function ItemSlot:OnShow()
+	self:RegisterFrameMessage('FOCUS_BAG', 'OnBagFocused')
 	self:RegisterMessage('SEARCH_UPDATE', 'UpdateSearch')
 	self:RegisterMessage('FLASH_ITEM', 'OnItemFlashed')
 	self:Update()
@@ -204,15 +205,6 @@ function ItemSlot:OnLeave()
 	GameTooltip:Hide()
 	BattlePetTooltip:Hide()
 	ResetCursor()
-end
-
-function ItemSlot:OnItemFlashed(_,item)
-	self.Flash:Stop()
-
-	local link = self:GetItem()
-	if link and link:match('item:(%d+)') == item:match('item:(%d+)') then
-		self.Flash:Play()
-	end
 end
 
 
@@ -395,7 +387,7 @@ function ItemSlot:HideBorder()
 end
 
 
---[[ Search ]]--
+--[[ Searches ]]--
 
 function ItemSlot:UpdateSearch()
 	local search = Addon.search or ''
@@ -412,8 +404,17 @@ function ItemSlot:UpdateSearch()
 	end
 end
 
-function ItemSlot:SetHighlight(enable)
-	if enable then
+function ItemSlot:OnItemFlashed(_,item)
+	self.Flash:Stop()
+
+	local link = self:GetItem()
+	if link and link:match('item:(%d+)') == item:match('item:(%d+)') then
+		self.Flash:Play()
+	end
+end
+
+function ItemSlot:OnBagFocused(_, bag)
+	if self:GetBag() == bag then
 		self:LockHighlight()
 	else
 		self:UnlockHighlight()
