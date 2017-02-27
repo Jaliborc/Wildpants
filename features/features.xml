@@ -2,4 +2,5 @@
 	<Script file="autoDisplay.lua"/>
 	<Script file="slashCommands.lua"/>
 	<Script file="tooltipCounts.lua"/>
+	<Script file="basicFilters.lua"/>
 </Ui>

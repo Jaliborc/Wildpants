@@ -8,12 +8,20 @@ local SETS = ADDON .. '_Sets'
 local CURRENT_VERSION = GetAddOnMetadata(ADDON, 'Version')
 local L = LibStub('AceLocale-3.0'):GetLocale(ADDON)
 
+local function AsArray(table)
+	return setmetatable(table, {__metatable = 1})
+end
+
 local function SetDefaults(target, defaults)
 	defaults.__index = nil
 
 	for k, v in pairs(defaults) do
 		if type(v) == 'table' then
-			target[k] = SetDefaults(target[k] or {}, v)
+			if getmetatable(v) == 1 then
+				target[k] = target[k] or AsArray(CopyTable(v))
+			else
+				target[k] = SetDefaults(target[k] or {}, v)
+			end
 		end
 	end
 	
@@ -34,13 +42,14 @@ local FrameDefaults = {
 
 	itemScale = 1, spacing = 2,
 	brokerObject = ADDON .. 'Launcher',
-	hiddenBags = {}, filters = {},
+	hiddenBags = {}, hiddenFilters = {},
+
+	filters = AsArray({'all', 'equip', 'use', 'trade', 'quest', 'misc'}),
 }
 
 local ProfileDefaults = {
 	inventory = SetDefaults({
 		borderColor = {1, 1, 1, 1},
-		leftSideFilter = true,
 		point = 'BOTTOMRIGHT',
 		x = -50, y = 100,
 		columns = 8,
