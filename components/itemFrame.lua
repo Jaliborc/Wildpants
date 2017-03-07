@@ -16,8 +16,8 @@ function ItemFrame:New(parent, bags)
 	f:SetScript('OnHide', f.UnregisterEvents)
 	f:SetScript('OnShow', f.Update)
 	f.bags, f.buttons = bags, {}
+	f:RequestLayout()
 	f:SetSize(1,1)
-	f:Update()
 
 	return f
 end
@@ -33,7 +33,6 @@ end
 function ItemFrame:RegisterEvents()
 	self:UnregisterEvents()
 	self:RegisterMessage('UPDATE_ALL', 'RequestLayout')
-	self:RegisterFrameMessage('BAG_TOGGLED', 'RequestLayout')
 	self:RegisterFrameMessage('FILTERS_CHANGED', 'RequestLayout')
 	self:RegisterFrameMessage('PLAYER_CHANGED', 'Update')
 
@@ -195,7 +194,7 @@ end
 --[[ Proprieties ]]--
 
 function ItemFrame:IsShowingBag(bag)
-	return Addon:IsBagShown(self, bag)
+	return self:GetFrame():IsShowingBag(bag)
 end
 
 function ItemFrame:IsShowingItem(bag, slot)

@@ -109,8 +109,8 @@ end
 --[[ Interaction ]]--
 
 function ItemSlot:OnShow()
-	self:RegisterFrameMessage('FOCUS_BAG', 'OnBagFocused')
-	self:RegisterMessage('SEARCH_UPDATE', 'UpdateSearch')
+	self:RegisterFrameMessage('FOCUS_BAG', 'UpdateFocus')
+	self:RegisterMessage('SEARCH_CHANGED', 'UpdateSearch')
 	self:RegisterMessage('FLASH_ITEM', 'OnItemFlashed')
 	self:Update()
 end
@@ -235,6 +235,7 @@ function ItemSlot:Update()
 end
 
 function ItemSlot:SecondaryUpdate()
+	self:UpdateFocus()
 	self:UpdateSearch()
 	self:UpdateSlotColor()
 	self:UpdateUpgradeIcon()
@@ -404,20 +405,20 @@ function ItemSlot:UpdateSearch()
 	end
 end
 
+function ItemSlot:UpdateFocus()
+	if self:GetBag() == self:GetFrame().focusedBag then
+		self:LockHighlight()
+	else
+		self:UnlockHighlight()
+	end
+end
+
 function ItemSlot:OnItemFlashed(_,item)
 	self.Flash:Stop()
 
 	local link = self:GetItem()
 	if link and link:match('item:(%d+)') == item:match('item:(%d+)') then
 		self.Flash:Play()
-	end
-end
-
-function ItemSlot:OnBagFocused(_, bag)
-	if self:GetBag() == bag then
-		self:LockHighlight()
-	else
-		self:UnlockHighlight()
 	end
 end
 

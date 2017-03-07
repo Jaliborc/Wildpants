@@ -7,5 +7,5 @@
 
 	<Script file="events.lua"/>
 	<Script file="frames.lua"/>
-	<Script file="filters.lua"/>
+	<Script file="rules.lua"/>
 </Ui>

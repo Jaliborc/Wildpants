@@ -10,7 +10,7 @@
 	<Script file="item.lua"/>
 	<Script file="itemFrame.lua"/>
 
-	<Script file="frame.lua"/>
+	<Script file="frameBase.lua"/>
 	<Script file="inventory.lua"/>
 	<Script file="bank.lua"/>
 </Ui>

@@ -114,7 +114,7 @@ function Bag:OnEnter()
 	end
 
 	self:UpdateTooltip()
-	self:SendFrameMessage('FOCUS_BAG', self:GetSlot())
+	self:SetFocus(true)
 end
 
 function Bag:OnLeave()
@@ -122,7 +122,7 @@ function Bag:OnLeave()
 		GameTooltip:Hide()
 	end
 
-	self:SendFrameMessage('FOCUS_BAG')
+	self:SetFocus(false)
 end
 
 
@@ -288,7 +288,15 @@ function Bag:Toggle()
 	local slot = profile.exclusiveReagent and not hidden[REAGENTBANK_CONTAINER] and REAGENTBANK_CONTAINER or self:GetSlot()
 	hidden[slot] = not hidden[slot]
 	
-	self:SendFrameMessage('BAG_TOGGLED', slot)
+	self:SendFrameMessage('FILTERS_CHANGED')
+	self:SetFocus(not hidden[slot])
+end
+
+function Bag:SetFocus(focus)
+	local state = focus and self:GetSlot()
+
+	self:GetFrame().focusedBag = state
+	self:SendFrameMessage('FOCUS_BAG', state)
 end
 
 
@@ -345,7 +353,7 @@ function Bag:IsPurchasable()
 end
 
 function Bag:IsHidden()
-	return not Addon:IsBagShown(self, self:GetSlot())
+	return not self:GetFrame():IsShowingBag(self:GetSlot())
 end
 
 function Bag:IsLocked()

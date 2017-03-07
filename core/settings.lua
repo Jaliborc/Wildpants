@@ -42,9 +42,14 @@ local FrameDefaults = {
 
 	itemScale = 1, spacing = 2,
 	brokerObject = ADDON .. 'Launcher',
-	hiddenBags = {}, hiddenFilters = {},
+	hiddenBags = {}, hiddenRules = {},
 
-	filters = AsArray({'all', 'equip', 'use', 'trade', 'quest', 'misc'}),
+	rules = AsArray({
+		'all', 'all/all', 'all/normal', 'all/trade',
+		'equip', 'equip/all', 'equip/armor',
+		'use', 'use/all',
+		'trade', 'quest', 'misc'
+	}),
 }
 
 local ProfileDefaults = {
