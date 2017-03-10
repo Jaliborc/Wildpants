@@ -59,7 +59,7 @@ Addon.Rules:New('all/reagent', Reagents, nil, function(_,_, bag) return bag == -
 
 --[[ Simple Categories ]]--
 
-ClassRule('contain', Container, 'Interface/Icons/inv_misc_bag_29', {Container})
+ClassRule('contain', Container, 'Interface/Icons/inv_misc_bag_19', {Container})
 ClassRule('quest', Quest, 'Interface/QuestFrame/UI-QuestLog-BookIcon', {Quest})
 ClassRule('misc', Misc, 'Interface/Icons/INV_Misc_Rune_01', {Misc})
 

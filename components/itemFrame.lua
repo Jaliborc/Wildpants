@@ -198,7 +198,7 @@ function ItemFrame:IsShowingBag(bag)
 end
 
 function ItemFrame:IsShowingItem(bag, slot)
-	return true
+	return self:GetFrame():IsShowingItem(bag, slot)
 end
 
 function ItemFrame:NumSlots(bag)
@@ -208,6 +208,7 @@ end
 function ItemFrame:BagBreak()
 	return self:GetProfile().bagBreak
 end
+
 function ItemFrame:LayoutTraits()
 	local profile = self:GetProfile()
 	return profile.columns, (37 + profile.spacing), profile.itemScale

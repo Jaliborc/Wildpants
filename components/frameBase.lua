@@ -30,7 +30,7 @@ end
 
 --[[ Settings ]]--
 
-function Frame:UpdateSettings()
+function Frame:UpdateAppearance()
 	self:ClearAllPoints()
 	self:SetPoint(self:GetPosition())
 	self:SetAlpha(self.profile.alpha)
@@ -74,23 +74,58 @@ function Frame:GetPosition()
 	return self.profile.point, self.profile.x, self.profile.y
 end
 
+function Frame:UpdateRules()
+	local sorted = {}
+	for i, id in ipairs(self.profile.rules) do
+		sorted[id] = true
+	end
+
+	local count = #self.profile.rules
+	for id, rule in Addon.Rules:Iterate() do
+		if not sorted[id] and not self.profile.hiddenRules[id] then
+			tinsert(self.profile.rules, id)
+		end
+	end
+
+	if #self.profile.rules > count then
+		self:SendFrameMessage('RULES_UPDATED')
+	end
+end
+
 
 --[[ Shared ]]--
-
-function Frame:IsShowingBag(bag)
-	return not self:GetProfile().hiddenBags[bag]
-end
 
 function Frame:IsBank()
 	return false
 end
 
-function Frame:GetProfile()
-	return Addon:GetProfile(self.player)[self.frameID]
+function Frame:IsShowingBag(bag)
+	return not self:GetProfile().hiddenBags[bag]
+end
+
+function Frame:IsShowingItem(bag, slot)
+	local icon, count, locked, quality, readable, lootable, link = Addon.Cache:GetItemInfo(self.player, bag, slot)
+	local rule = Addon.Rules:Get(self.subrule or self.rule)
+
+	if rule and rule.func then
+		if not rule.func(link, count, Addon:GetBagFamily(player, bag)) then
+			return
+		end
+	end
+
+	return self:IsShowingQuality(quality)
+end
+
+function Frame:IsShowingQuality(quality)
+	return self.quality == 0 or (quality and bit.band(self.quality, bit.lshift(1, quality)) > 0)
 end
 
 function Frame:IsCached()
 	return Addon:IsBagCached(self.player, self.Bags[1])
+end
+
+function Frame:GetProfile()
+	return Addon:GetProfile(self.player)[self.frameID]
 end
 
 function Frame:GetPlayer()
