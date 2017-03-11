@@ -31,10 +31,22 @@ end
 --[[ Settings ]]--
 
 function Frame:UpdateAppearance()
-	self:ClearAllPoints()
-	self:SetPoint(self:GetPosition())
-	self:SetAlpha(self.profile.alpha)
+	local managed = self.profile.managed
+	self:SetAttribute('UIPanelLayout-enabled', managed)
+	self:SetAttribute('UIPanelLayout-defined', managed)
+    self:SetAttribute('UIPanelLayout-whileDead', managed)
+    self:SetAttribute('UIPanelLayout-area', managed and 'left')
+    self:SetAttribute('UIPanelLayout-pushable', managed and 1)
+    self:SetAlpha(self.profile.alpha)
 	self:SetScale(self.profile.scale)
+
+	if managed then
+		HideUIPanel(self)
+		ShowUIPanel(self)
+	else
+		self:ClearAllPoints()
+		self:SetPoint(self:GetPosition())
+	end
 end
 
 function Frame:RecomputePosition()
@@ -71,7 +83,7 @@ function Frame:SetPosition(point, x, y)
 end
 
 function Frame:GetPosition()
-	return self.profile.point, self.profile.x, self.profile.y
+	return self.profile.point or 'CENTER', self.profile.x, self.profile.y
 end
 
 function Frame:UpdateRules()
@@ -126,6 +138,11 @@ end
 
 function Frame:GetProfile()
 	return Addon:GetProfile(self.player)[self.frameID]
+end
+
+function Frame:SetPlayer(player)
+	self.player = player
+    self:SendFrameMessage('PLAYER_CHANGED', player)
 end
 
 function Frame:GetPlayer()

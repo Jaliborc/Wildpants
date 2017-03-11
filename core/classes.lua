@@ -26,7 +26,7 @@ function Addon:NewClass(name, type, parent)
   
 	if parent then
 		class = setmetatable(class, parent)
-		class.super = parent
+		class.__super = parent
 	else
 		class.Bind = function(self, obj)
 			return setmetatable(obj, self)

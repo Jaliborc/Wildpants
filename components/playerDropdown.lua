@@ -12,8 +12,7 @@ local Dropdown
 --[[ Local Functions ]]--
 
 local function SetPlayer(self)
-    CurrentFrame.player = self.value
-    CurrentFrame:SendFrameMessage('PLAYER_CHANGED', self.value)
+    CurrentFrame:SetPlayer(self.value)
     CloseDropDownMenus()
 end
 

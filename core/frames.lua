@@ -51,7 +51,7 @@ function Addon:ShowFrame(id)
 	local frame = self:CreateFrame(id)
 	if frame then
 		frame.shownCount = (frame.shownCount or 0) + 1
-		frame:Show()
+		ShowUIPanel(frame)
 	end
 	return frame
 end
@@ -61,9 +61,9 @@ function Addon:HideFrame(id, force)
 	if frame then
 		if force or frame.shownCount == 1 then
 			frame.shownCount = 0
-			frame:Hide()
+			HideUIPanel(frame)
 		else
-			frame.shownCount = frame.shownCount - 1
+			frame.shownCount = (frame.shownCount or 0) - 1
 		end
 	end
 	return frame
