@@ -37,18 +37,20 @@ local FrameDefaults = {
 	strata = 'HIGH',
 	scale = 1, alpha = 1,
 	color = {0, 0, 0, 0.5},
-	width = 512, height = 512,
+	width = 400, height = 200,
 	x = 0, y = 0,
 
 	itemScale = 1, spacing = 2,
 	brokerObject = ADDON .. 'Launcher',
-	hiddenBags = {}, hiddenRules = {},
+	hiddenRules = {contain = true},
+	hiddenBags = {},
 
 	rules = AsArray({
-		'all', 'all/all', 'all/normal', 'all/trade',
-		'equip', 'equip/all', 'equip/armor',
-		'use', 'use/all',
-		'trade', 'quest', 'misc'
+		'all', 'all/all', 'all/normal', 'all/trade', 'all/reagent',
+		'equip', 'equip/all', 'equip/armor', 'equip/weapon', 'equip/trinket',
+		'use', 'use/all', 'use/consume', 'use/enhance',
+		'trade', 'trade/all', 'trade/goods', 'trade/gem', 'trade/glyph', 'trade/recipe',
+		'quest', 'misc',
 	}),
 }
 
