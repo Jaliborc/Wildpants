@@ -7,5 +7,6 @@ Wildpants includes:
 * Common features (tooltip counts, item rulesets, flash find,...)
 
 ## Documentation
-* [Ruleset API]()
-* [Custom Events]()
+Are you a developer? Wildpants provides a rich API for developing plugins or addons that interact with _Bagnon_ or _Combuctor_:
+* [Item Ruleset API](Ruleset-API)
+* [Custom Events](Custom-Events)
