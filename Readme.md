@@ -1,4 +1,4 @@
-# Wildpants
+# :jeans: Wildpants
 Wildpants is a collection of code functionality shared between Bagnon and Combuctor. Having a shared codebase allow for easier maintenance and for new features to be simultaneously implemented on both addons without additional effort.
 
 Wildpants includes:
