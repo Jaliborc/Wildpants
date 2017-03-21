@@ -8,5 +8,5 @@ Wildpants includes:
 
 ## For Developers
 Are you a developer? Wildpants provides a rich API for developing plugins or addons that interact with _Bagnon_ or _Combuctor_:
-* [Item Ruleset API](Ruleset-API)
-* [Custom Events](Custom-Events)
+* [Item Ruleset API](https://github.com/tullamods/Wildpants/wiki/Ruleset-API)
+* [Custom Events](https://github.com/tullamods/Wildpants/wiki/Custom-Events)
