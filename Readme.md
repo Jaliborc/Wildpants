@@ -6,7 +6,7 @@ Wildpants includes:
 * Classes to generate shared UI compoments (item buttons, money display, sort button,...)
 * Common features (tooltip counts, item rulesets, flash find,...)
 
-## Documentation
+## For Developers
 Are you a developer? Wildpants provides a rich API for developing plugins or addons that interact with _Bagnon_ or _Combuctor_:
 * [Item Ruleset API](Ruleset-API)
 * [Custom Events](Custom-Events)
