@@ -89,9 +89,8 @@ end
 
 function BagToggle:OpenFrame(id, addon)
 	if not addon or LoadAddOn(addon) then
-		local frame = Addon:CreateFrame(id)
-		frame.player = self:GetPlayer()
-		frame:ShowFrame()
+		Addon:CreateFrame(id):SetPlayer(self:GetPlayer())
+		Addon:ShowFrame(id)
 	end
 end
 

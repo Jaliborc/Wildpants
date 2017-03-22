@@ -8,24 +8,28 @@ local ADDON, Addon = ...
 
 --[[ Slot Type ]]--
 
-function Addon:IsBackpack(slot)
-	return slot == BACKPACK_CONTAINER
+function Addon:IsBasicBag(bag)
+	return self:IsBank(bag) or self:IsBackpack(bag)
 end
 
-function Addon:IsBackpackBag(bagSlot)
-  return bagSlot > 0 and bagSlot < (NUM_BAG_SLOTS + 1)
+function Addon:IsBackpack(bag)
+	return bag == BACKPACK_CONTAINER
 end
 
-function Addon:IsBank(slot)
-  return slot == BANK_CONTAINER 
+function Addon:IsBackpackBag(bag)
+  return bag > 0 and bag < (NUM_BAG_SLOTS + 1)
 end
 
-function Addon:IsReagents(slot)
-	return slot == REAGENTBANK_CONTAINER
+function Addon:IsBank(bag)
+  return bag == BANK_CONTAINER 
 end
 
-function Addon:IsBankBag(slot)
-  return slot > NUM_BAG_SLOTS and slot < (NUM_BAG_SLOTS + NUM_BANKBAGSLOTS + 1)
+function Addon:IsReagents(bag)
+	return bag == REAGENTBANK_CONTAINER
+end
+
+function Addon:IsBankBag(bag)
+  return bag > NUM_BAG_SLOTS and bag < (NUM_BAG_SLOTS + NUM_BANKBAGSLOTS + 1)
 end
 
 
@@ -82,7 +86,5 @@ function Addon:GetBagFamily(player, bag)
 	end
 
 	local link = self:GetBagInfo(player, bag)
-	if link then
-		return GetItemFamily(link)
-	end
+	return link and GetItemFamily(link) or 0
 end

@@ -23,11 +23,11 @@ local Quest = GetItemClassInfo(LE_ITEM_CLASS_QUESTITEM)
 local Misc = GetItemClassInfo(LE_ITEM_CLASS_MISCELLANEOUS)
 
 local function ClassRule(id, name, icon, classes)
-	local filter = function(item)
-		if item then
-			local _,_,_,_,_, itemclass = GetItemInfo(item)
+	local filter = function(_,_,_,_, itemLink)
+		if itemLink then
+			local _,_,_,_,_, itemType = GetItemInfo(itemLink)
 			for i, class in ipairs(classes) do
-				if itemclass == class then
+				if itemType == class then
 					return true
 				end
 			end
@@ -39,12 +39,16 @@ local function ClassRule(id, name, icon, classes)
 end
 
 local function ClassSubrule(id, class)
-	Addon.Rules:New(id, class, nil, function(item)
-		if item then
-			local _,_,_,_,_, itemclass = GetItemInfo(item)
-			return itemclass == class
+	Addon.Rules:New(id, class, nil, function(_,_,_,_, itemLink)
+		if itemLink then
+			local _,_,_,_,_, itemType = GetItemInfo(itemLink)
+			return itemType == class
 		end
 	end)
+end
+
+local function GetBagFamily(bagLink)
+	return bagLink and GetItemFamily(bagLink) or 0
 end
 
 
@@ -52,9 +56,9 @@ end
 
 Addon.Rules:New('all', ALL, 'Interface/Icons/INV_Misc_EngGizmos_17')
 Addon.Rules:New('all/all', ALL)
-Addon.Rules:New('all/normal', Normal, nil, function(_,_, bag) return bag == 0 end)
-Addon.Rules:New('all/trade', TRADE, nil, function(_,_, bag) return bag > 0 end)
-Addon.Rules:New('all/reagent', Reagents, nil, function(_,_, bag) return bag == -1 end)
+Addon.Rules:New('all/normal', Normal, nil, function(_, bag,_, bagLink) return Addon:IsBasicBag(bag) or GetBagFamily(bagLink) == 0 end)
+Addon.Rules:New('all/trade', TRADE, nil, function(_,_,_, bagLink) return GetBagFamily(bagLink) > 0 end)
+Addon.Rules:New('all/reagent', Reagents, nil, function(_, bag) return Addon:IsReagents(bag) end)
 
 
 --[[ Simple Categories ]]--
