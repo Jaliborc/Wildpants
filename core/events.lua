@@ -4,10 +4,10 @@
 
 	BAG_UPDATE_SIZE
 	args: bag
-		called when the size of a bag changes, will probably also have changed
+		called when the size of a bag changes, bag itself probably also has changed
 
 	BAG_UPDATE_CONTENT
-	args:
+	args: bag
 		called when the items of a bag change
 
 	BANK_OPENED
