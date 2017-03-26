@@ -19,3 +19,7 @@ function Frame:IsShowningBag(bag)
 		return not profile.hiddenBags[bag]
 	end
 end
+
+function Frame:IsBank()
+	return true
+end
