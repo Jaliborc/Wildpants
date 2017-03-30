@@ -62,9 +62,7 @@ function ItemFrame:BAG_UPDATE_SIZE(_,bag)
 end
 
 function ItemFrame:BAG_UPDATE_CONTENT(_,bag)
-	if self:CanUpdate(bag) then
-		self:ForBag(bag, 'Update')
-	end
+	self:ForBag(bag, 'Update')
 end
 
 function ItemFrame:ITEM_LOCK_CHANGED(_,bag, slot)
@@ -97,52 +95,47 @@ end
 
 function ItemFrame:Layout()
 	self:SetScript('OnUpdate', nil)
-	self.bagButtons = {}
+	self:ForAll('Release')
+	self.buttons = {}
 
-	local x, y, i = 0,0,1
-	local columns, size, scale = self:LayoutTraits()
-	local reverseBags, reverseSlots = self:GetProfile().reverseBags, self:GetProfile().reverseSlots
+	-- Acquire slots
+	for bag in ipairs(self.bags) do
+		if self:IsShowingBag(bag) then
+			self.buttons[bag] = {}
 
-	local first, last, step
-	if reverseSlots then
-		last, step = 1, -1
-	else
-		first, step = 1, 1
+			for slot = 1, self:NumSlots(bag) do
+				if self:IsShowingItem(bag, slot) then
+					self.buttons[bag][slot] = self.Button:New(self, bag, slot)
+				end
+			end
+		end
 	end
 
-	for k = reverseBags and #self.bags or 1, reverseBags and 1 or #self.bags, reverseBags and -1 or 1 do
+	-- Position slots
+	local profile =  self:GetProfile()
+	local columns, scale = self:LayoutTraits()
+	local size = self:GetButtonSize()
+
+	local revBags, revSlots = profile.reverseBags, profile.reverseSlots
+	local x, y = 0,0
+
+	for k = revBags and #self.bags or 1, revBags and 1 or #self.bags, revBags and -1 or 1 do
 		local bag = self.bags[k]
-		self.bagButtons[bag] = {}
+		local slots = self.buttons[bag]
 
-		if self:IsShowingBag(bag) then
-			if reverseSlots then
-				first = self:NumSlots(bag)
-			else
-				last = self:NumSlots(bag)
-			end
-
-			for slot = first, last, step do
-				if self:IsShowingItem(bag, slot) then
+		if slots then
+			for slot = revSlots and #slots or 1, revSlots and 1 or #slots, revSlots and -1 or 1 do
+				local button = slots[slot]
+				if button then
 					if x == columns then
 						y = y + 1
 						x = 0
 					end
 
-					local button = self.buttons[i] or self.Button:New()
 					button:ClearAllPoints()
-					button:SetTarget(self, bag, slot)
+					button:SetPoint('TOPLEFT', self, 'TOPLEFT', size * (self.Transposed and y or x), -size * (self.Transposed and x or y))
 					button:SetScale(scale)
 
-					if self.TransposeLayout then
-						button:SetPoint('TOPLEFT', self, 'TOPLEFT', size * y, -size * x)
-					else
-						button:SetPoint('TOPLEFT', self, 'TOPLEFT', size * x, -size * y)
-					end
-
-					self.bagButtons[bag][slot] = button
-					self.buttons[i] = button
-
-					i = i + 1
 					x = x + 1
 				end
 			end
@@ -154,40 +147,34 @@ function ItemFrame:Layout()
 		end
 	end
 
+	-- Resize frame
 	if x > 0 then
 		y = y + 1
 	end
 
-	for k = i, #self.buttons do
-		tremove(self.buttons):Free()
-	end
-
 	local width, height = max(columns * size * scale, 1), max(y * size * scale, 1)
-	if self.TransposeLayout then
-		self:SetSize(height, width)
-	else
-		self:SetSize(width, height)
-	end
-
+	self:SetSize(self.Transposed and height or width, self.Transposed and width or height)
 	self:SendFrameMessage('ITEM_FRAME_RESIZED')
-end
-
-function ItemFrame:CanUpdate(bag)
-	return not self:PendingLayout() and self.bagButtons[bag]
 end
 
 function ItemFrame:ForAll(method, ...)
 	if not self:PendingLayout() then
-		for i, button in pairs(self.buttons) do
+		for i, button in ipairs({self:GetChildren()}) do
 			button[method](button, ...)
 		end
 	end
 end
 
 function ItemFrame:ForBag(bag, method, ...)
-	for slot, button in pairs(self.bagButtons[bag]) do
-		button[method](button, ...)
+	if self:CanUpdate(bag) then
+		for slot, button in pairs(self.bagButtons[bag]) do
+			button[method](button, ...)
+		end
 	end
+end
+
+function ItemFrame:CanUpdate(bag)
+	return not self:PendingLayout() and self.bagButtons[bag]
 end
 
 
@@ -205,11 +192,14 @@ function ItemFrame:NumSlots(bag)
 	return Addon:GetBagSize(self:GetPlayer(), bag)
 end
 
-function ItemFrame:BagBreak()
-	return self:GetProfile().bagBreak
+function ItemFrame:NumButtons()
+	return self.numButtons
 end
 
-function ItemFrame:LayoutTraits()
-	local profile = self:GetProfile()
-	return profile.columns, (37 + profile.spacing), profile.itemScale
+function ItemFrame:GetButtonSize()
+	return 37 + self:GetProfile().spacing
+end
+
+function ItemFrame:BagBreak()
+	return self:GetProfile().bagBreak
 end
