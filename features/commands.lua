@@ -1,6 +1,6 @@
 --[[
-	slashCommands.lua
-		Defines a slash command menu and keybindings
+	commands.lua
+		Defines keybindings and a slash command menu
 --]]
 
 
@@ -24,13 +24,15 @@ end
 
 function Addon:AddSlashCommands(...)
 	for i = 1, select('#', ...) do
-		self:RegisterChatCommand(select(i, ...), 'OnSlashCommand')
+		local command = select(i, ...)
+		SlashCmdList[command] = function(...) self:OnSlashCommand(...) end
+		_G['SLASH_'..command..'1'] = '/' .. command
 	end
 end
 
 function Addon:OnSlashCommand(cmd)
 	cmd = cmd and cmd:lower() or ''
-	
+
 	if cmd == 'bank' then
 		self:ToggleFrame('bank')
 	elseif cmd == 'bags' or cmd == 'inventory' then
@@ -40,8 +42,10 @@ function Addon:OnSlashCommand(cmd)
 	elseif cmd == 'vault' and LoadAddOn(ADDON .. '_VoidStorage') then
 		self:ToggleFrame('vault')
 	elseif cmd == 'version' then
-		self:Print(GetAddOnMetadata(ADDON, 'Version'))
-	elseif cmd == '?' or cmd == 'help' or not self:ShowOptions() and cmd ~= 'config' and cmd ~= 'options' then
+		print('|cff33ff99' .. ADDON .. '|r version ' .. GetAddOnMetadata(ADDON, 'Version'))
+	elseif cmd == 'config' or cmd == 'options' then
+		self:ShowOptions()
+	else
 		self:PrintHelp()
 	end
 end
@@ -53,10 +57,28 @@ function Addon:PrintHelp()
 		end
 	end
 
-	self:Print(L.Commands)
+	print('|cff33ff99' .. ADDON .. '|r ' .. L.Commands)
 	PrintCmd('bags', L.CmdShowInventory)
 	PrintCmd('bank', L.CmdShowBank)
 	PrintCmd('guild', L.CmdShowGuild, ADDON .. '_GuildBank')
 	PrintCmd('vault', L.CmdShowVault,  ADDON .. '_VoidStorage')
+	PrintCmd('config/options', L.CmdShowOptions)
 	PrintCmd('version', L.CmdShowVersion)
+end
+
+--[[ Options ]]--
+
+function Addon:CreateOptionsLoader()
+	local f = CreateFrame('Frame', nil, InterfaceOptionsFrame)
+	f:SetScript('OnShow', function(self)
+		self:SetScript('OnShow', nil)
+		LoadAddOn(ADDON .. '_Config')
+	end)
+end
+
+function Addon:ShowOptions()
+	if LoadAddOn(ADDON .. '_Config') then
+		InterfaceOptionsFrame_OpenToCategory(ADDON)
+		InterfaceOptionsFrame_OpenToCategory(ADDON) -- sometimes once not enough
+	end
 end

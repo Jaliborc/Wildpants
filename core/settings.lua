@@ -24,7 +24,7 @@ local function SetDefaults(target, defaults)
 			end
 		end
 	end
-	
+
 	defaults.__index = defaults
 	return setmetatable(target, defaults)
 end
@@ -37,10 +37,11 @@ local FrameDefaults = {
 	strata = 'HIGH',
 	scale = 1, alpha = 1,
 	color = {0, 0, 0, 0.5},
-	width = 400, height = 200,
 	x = 0, y = 0,
 
-	itemScale = 1, spacing = 2,
+	itemScale = Addon.ItemScale or 1,
+	spacing = 2,
+
 	brokerObject = ADDON .. 'Launcher',
 	hiddenRules = {contain = true},
 	hiddenBags = {},
@@ -62,12 +63,15 @@ local ProfileDefaults = {
 		x = -50, y = 100,
 		columns = 8,
 		width = 384,
+		height = 200,
 	}, FrameDefaults),
 
 	bank = SetDefaults({
 		borderColor = {1, 1, 0, 1},
 		point = 'LEFT',
 		columns = 12,
+		width = 600,
+		height = 500,
 		x = 95
 	}, FrameDefaults),
 
@@ -117,7 +121,7 @@ function Addon:StartupSettings()
 
 	self.sets = _G[SETS]
 	self:UpdateSettings()
-	
+
 	for _, player in self.Cache:IteratePlayers() do
 		self:StartupProfile(player)
 	end

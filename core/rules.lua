@@ -6,7 +6,7 @@
 
 
 local ADDON, Addon = ...
-local Rules = Addon:NewClass('Rules', 'Frame')
+local Rules = Addon:NewClass('Rules')
 Rules.registry = {}
 Rules.hierarchy = {}
 

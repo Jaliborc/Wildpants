@@ -5,7 +5,6 @@
 
 local ADDON, Addon = ...
 local ItemSlot = Addon:NewClass('ItemSlot', 'Button')
-ItemSlot.dummyBags = {}
 ItemSlot.unused = {}
 ItemSlot.nextID = 0
 
@@ -18,8 +17,19 @@ local QUEST_LOWER = QUEST:lower()
 
 --[[ Constructor ]]--
 
-function ItemSlot:New()
-	return self:Restore() or self:Create()
+function ItemSlot:New(parent, bag, slot)
+	local button = self:Restore() or self:Create()
+	button:SetParent(self:GetDummyBag(parent, bag))
+	button:SetID(slot)
+	button.bag = bag
+
+	if button:IsVisible() then
+		button:Update()
+	else
+		button:Show()
+	end
+
+	return button
 end
 
 function ItemSlot:Create()
@@ -50,7 +60,7 @@ function ItemSlot:Create()
 		fade:SetFromAlpha(0)
 		fade:SetToAlpha(.8)
 	end
-	
+
 	item.UpdateTooltip = nil
 	item.Border, item.Flash = border, flash
 	item.newitemglowAnim:SetLooping('NONE')
@@ -95,7 +105,7 @@ function ItemSlot:GetBlizzard(id)
 end
 
 function ItemSlot:Restore()
-	return tremove(self.unused)
+	return tremove(self.unused, 1)
 end
 
 function ItemSlot:Free()
@@ -145,7 +155,7 @@ function ItemSlot:OnPreClick(button)
 
 							if (free > 0) then
 								SplitContainerItem(self:GetBag(), self:GetID(), min(self.count, free))
-								PickupContainerItem(bag, slot) 
+								PickupContainerItem(bag, slot)
 							end
 						end
 					end
@@ -210,18 +220,6 @@ end
 
 --[[ Update ]]--
 
-function ItemSlot:SetTarget(parent, bag, slot)
-  	self:SetParent(ItemSlot:GetDummyBag(parent, bag))
-  	self:SetID(slot)
-  	self.bag = bag
-
-  	if self:IsVisible() then
-  		self:Update()
-  	else
-		self:Show()
-	end
-end
-
 function ItemSlot:Update()
 	local icon, count, locked, quality, readable, lootable, link = self:GetInfo()
 	self:SetItem(link)
@@ -254,6 +252,10 @@ end
 
 function ItemSlot:GetItem()
 	return self.hasItem
+end
+
+function ItemSlot:GetItemID()
+	return self.hasItem and tonumber(self.hasItem:match('item:(%d+)'))
 end
 
 
@@ -296,10 +298,10 @@ end
 
 function ItemSlot:UpdateUpgradeIcon()
 	local isUpgrade = self:IsUpgrade()
-	self.UpgradeIcon:SetShown(isUpgrade)
-
 	if isUpgrade == nil then
 		self:After(0.5, 'UpdateUpgradeIcon')
+	else
+		self.UpgradeIcon:SetShown(isUpgrade)
 	end
 end
 
@@ -307,7 +309,7 @@ function ItemSlot:UpdateSlotColor()
 	if not self:GetItem() and Addon.sets.colorSlots then
 		local color = Addon.sets[self:GetBagType() .. 'Color']
 		self:SetSlotColor(color[1], color[2], color[3])
-	else 
+	else
 		self:SetSlotColor(1, 1, 1)
 	end
 end
@@ -428,7 +430,7 @@ end
 function ItemSlot:ShowTooltip()
 	local bag = self:GetBag()
 	local getSlot = Addon:IsBank(bag) and BankButtonIDToInvSlotID or Addon:IsReagents(bag) and ReagentBankButtonIDToInvSlotID
-	
+
 	if getSlot then
 		self:AnchorTooltip()
 		GameTooltip:SetInventoryItem('player', getSlot(self:GetID()))
@@ -436,7 +438,7 @@ function ItemSlot:ShowTooltip()
 		CursorUpdate(self)
 	else
 		ContainerFrameItemButton_OnEnter(self)
-	end	
+	end
 end
 
 function ItemSlot:AnchorTooltip()
@@ -544,21 +546,21 @@ function ItemSlot:CreateDummySlot()
 	local function Slot_OnEnter(self)
 		local parent = self:GetParent()
 		local item = parent:IsCached() and parent:GetItem()
-		
+
 		if item then
 			parent.AnchorTooltip(self)
-			
+
 			if item:find('battlepet:') then
 				local _, specie, level, quality, health, power, speed = strsplit(':', item)
 				local name = item:match('%[(.-)%]')
-				
+
 				BattlePetToolTip_Show(tonumber(specie), level, tonumber(quality), health, power, speed, name)
 			else
 				GameTooltip:SetHyperlink(item)
 				GameTooltip:Show()
 			end
 		end
-		
+
 		parent:LockHighlight()
 		CursorUpdate(parent)
 	end
