@@ -12,5 +12,4 @@
 	<Include file="LibItemCache-1.1\LibItemCache-1.1.xml"/>
 
 	<Include file="Poncho-1.0\Poncho-1.0.xml"/>
-	<Script file="libs.lua"/>
 </Ui>

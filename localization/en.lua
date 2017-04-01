@@ -12,12 +12,13 @@ L.ToggleGuild = 'Toggle Guild Bank'
 L.ToggleVault = 'Toggle Void Storage'
 
 --terminal
-L.Commands = 'Command list'
+L.Commands = 'command list'
 L.CmdShowInventory = 'Toggles your inventory'
 L.CmdShowBank = 'Toggles your bank'
 L.CmdShowGuild = 'Toggles your guild bank'
 L.CmdShowVault = 'Toggles your void storage'
 L.CmdShowVersion = 'Prints the current verison'
+L.CmdShowOptions = 'Opens the configuration menu'
 L.Updated = 'Updated to v%s'
 
 --frames

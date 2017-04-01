@@ -13,9 +13,9 @@ ItemFrame.Button = Addon.ItemSlot
 
 function ItemFrame:New(parent, bags)
 	local f = self:Bind(CreateFrame('Frame', nil, parent))
+	f.bags, f.buttons, self.bagButtons = bags, {}, {}
 	f:SetScript('OnHide', f.UnregisterEvents)
 	f:SetScript('OnShow', f.Update)
-	f.bags, f.buttons = bags, {}
 	f:RequestLayout()
 	f:SetSize(1,1)
 
@@ -32,9 +32,10 @@ end
 
 function ItemFrame:RegisterEvents()
 	self:UnregisterEvents()
-	self:RegisterMessage('UPDATE_ALL', 'RequestLayout')
-	self:RegisterFrameMessage('FILTERS_CHANGED', 'RequestLayout')
 	self:RegisterFrameMessage('PLAYER_CHANGED', 'Update')
+	self:RegisterFrameMessage('FILTERS_CHANGED', 'RequestLayout')
+	self:RegisterMessage('UPDATE_ALL', 'RequestLayout')
+	self:RegisterEvent('GET_ITEM_INFO_RECEIVED')
 
 	if not self:IsCached() then
 		self:RegisterMessage('BAG_UPDATE_SIZE')
@@ -50,7 +51,6 @@ function ItemFrame:RegisterEvents()
 		self:RegisterEvent('PLAYER_SPECIALIZATION_CHANGED', 'ForAll', 'UpdateUpgradeIcon')
 		self:RegisterEvent('UNIT_INVENTORY_CHANGED', 'ForAll', 'UpdateUpgradeIcon')
 	else
-		self:RegisterEvent('GET_ITEM_INFO_RECEIVED', 'ForAll', 'Update')
 		self:RegisterMessage('BANK_OPENED', 'RegisterEvents')
 	end
 end
@@ -76,6 +76,16 @@ function ItemFrame:ITEM_LOCK_CHANGED(_,bag, slot)
 	end
 end
 
+function ItemFrame:GET_ITEM_INFO_RECEIVED(_,itemID)
+	if not self:PendingLayout() then
+		for i, button in ipairs(self.buttons) do
+			if button:GetItemID() == itemID then
+				button:Update()
+			end
+		end
+	end
+end
+
 function ItemFrame:UNIT_QUEST_LOG_CHANGED(_,unit)
 	if unit == 'player' then
 		self:ForAll('UpdateBorder')
@@ -95,24 +105,27 @@ end
 
 function ItemFrame:Layout()
 	self:SetScript('OnUpdate', nil)
-	self:ForAll('Release')
-	self.buttons = {}
+	self:ForAll('Free')
+	self.buttons, self.bagButtons = {}, {}
 
 	-- Acquire slots
-	for bag in ipairs(self.bags) do
+	for _,bag in ipairs(self.bags) do
 		if self:IsShowingBag(bag) then
-			self.buttons[bag] = {}
-
-			for slot = 1, self:NumSlots(bag) do
+			local numSlots = self:NumSlots(bag)
+			for slot = 1, numSlots do
 				if self:IsShowingItem(bag, slot) then
-					self.buttons[bag][slot] = self.Button:New(self, bag, slot)
+					local button = self.Button:New(self, bag, slot)
+					tinsert(self.buttons, button)
+
+					self.bagButtons[bag] = self.bagButtons[bag] or {max = numSlots}
+					self.bagButtons[bag][slot] = button
 				end
 			end
 		end
 	end
 
 	-- Position slots
-	local profile =  self:GetProfile()
+	local profile = self:GetProfile()
 	local columns, scale = self:LayoutTraits()
 	local size = self:GetButtonSize()
 
@@ -121,10 +134,10 @@ function ItemFrame:Layout()
 
 	for k = revBags and #self.bags or 1, revBags and 1 or #self.bags, revBags and -1 or 1 do
 		local bag = self.bags[k]
-		local slots = self.buttons[bag]
+		local slots = self.bagButtons[bag]
 
 		if slots then
-			for slot = revSlots and #slots or 1, revSlots and 1 or #slots, revSlots and -1 or 1 do
+			for slot = revSlots and slots.max or 1, revSlots and 1 or slots.max, revSlots and -1 or 1 do
 				local button = slots[slot]
 				if button then
 					if x == columns then
@@ -159,7 +172,7 @@ end
 
 function ItemFrame:ForAll(method, ...)
 	if not self:PendingLayout() then
-		for i, button in ipairs({self:GetChildren()}) do
+		for i, button in ipairs(self.buttons) do
 			button[method](button, ...)
 		end
 	end
@@ -193,7 +206,7 @@ function ItemFrame:NumSlots(bag)
 end
 
 function ItemFrame:NumButtons()
-	return self.numButtons
+	return #self.buttons
 end
 
 function ItemFrame:GetButtonSize()

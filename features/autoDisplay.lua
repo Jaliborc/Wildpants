@@ -14,14 +14,10 @@ end
 --[[ Game Events ]]--
 
 function Addon:RegisterGameEvents()
-	if not self.sets then
-		return
-	end
-
 	self:UnregisterEvents()
+	self:RegisterEvent('BANKFRAME_CLOSED')
 	self:RegisterMessage('UPDATE_ALL', 'RegisterGameEvents')
 	self:RegisterMessage('BANK_OPENED')
-	self:RegisterEvent('BANKFRAME_CLOSED')
 
 	self:RegisterDisplayEvents('displayAuction', 'AUCTION_HOUSE_SHOW', 'AUCTION_HOUSE_CLOSED')
 	self:RegisterDisplayEvents('displayGuild', 'GUILDBANKFRAME_OPENED', 'GUILDBANKFRAME_CLOSED')
@@ -62,7 +58,7 @@ function Addon:BANK_OPENED()
 	if bankFrame then
 		bankFrame:SetPlayer(nil)
 	end
-	
+
 	self.Cache.AtBank = true
 	self:ShowFrame('bank')
 

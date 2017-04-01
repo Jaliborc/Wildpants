@@ -7,9 +7,13 @@ local ADDON, Addon = ...
 local Mixins = {'RegisterEvent', 'UnregisterEvent', 'UnregisterEvents', 'RegisterMessage', 'UnregisterMessage', 'UnregisterMessages', 'SendMessage'}
 local Messages = {}
 
-LibStub('AceAddon-3.0'):NewAddon(Addon, ADDON, 'AceEvent-3.0', 'AceConsole-3.0')
+
+--[[ Libraries ]]--
+
+LibStub('AceAddon-3.0'):NewAddon(Addon, ADDON, 'AceEvent-3.0')
 Addon.SendMessage = LibStub('CallbackHandler-1.0'):New(Messages, 'RegisterMessage', 'UnregisterMessage', 'UnregisterMessages').Fire
 Addon.Cache = LibStub('LibItemCache-1.1')
+_G[ADDON] = Addon
 
 for key, func in pairs(Messages) do
 	Addon[key] = func
@@ -19,11 +23,11 @@ end
 --[[ API ]]--
 
 function Addon:NewClass(name, type, parent)
-	local class = CreateFrame(type)
+	local class = CreateFrame(type or 'Frame')
 	class.__index = class
 	class.Name = name
-  	class:Hide()
-  
+  class:Hide()
+
 	if parent then
 		class = setmetatable(class, parent)
 		class.__super = parent

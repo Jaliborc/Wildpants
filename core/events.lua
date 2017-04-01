@@ -17,16 +17,7 @@
 --]]
 
 local _, Addon = ...
-local Events = Addon:NewModule('Events')
-
-
---[[ Startup ]]--
-
-function Events:OnEnable()
-	self.firstVisit = true
-	self.sizes, self.types = {}, {}
-	self:RegisterEvent('PLAYER_LOGIN')
-end
+local Events = Addon:NewClass('Events')
 
 
 --[[ Events ]]--
@@ -67,7 +58,7 @@ function Events:BANKFRAME_OPENED()
 		self:UpdateBankBags()
 	end
 
-	Addon:SendMessage('BANK_OPENED')
+	self:SendMessage('BANK_OPENED')
 end
 
 
@@ -98,7 +89,7 @@ function Events:UpdateSize(bag)
 		self.types[bag] = kind
 		self.sizes[bag] = new
 
-		Addon:SendMessage('BAG_UPDATE_SIZE', bag)
+		self:SendMessage('BAG_UPDATE_SIZE', bag)
 		return true
 	end
 end
@@ -109,10 +100,17 @@ function Events:UpdateType(bag)
 
 	if old ~= new then
 		self.types[bag] = new
-		Addon:SendMessage('BAG_UPDATE_CONTENT', bag)
+		self:SendMessage('BAG_UPDATE_CONTENT', bag)
 	end
 end
 
 function Events:UpdateContent(bag)
-	Addon:SendMessage('BAG_UPDATE_CONTENT', bag)
+	self:SendMessage('BAG_UPDATE_CONTENT', bag)
 end
+
+
+--[[ Startup ]]--
+
+Events.firstVisit = true
+Events.sizes, Events.types = {}, {}
+Events:RegisterEvent('PLAYER_LOGIN')
