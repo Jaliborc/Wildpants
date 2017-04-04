@@ -13,7 +13,7 @@ ItemFrame.Button = Addon.ItemSlot
 
 function ItemFrame:New(parent, bags)
 	local f = self:Bind(CreateFrame('Frame', nil, parent))
-	f.bags, f.buttons, self.bagButtons = bags, {}, {}
+	f.bags, f.buttons, self.bagSlots = bags, {}, {}
 	f:SetScript('OnHide', f.UnregisterEvents)
 	f:SetScript('OnShow', f.Update)
 	f:RequestLayout()
@@ -67,7 +67,7 @@ end
 
 function ItemFrame:ITEM_LOCK_CHANGED(_,bag, slot)
 	if not self:PendingLayout() then
-		bag = self.bagButtons[bag]
+		bag = self.bagSlots[bag]
 		slot = bag and bag[slot]
 
 		if slot then
@@ -106,7 +106,7 @@ end
 function ItemFrame:Layout()
 	self:SetScript('OnUpdate', nil)
 	self:ForAll('Free')
-	self.buttons, self.bagButtons = {}, {}
+	self.buttons, self.bagSlots = {}, {}
 
 	-- Acquire slots
 	for _,bag in ipairs(self.bags) do
@@ -117,8 +117,8 @@ function ItemFrame:Layout()
 					local button = self.Button:New(self, bag, slot)
 					tinsert(self.buttons, button)
 
-					self.bagButtons[bag] = self.bagButtons[bag] or {max = numSlots}
-					self.bagButtons[bag][slot] = button
+					self.bagSlots[bag] = self.bagSlots[bag] or {}
+					self.bagSlots[bag][slot] = button
 				end
 			end
 		end
@@ -134,10 +134,11 @@ function ItemFrame:Layout()
 
 	for k = revBags and #self.bags or 1, revBags and 1 or #self.bags, revBags and -1 or 1 do
 		local bag = self.bags[k]
-		local slots = self.bagButtons[bag]
+		local slots = self.bagSlots[bag]
 
 		if slots then
-			for slot = revSlots and slots.max or 1, revSlots and 1 or slots.max, revSlots and -1 or 1 do
+			local numSlots = self:NumSlots(bag)
+			for slot = revSlots and numSlots or 1, revSlots and 1 or numSlots, revSlots and -1 or 1 do
 				local button = slots[slot]
 				if button then
 					if x == columns then
@@ -180,14 +181,14 @@ end
 
 function ItemFrame:ForBag(bag, method, ...)
 	if self:CanUpdate(bag) then
-		for slot, button in pairs(self.bagButtons[bag]) do
+		for slot, button in pairs(self.bagSlots[bag]) do
 			button[method](button, ...)
 		end
 	end
 end
 
 function ItemFrame:CanUpdate(bag)
-	return not self:PendingLayout() and self.bagButtons[bag]
+	return not self:PendingLayout() and self.bagSlots[bag]
 end
 
 
