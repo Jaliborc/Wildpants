@@ -31,7 +31,7 @@ L.TitleBank = 'Banca di %s'
 
 
 --tooltips
-L.TipBags = 'Borse'
+--tooltips
 L.TipChangePlayer = 'Clicca per vedere gli oggetti di un altro personaggio.'
 L.TipCleanBags = 'Clicca per mettere in ordine le borse.'
 L.TipCleanBank = '<Clic Destro> per mettere in ordine la Banca.'

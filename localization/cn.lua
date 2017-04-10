@@ -31,7 +31,6 @@ L.TitleBank = '%s 的银行'
 
 
 --tooltips
-L.TipBags = '背包'
 L.TipChangePlayer = '查看其他角色的物品'
 L.TipCleanBags = '整理背包'
 L.TipCleanBank = '<右击> 整理银行'

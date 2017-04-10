@@ -52,7 +52,7 @@ function BagToggle:OnClick(button)
 		if Addon.Cache:GetPlayerGuild(self:GetPlayer()) then
 			addLine('guild', GUILD_BANK, ADDON .. '_GuildBank')
 		end
-		
+
 		if #menu > 1 then
 			EasyMenu(menu, Dropdown, self, 0, 0, 'MENU')
 		else
@@ -68,14 +68,14 @@ function BagToggle:OnEnter()
 		GameTooltip:SetOwner(self, 'ANCHOR_RIGHT')
 	end
 
-	GameTooltip:SetText(L.TipBags)
+	GameTooltip:SetText(BAGSLOTTEXT)
 
 	if self:IsBagFrameShown() then
 		GameTooltip:AddLine(L.TipHideBags, 1,1,1)
 	else
 		GameTooltip:AddLine(L.TipShowBags, 1,1,1)
 	end
-	
+
 	GameTooltip:AddLine(L.TipFrameToggle, 1,1,1)
 	GameTooltip:Show()
 end

@@ -21,12 +21,13 @@ L.CmdShowVersion = 'Prints the current verison'
 L.CmdShowOptions = 'Opens the configuration menu'
 L.Updated = 'Updated to v%s'
 
---frames
+--frame titles
 L.TitleBags = '%s\'s Inventory'
 L.TitleBank = '%s\'s Bank'
+L.TitleGuild = '%s\'s Guild Bank'
+L.TitleVault = '%s\'s Void Storage'
 
 --tooltips
-L.TipBags = 'Bags'
 L.TipChangePlayer = '<Left-Click> to view another character\'s items.'
 L.TipCleanBags = 'Click to clean up bags.'
 L.TipCleanBank = '<Right-Click> to to clean up bank.'
@@ -48,9 +49,21 @@ L.TipShowOptions = '<Shift Click> to open the options menu.'
 L.TipShowSearch = 'Click to search'
 L.TipShowFrameConfig = 'Click to configure this window'
 L.TipDoubleClickSearch = '<Alt-Drag> to move.\n<Right-Click> to configure.\n<Double-Click> to search.'
+L.TipDeposit = '<Left Click> to deposit.'
+L.TipWithdrawRemaining = '<Right Click> to withdraw (%s remaining).'
+L.TipWithdraw = '<Right Click> to withdraw (no remaining)'
+L.NumWithdraw = '%d withdraw'
+L.NumDeposit = '%d deposit'
+L.GuildFunds = 'Guild Funds'
 L.Total = 'Total'
 
---itemcount tooltips
+--dialogs
+L.ConfirmTransfer = 'Depositing these items will remove all modifications and make them non-tradeable and non-refundable.|n|nDo you wish to continue?'
+L.PurchaseDialog = 'Would you like to unlock the Void Storage service?|n|n|cffffd200Cost:|r %s'
+L.CannotPurchaseDialog = 'You do not have enough money to unlock the Void Storage service|n|n|cffff2020Cost: %s|r'
+L.AskMafia = 'Ask Mafia'
+
+--item tooltips
 L.TipCount1 = 'Equipped: %d'
 L.TipCount2 = 'Bags: %d'
 L.TipCount3 = 'Bank: %d'

@@ -26,7 +26,6 @@ L.TitleBags = '%s的背包'
 L.TitleBank = '%s的銀行'
 
 --tooltips
-L.TipBags = '背包'
 L.TipChangePlayer = '點擊檢視其他角色的物品。'
 L.TipCleanBags = '點擊整理背包。'
 L.TipCleanBank = '<右鍵點擊>整理銀行。'
