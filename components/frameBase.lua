@@ -116,11 +116,11 @@ function Frame:IsShowingBag(bag)
 end
 
 function Frame:IsShowingItem(bag, slot)
-	local icon, count, locked, quality, readable, lootable, itemLink = Addon.Cache:GetItemInfo(self.player, bag, slot)
+	local icon, count, locked, quality, readable, lootable, itemLink = self:GetItemInfo(bag, slot)
 	local rule = Addon.Rules:Get(self.subrule or self.rule)
 
 	if rule and rule.func then
-		local bagLink = Addon.Cache:GetBagInfo(self.player, bag)
+		local bagLink = self:GetBagInfo(bag)
 		if not rule.func(player, bag, slot, bagLink, itemLink, count) then
 			return
 		end
@@ -137,13 +137,21 @@ function Frame:IsCached()
 	return Addon:IsBagCached(self.player, self.Bags[1])
 end
 
+function Frame:GetBagInfo(bag)
+	return Addon.Cache:GetBagInfo(self.player, bag)
+end
+
+function Frame:GetItemInfo(bag, slot)
+	return Addon.Cache:GetItemInfo(self.player, bag, slot)
+end
+
 function Frame:GetProfile()
 	return Addon:GetProfile(self.player)[self.frameID]
 end
 
 function Frame:SetPlayer(player)
 	self.player = player
-    self:SendFrameMessage('PLAYER_CHANGED', player)
+  self:SendFrameMessage('PLAYER_CHANGED', player)
 end
 
 function Frame:GetPlayer()

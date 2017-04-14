@@ -59,8 +59,8 @@ L.Total = 'Total'
 
 --dialogs
 L.ConfirmTransfer = 'Depositing these items will remove all modifications and make them non-tradeable and non-refundable.|n|nDo you wish to continue?'
-L.PurchaseDialog = 'Would you like to unlock the Void Storage service?|n|n|cffffd200Cost:|r %s'
-L.CannotPurchaseDialog = 'You do not have enough money to unlock the Void Storage service|n|n|cffff2020Cost: %s|r'
+L.PurchaseVault = 'Would you like to unlock the Void Storage service?|n|n|cffffd200Cost:|r %s'
+L.CannotPurchaseVault = 'You do not have enough money to unlock the Void Storage service|n|n|cffff2020Cost: %s|r'
 L.AskMafia = 'Ask Mafia'
 
 --item tooltips

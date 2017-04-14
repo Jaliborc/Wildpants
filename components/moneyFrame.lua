@@ -13,23 +13,21 @@ local MoneyFrame = Addon:NewClass('MoneyFrame', 'Frame')
 function MoneyFrame:New(parent)
 	local f = self:Bind(CreateFrame('Button', parent:GetName() .. 'MoneyFrame', parent, 'SmallMoneyFrameTemplate'))
 	f.trialErrorButton:SetPoint('LEFT', -14, 0)
-	f:SetHeight(24)
-	
-	local click = CreateFrame('Button', f:GetName() .. 'Click', f)
-	click:SetFrameLevel(self:GetFrameLevel() + 4)
-	click:RegisterForClicks('anyUp')
-	click:SetAllPoints()
-	
-	click:SetScript('OnClick', function(_, ...) f:OnClick(...) end)
-	click:SetScript('OnEnter', function() f:OnEnter() end)
-	click:SetScript('OnLeave', function() f:OnLeave() end)
-
 	f:SetScript('OnShow', f.RegisterEvents)
 	f:SetScript('OnHide', f.UnregisterEvents)
 	f:SetScript('OnEvent', nil)
 	f:UnregisterAllEvents()
-	f:RegisterEvents()
+	f:SetHeight(24)
 
+	local click = CreateFrame('Button', nil, f)
+	click:SetScript('OnClick', function() f:OnClick() end)
+	click:SetScript('OnEnter', function() f:OnEnter() end)
+	click:SetScript('OnLeave', function() f:OnLeave() end)
+	click:SetFrameLevel(self:GetFrameLevel() + 4)
+	click:RegisterForClicks('anyUp')
+	click:SetAllPoints()
+	f.Clicker = click
+	
 	return f
 end
 
@@ -49,7 +47,7 @@ function MoneyFrame:OnClick()
 		OpenCoinPickupFrame(1, MoneyTypeInfo[self.moneyType].UpdateFunc(self), self)
 		self.hasPickup = 1
 	end
-	
+
 	self:OnLeave()
 end
 
@@ -67,7 +65,7 @@ function MoneyFrame:OnEnter()
 	GameTooltip:SetOwner(self, 'ANCHOR_BOTTOM')
 	GameTooltip:AddDoubleLine(L.Total, GetCoinTextureString(total), nil,nil,nil, 1,1,1)
 	GameTooltip:AddLine(' ')
-	
+
 	-- Each player
 	for i, player in Addon.Cache:IteratePlayers() do
 		local money = Addon.Cache:GetPlayerMoney(player)
@@ -78,7 +76,7 @@ function MoneyFrame:OnEnter()
 			GameTooltip:AddDoubleLine(player, coins, color.r, color.g, color.b, 1,1,1)
 		end
 	end
-	
+
 	GameTooltip:Show()
 end
 
@@ -96,7 +94,8 @@ function MoneyFrame:RegisterEvents()
 end
 
 function MoneyFrame:Update()
-	MoneyFrame_Update(self:GetName(), self:GetMoney())
+	local money = self:GetMoney()
+	MoneyFrame_Update(self:GetName(), money, money == 0)
 end
 
 

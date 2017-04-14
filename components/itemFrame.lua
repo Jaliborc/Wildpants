@@ -16,8 +16,11 @@ function ItemFrame:New(parent, bags)
 	f.bags, f.buttons, self.bagSlots = bags, {}, {}
 	f:SetScript('OnHide', f.UnregisterEvents)
 	f:SetScript('OnShow', f.Update)
-	f:RequestLayout()
 	f:SetSize(1,1)
+
+	if f:IsVisible() then
+		f:Update()
+	end
 
 	return f
 end
@@ -194,12 +197,12 @@ end
 
 --[[ Proprieties ]]--
 
-function ItemFrame:IsShowingBag(bag)
-	return self:GetFrame():IsShowingBag(bag)
-end
-
 function ItemFrame:IsShowingItem(bag, slot)
 	return self:GetFrame():IsShowingItem(bag, slot)
+end
+
+function ItemFrame:IsShowingBag(bag)
+	return self:GetFrame():IsShowingBag(bag)
 end
 
 function ItemFrame:NumSlots(bag)

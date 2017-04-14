@@ -483,12 +483,12 @@ function ItemSlot:IsUpgrade()
 	return IsContainerItemAnUpgrade(self:GetBag(), self:GetID())
 end
 
-function ItemSlot:GetInfo()
-	return Addon.Cache:GetItemInfo(self:GetPlayer(), self:GetBag(), self:GetID())
-end
-
 function ItemSlot:IsSlot(bag, slot)
 	return self:GetBag() == bag and self:GetID() == slot
+end
+
+function ItemSlot:GetInfo()
+	return self:GetFrame():GetItemInfo(self:GetBag(), self:GetID())
 end
 
 function ItemSlot:GetBagType()

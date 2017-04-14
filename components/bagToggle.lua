@@ -58,16 +58,13 @@ function BagToggle:OnClick(button)
 		else
 			self:OpenFrame(self:GetFrameID() == 'inventory' and 'bank' or 'inventory')
 		end
+
+		self:Update()
 	end
 end
 
 function BagToggle:OnEnter()
-	if self:GetRight() > (GetScreenWidth() / 2) then
-		GameTooltip:SetOwner(self, 'ANCHOR_LEFT')
-	else
-		GameTooltip:SetOwner(self, 'ANCHOR_RIGHT')
-	end
-
+	GameTooltip:SetOwner(self, self:GetRight() > (GetScreenWidth() / 2) and 'ANCHOR_LEFT' or 'ANCHOR_RIGHT')
 	GameTooltip:SetText(BAGSLOTTEXT)
 
 	if self:IsBagFrameShown() then
@@ -81,7 +78,9 @@ function BagToggle:OnEnter()
 end
 
 function BagToggle:OnLeave()
-	GameTooltip:Hide()
+	if GameTooltip:IsOwned(self) then
+		GameTooltip:Hide()
+	end
 end
 
 
