@@ -26,6 +26,7 @@ L.TitleBags = '%s\의 인벤토리'
 L.TitleBank = '%s\의 은행'
 
 --tooltips
+L.TipBags = '가방'
 L.TipChangePlayer = '다른 캐릭터의 아이템 보기'
 L.TipCleanBags = '클릭하여 가방을 자동으로 정리합니다.'
 L.TipCleanBank = '<우-클릭> 은행을 자동으로 정리합니다.'

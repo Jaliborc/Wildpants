@@ -32,7 +32,7 @@ end
 local FrameDefaults = {
 	enabled = true,
 	money = true, broker = true,
-	bagFrame = true, sort = true, search = true, options = true,
+	bagToggle = true, sort = true, search = true, options = true,
 
 	strata = 'HIGH',
 	scale = 1, alpha = 1,

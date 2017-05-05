@@ -6,6 +6,7 @@
 local ADDON, Addon = ...
 local L = LibStub('AceLocale-3.0'):GetLocale(ADDON)
 local MoneyFrame = Addon:NewClass('MoneyFrame', 'Frame')
+MoneyFrame.Type = 'PLAYER'
 
 
 --[[ Constructor ]]--
@@ -13,21 +14,27 @@ local MoneyFrame = Addon:NewClass('MoneyFrame', 'Frame')
 function MoneyFrame:New(parent)
 	local f = self:Bind(CreateFrame('Button', parent:GetName() .. 'MoneyFrame', parent, 'SmallMoneyFrameTemplate'))
 	f.trialErrorButton:SetPoint('LEFT', -14, 0)
-	f:SetScript('OnShow', f.RegisterEvents)
 	f:SetScript('OnHide', f.UnregisterEvents)
+	f:SetScript('OnShow', f.RegisterEvents)
 	f:SetScript('OnEvent', nil)
 	f:UnregisterAllEvents()
 	f:SetHeight(24)
 
-	local click = CreateFrame('Button', nil, f)
-	click:SetScript('OnClick', function() f:OnClick() end)
-	click:SetScript('OnEnter', function() f:OnEnter() end)
-	click:SetScript('OnLeave', function() f:OnLeave() end)
-	click:SetFrameLevel(self:GetFrameLevel() + 4)
-	click:RegisterForClicks('anyUp')
-	click:SetAllPoints()
-	f.Clicker = click
-	
+	local overlay = CreateFrame('Button', nil, f)
+	overlay:SetScript('OnClick', function(_,...) f:OnClick(...) end)
+	overlay:SetScript('OnEnter', function() f:OnEnter() end)
+	overlay:SetScript('OnLeave', function() f:OnLeave() end)
+	overlay:SetFrameLevel(self:GetFrameLevel() + 4)
+	overlay:RegisterForClicks('anyUp')
+	overlay:SetAllPoints()
+
+	f.info = MoneyTypeInfo[f.Type]
+	f.overlay = overlay
+
+	if f:IsShown() then
+		f:RegisterEvents()
+	end
+
 	return f
 end
 
@@ -35,8 +42,11 @@ end
 --[[ Interaction ]]--
 
 function MoneyFrame:OnClick()
-	local name = self:GetName()
+	if self:IsCached() then
+		return
+	end
 
+	local name = self:GetName()
 	if MouseIsOver(_G[name .. 'GoldButton']) then
 		OpenCoinPickupFrame(COPPER_PER_GOLD, MoneyTypeInfo[self.moneyType].UpdateFunc(self), self)
 		self.hasPickup = 1
@@ -53,8 +63,8 @@ end
 
 function MoneyFrame:OnEnter()
 	if not Addon.Cache:HasCache() then
-    	return
-  	end
+    return
+  end
 
 	-- Total
 	local total = 0
@@ -62,7 +72,7 @@ function MoneyFrame:OnEnter()
 		total = total + Addon.Cache:GetPlayerMoney(player)
 	end
 
-	GameTooltip:SetOwner(self, 'ANCHOR_BOTTOM')
+	GameTooltip:SetOwner(self, self:GetTop() > (GetScreenHeight() / 2) and 'ANCHOR_BOTTOM' or 'ANCHOR_TOP')
 	GameTooltip:AddDoubleLine(L.Total, GetCoinTextureString(total), nil,nil,nil, 1,1,1)
 	GameTooltip:AddLine(' ')
 

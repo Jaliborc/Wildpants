@@ -31,6 +31,8 @@ L.TitleBank = 'Банк |3-1(%s)'
 
 
 --tooltips
+L.TipBags = 'Сумки'
+L.TipBank = 'Банк'
 L.TipChangePlayer = '<Клик> - просмотр предметов другого персонажа.'
 L.TipGoldOnRealm = 'Всего денег на %s'
 L.TipHideBag = '<Клик> - скрыть эту сумку.'

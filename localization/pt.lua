@@ -30,6 +30,8 @@ L.TitleBank = 'Banco de %s'
 
 
 --tooltips
+L.TipBags = 'Mochila'
+L.TipBank = 'Banco'
 L.TipBankToggle = '<Clique Direito> para abrir o banco.'
 L.TipChangePlayer = 'Carregue para ver os itens das suas personagens.'
 L.TipGoldOnRealm = '%s no Total'

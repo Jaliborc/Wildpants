@@ -26,6 +26,7 @@ L.TitleBags = 'Inventar von %s'
 L.TitleBank = 'Bank von %s'
 
 --tooltips
+L.TipBags = 'Taschen'
 L.TipChangePlayer = '<Klicken> um die Gegenst\195\164nde anderer Charaktere anzuzeigen.'
 L.TipCleanBags = '<Klicken> um die Taschen aufräumen.'
 L.TipCleanBank = '<Rechtsklick> um die Bank aufzuräumen.'

@@ -31,6 +31,8 @@ L.TitleBank = 'Banque de %s'
 
 
 --tooltips
+L.TipBags = 'Sacs'
+L.TipBank = 'Banque'
 L.TipChangePlayer = 'Cliquez pour afficher les objets d\'un autre personnage.'
 L.TipGoldOnRealm = '%s Totaux'
 L.TipHideBag = 'Cliquez pour cacher ce sac.'
