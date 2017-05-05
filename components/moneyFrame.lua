@@ -120,7 +120,13 @@ function MoneyFrame:GetCoinsText(money)
 	local text = ''
 
 	if gold > 0 then
-		text = format('%d|cffffd700%s|r', gold, GOLD_AMOUNT_SYMBOL)
+		local separated = ''
+		while gold > 1 do
+			separated = tostring(gold):sub(-3,-1) .. LARGE_NUMBER_SEPERATOR .. separated
+			gold = floor(gold / 1000)
+		end
+
+		text = format('%s|cffffd700%s|r', separated:sub(1,-2), GOLD_AMOUNT_SYMBOL)
 	end
 
 	if silver > 0 then
