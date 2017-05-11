@@ -133,6 +133,7 @@ function Bag:RegisterEvents()
 
 	self:UnregisterEvents()
 	self:RegisterFrameMessage('PLAYER_CHANGED', 'RegisterEvents')
+	self:RegisterFrameMessage('FILTERS_CHANGED', 'UpdateToggle')
 	self:RegisterEvent('BAG_CLOSED', 'BAG_UPDATE')
 	self:RegisterEvent('BAG_UPDATE')
 
@@ -140,7 +141,7 @@ function Bag:RegisterEvents()
 		self:RegisterMessage('BANK_OPENED', 'RegisterEvents')
 		self:RegisterEvent('BANKFRAME_CLOSED', 'RegisterEvents')
 	end
-	
+
 	if self:IsCustomSlot() then
 		if self:IsCached() then
 			self:RegisterEvent('GET_ITEM_INFO_RECEIVED', 'Update')
@@ -165,7 +166,7 @@ end
 function Bag:Update()
 	local link, count, texture, _,_, cached = self:GetInfo()
 
-  	if self:IsBackpack() or self:IsBank() then
+  if self:IsBackpack() or self:IsBank() then
 		self:SetIcon('Interface/Buttons/Button-Backpack-Up')
 	elseif self:IsReagents() then
 		self:SetIcon('Interface/Icons/Achievement_GuildPerk_BountifulBags')
@@ -188,7 +189,7 @@ function Bag:Update()
 
 	self.FilterIcon:SetShown(not cached)
 	self.Count:SetText(count > 0 and count)
-	
+
 	self:UpdateLock()
 	self:UpdateCursor()
 	self:UpdateToggle()
@@ -245,16 +246,6 @@ function Bag:UpdateTooltip()
 end
 
 
---[[ Display ]]--
-
-function Bag:SetIcon(icon)
-	local color = self:IsPurchasable() and .1 or 1
-
-	SetItemButtonTexture(self, icon)
-	SetItemButtonTextureVertexColor(self, 1, color, color)
-end
-
-
 --[[ Actions ]]--
 
 function Bag:Purchase()
@@ -287,16 +278,21 @@ function Bag:Toggle()
 	local hidden = profile.hiddenBags
 	local slot = profile.exclusiveReagent and not hidden[REAGENTBANK_CONTAINER] and REAGENTBANK_CONTAINER or self:GetSlot()
 	hidden[slot] = not hidden[slot]
-	
+
 	self:SendFrameMessage('FILTERS_CHANGED')
-	self:SetFocus(not hidden[slot])
+	self:SetFocus(true)
 end
 
 function Bag:SetFocus(focus)
 	local state = focus and self:GetSlot()
-
 	self:GetFrame().focusedBag = state
 	self:SendFrameMessage('FOCUS_BAG', state)
+end
+
+function Bag:SetIcon(icon)
+	local color = self:IsPurchasable() and .1 or 1
+	SetItemButtonTexture(self, icon)
+	SetItemButtonTextureVertexColor(self, 1, color, color)
 end
 
 
@@ -317,7 +313,6 @@ end
 function Bag:IsReagents()
 	return Addon:IsReagents(self:GetSlot())
 end
-
 
 function Bag:IsBankBag()
 	return Addon:IsBankBag(self:GetSlot())

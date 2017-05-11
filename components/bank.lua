@@ -13,9 +13,9 @@ function Frame:OnHide()
 	Addon.Frame.OnHide(self)
 end
 
-function Frame:IsShowningBag(bag)
+function Frame:IsShowingBag(bag)
 	local profile = self:GetProfile()
-	if not Addon.sets.exclusiveReagent or bag == REAGENTBANK_CONTAINER or profile.hiddenBags[REAGENTBANK_CONTAINER] then
+	if not profile.exclusiveReagent or bag == REAGENTBANK_CONTAINER or profile.hiddenBags[REAGENTBANK_CONTAINER] then
 		return not profile.hiddenBags[bag]
 	end
 end
