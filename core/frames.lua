@@ -43,35 +43,31 @@ function Addon:ToggleFrame(id)
 	if self:IsFrameShown(id) then
 		return self:HideFrame(id, true)
 	else
-		return self:ShowFrame(id)
+		return self:ShowFrame(id, true)
 	end
 end
 
-function Addon:ShowFrame(id)
+function Addon:ShowFrame(id, manual)
 	local frame = self:CreateFrame(id)
 	if frame then
-		frame.shownCount = (frame.shownCount or 0) + 1
+		frame.manualShown = frame.manualShown or manual
 		ShowUIPanel(frame)
 	end
 	return frame
 end
 
-function Addon:HideFrame(id, force)
+function Addon:HideFrame(id, manual)
 	local frame = self:GetFrame(id)
-	if frame then
-		if force or frame.shownCount == 1 then
-			frame.shownCount = 0
-			HideUIPanel(frame)
-		else
-			frame.shownCount = (frame.shownCount or 0) - 1
-		end
+	if frame and (manual or not frame.manualShown) then
+		frame.manualShown = nil
+		HideUIPanel(frame)
 	end
 	return frame
 end
 
 function Addon:IsFrameShown(id)
 	local frame = self:GetFrame(id)
-	return frame and (frame.shownCount or 0) > 0
+	return frame and frame:IsShown()
 end
 
 
