@@ -34,10 +34,11 @@ function Frame:UpdateAppearance()
 	local managed = self.profile.managed
 	self:SetAttribute('UIPanelLayout-enabled', managed)
 	self:SetAttribute('UIPanelLayout-defined', managed)
-    self:SetAttribute('UIPanelLayout-whileDead', managed)
-    self:SetAttribute('UIPanelLayout-area', managed and 'left')
-    self:SetAttribute('UIPanelLayout-pushable', managed and 1)
-    self:SetAlpha(self.profile.alpha)
+  self:SetAttribute('UIPanelLayout-whileDead', managed)
+  self:SetAttribute('UIPanelLayout-area', managed and 'left')
+  self:SetAttribute('UIPanelLayout-pushable', managed and 1)
+	self:SetFrameStrata(self.profile.strata)
+  self:SetAlpha(self.profile.alpha)
 	self:SetScale(self.profile.scale)
 
 	if managed then
