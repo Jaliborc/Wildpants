@@ -24,9 +24,11 @@ local function FormatCounts(color, ...)
 	for i = 1, select('#', ...) do
 		local count = select(i, ...)
 		if count > 0 then
-			text = text .. L.TipDelimiter .. L['TipCount' .. i]:format(count)
-			total = total + count
-			places = places + 1
+			if (string.find(L['TipCount' .. i], "Guild") and Addon.sets.tipCountGuild) or (not string.find(L['TipCount' .. i], "Guild")) then
+				text = text .. L.TipDelimiter .. L['TipCount' .. i]:format(count)
+				total = total + count
+				places = places + 1
+			end
 		end
 	end
 	
