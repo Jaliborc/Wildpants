@@ -7,20 +7,45 @@ local ADDON, Addon = ...
 local Mixins = {'RegisterEvent', 'UnregisterEvent', 'UnregisterEvents', 'RegisterMessage', 'UnregisterMessage', 'UnregisterMessages', 'SendMessage'}
 local Messages = {}
 
-
---[[ Libraries ]]--
-
-LibStub('AceAddon-3.0'):NewAddon(Addon, ADDON, 'AceEvent-3.0')
-Addon.SendMessage = LibStub('CallbackHandler-1.0'):New(Messages, 'RegisterMessage', 'UnregisterMessage', 'UnregisterMessages').Fire
+LibStub('AceEvent-3.0'):Embed(Messages)
+LibStub('AceAddon-3.0'):NewAddon(Addon, ADDON)
 Addon.Cache = LibStub('LibItemCache-1.1')
 _G[ADDON] = Addon
 
-for key, func in pairs(Messages) do
-	Addon[key] = func
+
+--[[ Messaging ]]--
+
+function Addon:RegisterMessage(msg, call, ...)
+	Messages.RegisterMessage(self, 'BAGNON_' .. msg, call or msg, ...)
+end
+
+function Addon:UnregisterMessage(msg)
+	Messages.UnregisterMessage(self, 'BAGNON_' .. msg)
+end
+
+function Addon:SendMessage(msg, ...)
+	Messages.SendMessage(self, 'BAGNON_' .. msg, ...)
+end
+
+function Addon:RegisterEvent(...)
+	Messages.RegisterEvent(self, ...)
+end
+
+function Addon:UnregisterEvent(...)
+	Messages.UnregisterEvent(self, ...)
+end
+
+function Addon:UnregisterMessages()
+	Messages.UnregisterAllMessages(self)
+end
+
+function Addon:UnregisterEvents()
+	Messages.UnregisterAllEvents(self)
+	Messages.UnregisterAllMessages(self)
 end
 
 
---[[ API ]]--
+--[[ Classes ]]--
 
 function Addon:NewClass(name, type, parent)
 	local class = CreateFrame(type or 'Frame')
@@ -87,9 +112,4 @@ function Addon:NewClass(name, type, parent)
 
 	self[name] = class
 	return class
-end
-
-function Addon:UnregisterEvents()
-	Addon.UnregisterAllEvents(self)
-	Addon.UnregisterMessages(self)
 end
