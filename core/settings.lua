@@ -100,7 +100,7 @@ function Addon:StartupSettings()
 
 		resetPlayer = true,
 		displayBank = true, closeBank = true, displayAuction = true, displayGuild = true, displayMail = true, displayTrade = true, displayCraft = true,
-		flashFind = true, tipCount = true, fading = true,
+		flashFind = true, tipCount = true, tipCountGuild = false, fading = true,
 
 		glowAlpha = 0.5,
 		glowQuality = true, glowNew = true, glowQuest = true, glowSets = true, glowUnusable = true,
