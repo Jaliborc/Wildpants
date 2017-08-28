@@ -20,8 +20,8 @@ local function FormatCounts(color, ...)
 	local places = 0
 	local total = 0
 	local text = ''
-	
-	for i = 1, select('#', ...) do
+
+	for i = 1, select('#', ...) - (Addon.sets.countGuild and 1 or 0) do
 		local count = select(i, ...)
 		if count > 0 then
 			text = text .. L.TipDelimiter .. L['TipCount' .. i]:format(count)
@@ -29,14 +29,14 @@ local function FormatCounts(color, ...)
 			places = places + 1
 		end
 	end
-	
+
 	text = text:sub(#L.TipDelimiter + 1)
 	if places > 1 then
 		text = color:format(total) .. ' ' .. SILVER:format('('.. text .. ')')
 	else
 		text = color:format(text)
 	end
-		
+
 	return total, total > 0 and text
 end
 
@@ -49,15 +49,15 @@ local function AddOwners(tooltip, link)
 	if not id or id == HEARTHSTONE then
 		return
 	end
-	
+
 	local players = 0
 	local total = 0
-	
+
 	for i, player in Cache:IterateAlliedPlayers() do
 		local color = Addon:GetPlayerColorString(player)
 		local countText = ItemText[player][id]
 		local count = ItemCount[player][id]
-		
+
 		if countText == nil then
 			count, countText = FormatCounts(color, Cache:GetItemCounts(player, id))
 
@@ -73,11 +73,11 @@ local function AddOwners(tooltip, link)
 			players = players + 1
 		end
 	end
-	
+
 	if players > 1 and total > 0 then
 		tooltip:AddDoubleLine(TOTAL, SILVER:format(total))
 	end
-	
+
 	tooltip.__tamedCounts = true
 	tooltip:Show()
 end
@@ -112,8 +112,8 @@ local function HookTip(tooltip)
 	tooltip:HookScript('OnTooltipCleared', OnClear)
 	tooltip:HookScript('OnTooltipSetItem', OnItem)
 
-    hooksecurefunc(tooltip, 'SetRecipeReagentItem', OnTradeSkill)
-    hooksecurefunc(tooltip, 'SetRecipeResultItem', OnTradeSkill)
+  hooksecurefunc(tooltip, 'SetRecipeReagentItem', OnTradeSkill)
+  hooksecurefunc(tooltip, 'SetRecipeResultItem', OnTradeSkill)
 	hooksecurefunc(tooltip, 'SetQuestItem', OnQuest)
 	hooksecurefunc(tooltip, 'SetQuestLogItem', OnQuest)
 end
@@ -128,7 +128,7 @@ function Addon:HookTooltips()
 				ItemCount[player] = {}
 				ItemText[player] = {}
 			end
-		
+
 			HookTip(GameTooltip)
 			HookTip(ItemRefTooltip)
 			Hooked = true
