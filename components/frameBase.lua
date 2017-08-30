@@ -7,9 +7,8 @@
 local ADDON, Addon = ...
 local L = LibStub('AceLocale-3.0'):GetLocale(ADDON)
 local Frame = Addon:NewClass('Frame', 'Frame')
-Frame.OpenSound = 'igBackPackOpen'
-Frame.CloseSound = 'igBackPackClose'
-
+Frame.OpenSound = SOUNDKIT.IG_BACKPACK_OPEN
+Frame.CloseSound = SOUNDKIT.IG_BACKPACK_CLOSE
 
 --[[ Frame Events ]]--
 

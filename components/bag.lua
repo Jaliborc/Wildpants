@@ -81,7 +81,7 @@ function Bag:OnClick(button)
 	if button == 'RightButton' then
 		if not self:IsCached() and not self:IsReagents() and not self:IsPurchasable() then
 			ContainerFrame1FilterDropDown:SetParent(self)
-			PlaySound('igMainMenuOptionCheckBoxOn')
+			PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
 			ToggleDropDownMenu(1, nil, ContainerFrame1FilterDropDown, self, 0, 0)
 		end
 	elseif self:IsPurchasable() then
@@ -101,7 +101,7 @@ end
 
 function Bag:OnDrag()
 	if self:IsCustomSlot() and not self:IsCached() then
-		PlaySound('BAGMENUBUTTONPRESS')
+		PlaySound(SOUNDKIT.IG_BACKPACK_OPEN)
 		PickupBagFromSlot(self:GetInventorySlot())
 	end
 end
@@ -249,7 +249,7 @@ end
 --[[ Actions ]]--
 
 function Bag:Purchase()
-	PlaySound('igMainMenuOption')
+	PlaySound(SOUNDKIT.IG_MAINMENU_OPEN)
 
 	if self:IsReagents() then
 		StaticPopup_Show('CONFIRM_BUY_REAGENTBANK_TAB')
