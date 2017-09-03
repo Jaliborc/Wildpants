@@ -10,6 +10,4 @@
 	<Script file="CustomSearch-1.0\CustomSearch-1.0.lua"/>
 	<Script file="LibItemSearch-1.2\LibItemSearch-1.2.lua"/>
 	<Include file="LibItemCache-1.1\LibItemCache-1.1.xml"/>
-
-	<Include file="Poncho-1.0\Poncho-1.0.xml"/>
 </Ui>

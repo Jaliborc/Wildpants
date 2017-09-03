@@ -21,7 +21,7 @@ function Addon:IsBackpackBag(bag)
 end
 
 function Addon:IsBank(bag)
-  return bag == BANK_CONTAINER 
+  return bag == BANK_CONTAINER
 end
 
 function Addon:IsReagents(bag)
@@ -45,7 +45,7 @@ end
 
 function Addon:IsBagLocked(player, bag)
 	if not self:IsBackpack(bag) and not self:IsBank(bag) then
-    	local slot, size, cached = select(4, self:GetBagInfo(player, bag))
+    local slot, size, cached = select(4, self:GetBagInfo(player, bag))
 		return not cached and IsInventoryItemLocked(slot)
 	end
 end

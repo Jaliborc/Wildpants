@@ -4,7 +4,6 @@
 --]]
 
 local ADDON, Addon = ...
-local Cache = LibStub('LibItemCache-1.1')
 local ItemFrame = Addon:NewClass('ItemFrame', 'Frame')
 ItemFrame.Button = Addon.ItemSlot
 

@@ -130,8 +130,8 @@ function Addon:StartupSettings()
 end
 
 function Addon:UpdateSettings()
-	local expansion, patch, release = strsplit('.', self.sets.version)
-	local version = tonumber(expansion) * 10000 + tonumber(patch or 0) * 100 + tonumber(release or 0)
+	--local expansion, patch, release = strsplit('.', self.sets.version)
+	--local version = tonumber(expansion) * 10000 + tonumber(patch or 0) * 100 + tonumber(release or 0)
 
 	if self.sets.frames then
 		for frame, sets in pairs(self.sets.frames) do

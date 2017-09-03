@@ -121,7 +121,7 @@ function Frame:IsShowingItem(bag, slot)
 
 	if rule and rule.func then
 		local bagLink = self:GetBagInfo(bag)
-		if not rule.func(player, bag, slot, bagLink, itemLink, count) then
+		if not rule.func(self.player, bag, slot, bagLink, itemLink, count) then
 			return
 		end
 	end
