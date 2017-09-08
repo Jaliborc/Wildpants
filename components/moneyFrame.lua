@@ -121,7 +121,7 @@ function MoneyFrame:GetCoinsText(money)
 
 	if gold > 0 then
 		local separated = ''
-		while gold > 1 do
+		while gold > 0 do
 			separated = tostring(gold):sub(-3,-1) .. LARGE_NUMBER_SEPERATOR .. separated
 			gold = floor(gold / 1000)
 		end
