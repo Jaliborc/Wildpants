@@ -73,7 +73,7 @@ function MoneyFrame:OnEnter()
 	end
 
 	GameTooltip:SetOwner(self, self:GetTop() > (GetScreenHeight() / 2) and 'ANCHOR_BOTTOM' or 'ANCHOR_TOP')
-	GameTooltip:AddDoubleLine(L.Total, GetCoinTextureString(total), nil,nil,nil, 1,1,1)
+	GameTooltip:AddDoubleLine(L.Total, self:GetCoinTextureString(total), nil,nil,nil, 1,1,1)
 	GameTooltip:AddLine(' ')
 
 	-- Each player
@@ -81,7 +81,7 @@ function MoneyFrame:OnEnter()
 		local money = Addon.Cache:GetPlayerMoney(player)
 		if money > 0 then
 			local color = Addon:GetPlayerColor(player)
-			local coins = self:GetCoinsText(money)
+			local coins = self:GetCoinTextureString(money)
 
 			GameTooltip:AddDoubleLine(player, coins, color.r, color.g, color.b, 1,1,1)
 		end
@@ -115,24 +115,37 @@ function MoneyFrame:GetMoney()
 	return Addon.Cache:GetPlayerMoney(self:GetPlayer())
 end
 
-function MoneyFrame:GetCoinsText(money)
+function MoneyFrame:GetCoinTextureString(money)
+	if ENABLE_COLORBLIND_MODE == '1' then
+		return self:GetCoinText(money)
+	else
+		local gold, silver, copper = self:GetCoins(money)
+		local text = ''
+
+		if gold > 0 then
+			text = format('%s|TInterface/MoneyFrame/UI-MoneyIcons:10:10:2:0:32:16:0:8:0:16|t', BreakUpLargeNumbers(gold))
+		end
+		if silver > 0 then
+			text = text .. format(' %d|TInterface/MoneyFrame/UI-MoneyIcons:10:10:2:0:32:16:8:16:0:16|t', silver)
+		end
+		if copper > 0 or money == 0 then
+			text = text .. format(' %d|TInterface/MoneyFrame/UI-MoneyIcons:10:10:2:0:32:16:16:24:0:16|t', copper)
+		end
+
+		return text
+	end
+end
+
+function MoneyFrame:GetCoinText(money)
 	local gold, silver, copper = self:GetCoins(money)
 	local text = ''
 
 	if gold > 0 then
-		local separated = ''
-		while gold > 0 do
-			separated = tostring(gold):sub(-3,-1) .. LARGE_NUMBER_SEPERATOR .. separated
-			gold = floor(gold / 1000)
-		end
-
-		text = format('%s|cffffd700%s|r', separated:sub(1,-2), GOLD_AMOUNT_SYMBOL)
+		text = format('%s|cffffd700%s|r', BreakUpLargeNumbers(gold), GOLD_AMOUNT_SYMBOL)
 	end
-
 	if silver > 0 then
 		text = text .. format(' %d|cffc7c7cf%s|r', silver, SILVER_AMOUNT_SYMBOL)
 	end
-
 	if copper > 0 or money == 0 then
 		text = text .. format(' %d|cffeda55f%s|r', copper, COPPER_AMOUNT_SYMBOL)
 	end
