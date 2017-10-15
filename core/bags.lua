@@ -4,7 +4,7 @@
 --]]
 
 local ADDON, Addon = ...
-
+local Cache = LibStub('LibItemCache-2.0')
 
 --[[ Slot Type ]]--
 
@@ -36,11 +36,19 @@ end
 --[[ Bag State ]]--
 
 function Addon:GetBagInfo(...)
- 	return self.Cache:GetBagInfo(...)
+ 	return Cache:GetBagInfo(...)
+end
+
+function Addon:GetBagSize(...)
+  	return self:GetBagInfo(...).count or 0
+end
+
+function Addon:GetBagInventorySlot(...)
+  return self:GetBagInfo(...).slot
 end
 
 function Addon:IsBagCached(...)
-  return self.Cache:GetBagType(...)
+  return self:GetBagInfo(...).cached
 end
 
 function Addon:IsBagLocked(player, bag)
@@ -48,14 +56,6 @@ function Addon:IsBagLocked(player, bag)
     local slot, size, cached = select(4, self:GetBagInfo(player, bag))
 		return not cached and IsInventoryItemLocked(slot)
 	end
-end
-
-function Addon:GetBagSize(player, bag)
-  	return select(5, self:GetBagInfo(player, bag))
-end
-
-function Addon:BagToInventorySlot(...)
-  return select(4, self:GetBagInfo(...))
 end
 
 

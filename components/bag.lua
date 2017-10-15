@@ -164,18 +164,22 @@ end
 --[[ Update ]]--
 
 function Bag:Update()
-	local link, count, texture, _,_, cached = self:GetInfo()
+	local info = self:GetInfo()
+
+	self.FilterIcon:SetShown(not info.cached)
+	self.Count:SetText(info.free and info.free > 0 and info.free)
 
   if self:IsBackpack() or self:IsBank() then
 		self:SetIcon('Interface/Buttons/Button-Backpack-Up')
 	elseif self:IsReagents() then
 		self:SetIcon('Interface/Icons/Achievement_GuildPerk_BountifulBags')
 	else
-		texture = texture or link and GetItemIcon(link)
-		count = texture and count or 0
+		self:SetIcon(info.icon or 'Interface/PaperDoll/UI-PaperDoll-Slot-Bag')
+	  self.link = info.link
 
-		self:SetIcon(texture or 'Interface/PaperDoll/UI-PaperDoll-Slot-Bag')
-	  	self.link = link
+		if not info.icon then
+			self.Count:SetText()
+		end
 	end
 
 	for i = LE_BAG_FILTER_FLAG_EQUIPMENT, NUM_LE_BAG_FILTER_FLAGS do
@@ -186,9 +190,6 @@ function Bag:Update()
 			self.FilterIcon.Icon:SetAtlas(BAG_FILTER_ICONS[i])
 		end
 	end
-
-	self.FilterIcon:SetShown(not cached)
-	self.Count:SetText(count > 0 and count)
 
 	self:UpdateLock()
 	self:UpdateCursor()
@@ -334,7 +335,7 @@ function Bag:GetInfo()
 end
 
 function Bag:GetInventorySlot()
-	return Addon:BagToInventorySlot(self:GetPlayer(), self:GetSlot())
+	return Addon:GetBagInventorySlot(self:GetPlayer(), self:GetSlot())
 end
 
 function Bag:GetCost()

@@ -7,6 +7,7 @@ local ADDON, Addon = ...
 local SETS = ADDON .. '_Sets'
 local CURRENT_VERSION = GetAddOnMetadata(ADDON, 'Version')
 local L = LibStub('AceLocale-3.0'):GetLocale(ADDON)
+local Cache = LibStub('LibItemCache-2.0')
 
 local function AsArray(table)
 	return setmetatable(table, {__metatable = 1})
@@ -96,7 +97,7 @@ function Addon:StartupSettings()
 	_G[SETS] = SetDefaults(_G[SETS] or {}, {
 		version = CURRENT_VERSION,
 		global = SetDefaults({}, ProfileDefaults),
-		players = {},
+		owners = {},
 
 		resetPlayer = true,
 		displayBank = true, closeBank = true, displayAuction = true, displayGuild = true, displayMail = true, displayTrade = true, displayCraft = true,
@@ -122,16 +123,23 @@ function Addon:StartupSettings()
 	self.sets = _G[SETS]
 	self:UpdateSettings()
 
-	for _, player in self.Cache:IteratePlayers() do
-		self:StartupProfile(player)
+	for owner, profile in pairs(self.sets.owners) do
+		SetDefaults(profile, ProfileDefaults)
 	end
 
 	self.profile = self:GetProfile()
 end
 
 function Addon:UpdateSettings()
-	--local expansion, patch, release = strsplit('.', self.sets.version)
-	--local version = tonumber(expansion) * 10000 + tonumber(patch or 0) * 100 + tonumber(release or 0)
+	if self.sets.players then
+		for realm, players in pairs(self.sets.players) do
+			for player, profile in pairs(players) do
+				self.sets.owners[player .. ' - ' .. realm] = profile
+			end
+		end
+
+		self.sets.players = nil
+	end
 
 	if self.sets.frames then
 		for frame, sets in pairs(self.sets.frames) do
@@ -150,22 +158,10 @@ end
 
 --[[ Profiles ]]--
 
-function Addon:StartupProfile(player)
-	local realm, name = self.Cache:GetPlayerAddress(player)
-	self.sets.players[realm]  = self.sets.players[realm] or {}
-	self:SetProfile(self.sets.players[realm][name], player)
+function Addon:SetProfile(owner, profile)
+	self.sets.owners[Cache:GetOwnerID(owner)] = profile and SetDefaults(profile, ProfileDefaults)
 end
 
-function Addon:SetProfile(profile, player)
-	local realm, name = self.Cache:GetPlayerAddress(player)
-	self.sets.players[realm][name] = profile and SetDefaults(profile, ProfileDefaults)
-end
-
-function Addon:GetProfile(player)
-	return self:GetSpecificProfile(player) or self.sets.global
-end
-
-function Addon:GetSpecificProfile(player)
-	local realm, name = self.Cache:GetPlayerAddress(player)
-	return self.sets.players[realm][name]
+function Addon:GetProfile(owner)
+	return self.sets.owners[Cache:GetOwnerID(owner)] or self.sets.global
 end

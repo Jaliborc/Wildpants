@@ -8,23 +8,28 @@ local ALTERNATIVE_ICONS = 'Interface/CharacterFrame/TEMPORARYPORTRAIT-%s-%s'
 local ICONS = 'Interface/Icons/Achievement_Character_%s_%s'
 local CLASS_COLOR = '|cff%02x%02x%02x'
 
+function Addon:HasMultiplePlayers()
+	local players = LibStub('LibItemCache-2.0'):IterateOwners()
+	return players() and players() -- more than one
+end
+
 function Addon:GetPlayerIcon(player)
-	local _, race, sex = self.Cache:GetPlayerInfo(player)
-	if not race then
+	if not player.race then
 		return
-	else
-		sex = sex == 3 and 'Female' or 'Male'
 	end
 
-	if race ~= 'Worgen' and race ~= 'Goblin' and (race ~= 'Pandaren' or sex == 'Female') then
+	local gender = player.gender == 3 and 'Female' or 'Male'
+	local race = player.race
+
+	if race ~= 'Worgen' and race ~= 'Goblin' and (race ~= 'Pandaren' or player.gender == 3) then
 		if race == 'Scourge' then
 			race = 'Undead'
 		end
 
-		return ICONS:format(race, sex)
+		return ICONS:format(race, gender)
 	end
 
-	return ALTERNATIVE_ICONS:format(sex, race)
+	return ALTERNATIVE_ICONS:format(gender, race)
 end
 
 function Addon:GetPlayerColorString(player)
@@ -36,6 +41,5 @@ function Addon:GetPlayerColorString(player)
 end
 
 function Addon:GetPlayerColor(player)
-	local class = self.Cache:GetPlayerInfo(player) or 'PRIEST'
-	return (CUSTOM_CLASS_COLORS or RAID_CLASS_COLORS)[class]
+	return (CUSTOM_CLASS_COLORS or RAID_CLASS_COLORS)[player.class or 'PRIEST']
 end

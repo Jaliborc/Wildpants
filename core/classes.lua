@@ -9,7 +9,6 @@ local Messages = {}
 
 LibStub('AceEvent-3.0'):Embed(Messages)
 LibStub('AceAddon-3.0'):NewAddon(Addon, ADDON)
-Addon.Cache = LibStub('LibItemCache-1.1')
 _G[ADDON] = Addon
 
 

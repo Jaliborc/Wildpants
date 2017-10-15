@@ -144,7 +144,7 @@ end
 
 function ItemSlot:OnPreClick(button)
 	if not IsModifiedClick() and button == 'RightButton' then
-		if Addon.Cache.AtBank and IsReagentBankUnlocked() and GetContainerNumFreeSlots(REAGENTBANK_CONTAINER) > 0 then
+		if LibStub('LibItemCache-2.0').AtBank and IsReagentBankUnlocked() and GetContainerNumFreeSlots(REAGENTBANK_CONTAINER) > 0 then
 			if not Addon:IsReagents(self:GetBag()) and ItemSearch:TooltipPhrase(self:GetItem(), PROFESSIONS_USED_IN_COOKING) then
 				local stack = select(8, GetItemInfo(self:GetItem()))
 
@@ -222,12 +222,12 @@ end
 --[[ Update ]]--
 
 function ItemSlot:Update()
-	local icon, count, locked, quality, readable, lootable, link = self:GetInfo()
-	self:SetItem(link)
-	self:SetTexture(icon)
-	self:SetCount(count)
-	self:SetLocked(locked)
-	self:SetReadable(readable)
+	local info = self:GetInfo()
+	self:SetItem(info.link, info.id)
+	self:SetTexture(info.icon)
+	self:SetCount(info.count)
+	self:SetLocked(info.locked)
+	self:SetReadable(info.readable)
 
 	self:UpdateCooldown()
 	self:After(0.1, 'SecondaryUpdate')
@@ -247,8 +247,8 @@ end
 
 --[[ Item ]]--
 
-function ItemSlot:SetItem(item)
-	self.hasItem = item -- CursorUpdate
+function ItemSlot:SetItem(link, id)
+	self.hasItem, self.id = link, id
 end
 
 function ItemSlot:GetItem()
@@ -256,7 +256,7 @@ function ItemSlot:GetItem()
 end
 
 function ItemSlot:GetItemID()
-	return self.hasItem and tonumber(self.hasItem:match('item:(%d+)'))
+	return self.id
 end
 
 
@@ -274,15 +274,11 @@ end
 --[[ Locked ]]--
 
 function ItemSlot:UpdateLocked()
-	self:SetLocked(self:IsLocked())
+	self:SetLocked(self:GetInfo().locked)
 end
 
 function ItemSlot:SetLocked(locked)
 	SetItemButtonDesaturated(self, locked)
-end
-
-function ItemSlot:IsLocked()
-	return select(3, self:GetInfo())
 end
 
 
@@ -332,8 +328,8 @@ end
 --[[ Border Glow ]]--
 
 function ItemSlot:UpdateBorder()
-	local _,_,_, quality = self:GetInfo()
-	local item = self:GetItem()
+	local info = self:GetInfo()
+	local item, quality = info.link, info.quality
 	self:HideBorder()
 
 	if item then

@@ -49,7 +49,8 @@ function BagToggle:OnClick(button)
 		addLine('bank', BANK)
 		addLine('vault', VOID_STORAGE, ADDON .. '_VoidStorage')
 
-		if Addon.Cache:GetPlayerGuild(self:GetPlayer()) then
+		local player = LibStub('LibItemCache-2.0'):GetOwnerInfo(self:GetPlayer())
+		if player.guild then
 			addLine('guild', GUILD_BANK, ADDON .. '_GuildBank')
 		end
 

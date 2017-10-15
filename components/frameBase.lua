@@ -5,6 +5,7 @@
 
 
 local ADDON, Addon = ...
+local Cache = LibStub('LibItemCache-2.0')
 local L = LibStub('AceLocale-3.0'):GetLocale(ADDON)
 local Frame = Addon:NewClass('Frame', 'Frame')
 Frame.OpenSound = SOUNDKIT.IG_BACKPACK_OPEN
@@ -138,11 +139,11 @@ function Frame:IsCached()
 end
 
 function Frame:GetBagInfo(bag)
-	return Addon.Cache:GetBagInfo(self.player, bag)
+	return Cache:GetBagInfo(self.player, bag)
 end
 
 function Frame:GetItemInfo(bag, slot)
-	return Addon.Cache:GetItemInfo(self.player, bag, slot)
+	return Cache:GetItemInfo(self.player, bag, slot)
 end
 
 function Frame:GetProfile()
