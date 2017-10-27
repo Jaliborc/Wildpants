@@ -55,7 +55,7 @@ local function AddOwners(tooltip, link)
 
 	for name in Cache:IterateOwners() do
 		local player = Cache:GetOwnerInfo(name)
-		local color = Addon:GetPlayerColorString(player)
+		local color = Addon:GetCharacterColorString(player)
 		local countText = ItemText[name][id]
 		local count = ItemCount[name][id]
 
@@ -123,7 +123,7 @@ end
 --[[ Public Methods ]]--
 
 function Addon:HookTooltips()
-	if self:HasMultiplePlayers() and self.sets.tipCount then
+	if self:MultipleOwnersFound() and self.sets.tipCount then
 		if not Hooked then
 			for owner in Cache:IterateOwners() do
 				ItemCount[owner] = {}

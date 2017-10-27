@@ -79,7 +79,7 @@ end
 
 function Bag:OnClick(button)
 	if button == 'RightButton' then
-		if not self:IsCached() and not self:IsReagents() and not self:IsPurchasable() then
+		if not self:IsReagents() and not self:IsPurchasable() then
 			ContainerFrame1FilterDropDown:SetParent(self)
 			PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
 			ToggleDropDownMenu(1, nil, ContainerFrame1FilterDropDown, self, 0, 0)
@@ -90,7 +90,7 @@ function Bag:OnClick(button)
 		if self:IsBackpack() then
 			PutItemInBackpack()
 		else
-			PutItemInBag(self:GetInventorySlot())
+			PutItemInBag(self:GetInfo().slot)
 		end
 	elseif self:CanToggle() then
 		self:Toggle()
@@ -102,7 +102,7 @@ end
 function Bag:OnDrag()
 	if self:IsCustomSlot() and not self:IsCached() then
 		PlaySound(SOUNDKIT.IG_BACKPACK_OPEN)
-		PickupBagFromSlot(self:GetInventorySlot())
+		PickupBagFromSlot(self:GetInfo().slot)
 	end
 end
 
@@ -132,7 +132,7 @@ function Bag:RegisterEvents()
 	self:Update()
 
 	self:UnregisterEvents()
-	self:RegisterFrameMessage('PLAYER_CHANGED', 'RegisterEvents')
+	self:RegisterFrameMessage('OWNER_CHANGED', 'RegisterEvents')
 	self:RegisterFrameMessage('FILTERS_CHANGED', 'UpdateToggle')
 	self:RegisterEvent('BAG_CLOSED', 'BAG_UPDATE')
 	self:RegisterEvent('BAG_UPDATE')
@@ -198,13 +198,13 @@ end
 
 function Bag:UpdateLock()
 	if self:IsCustomSlot() then
-    	SetItemButtonDesaturated(self, self:IsLocked())
+    	SetItemButtonDesaturated(self, self:GetInfo().locked)
  	end
 end
 
 function Bag:UpdateCursor()
 	if not self:IsCustomSlot() then
-		if CursorCanGoInSlot(self:GetInventorySlot()) then
+		if CursorCanGoInSlot(self:GetInfo().slot) then
 			self:LockHighlight()
 		else
 			self:UnlockHighlight()
@@ -330,12 +330,8 @@ end
 
 --[[ Info ]]--
 
-function Bag:GetInfo()
-	return Addon:GetBagInfo(self:GetPlayer(), self:GetSlot())
-end
-
-function Bag:GetInventorySlot()
-	return Addon:GetBagInventorySlot(self:GetPlayer(), self:GetSlot())
+function Bag:IsCached()
+ 	return self:GetInfo().cached
 end
 
 function Bag:GetCost()
@@ -352,10 +348,6 @@ function Bag:IsHidden()
 	return not self:GetFrame():IsShowingBag(self:GetSlot())
 end
 
-function Bag:IsLocked()
-	return Addon:IsBagLocked(self:GetPlayer(), self:GetSlot())
-end
-
-function Bag:IsCached()
- 	return Addon:IsBagCached(self:GetPlayer(), self:GetSlot())
+function Bag:GetInfo()
+	return Addon:GetBagInfo(self:GetOwner(), self:GetSlot())
 end

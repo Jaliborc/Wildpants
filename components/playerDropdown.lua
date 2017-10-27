@@ -9,29 +9,29 @@ local CurrentFrame
 local Dropdown
 
 local function SetPlayer(self)
-	CurrentFrame:SetPlayer(self.value)
+	CurrentFrame:SetOwner(self.value)
 	CloseDropDownMenus()
 end
 
 local function DeletePlayer(self)
 	for i, frame in Addon:IterateFrames() do
-		if self.value == frame:GetPlayer() then
-			frame.player = nil
-			frame:SendFrameMessage('PLAYER_CHANGED')
+		if self.value == frame:GetOwner() then
+			frame.owner = nil
+			frame:SendFrameMessage('OWNER_CHANGED')
 		end
 	end
 
-	--Cache:DeletePlayer(self.value)
+	--Cache:DeleteOwner(self.value)
 	CloseDropDownMenus()
 end
 
 local function ListPlayer(name)
-	local player = Cache:GetOwnerInfo(name)
-	if not player.isguild then
+	local owner = Cache:GetOwnerInfo(name)
+	if not owner.isguild then
 		UIDropDownMenu_AddButton {
-			text = format('|T%s:14:14:-3:0|t', Addon:GetPlayerIcon(player)) .. Addon:GetPlayerColorString(player):format(name),
-	    checked = name == CurrentFrame:GetPlayer(),
-			hasArrow = player.cached,
+			text = format('|T%s:14:14:-3:0|t', Addon:GetCharacterIcon(owner)) .. Addon:GetCharacterColorString(owner):format(name),
+	    checked = name == CurrentFrame:GetOwner(),
+			hasArrow = owner.cached,
 			func = SetPlayer,
 			value = name
 		}
@@ -70,7 +70,7 @@ end
 --[[ Public Method ]]--
 
 function Addon:TogglePlayerDropdown(anchor, frame, offX, offY)
-	if self:HasMultiplePlayers() then
+	if self:MultipleOwnersFound() then
 		CurrentFrame = frame
 		ToggleDropDownMenu(1, nil, Dropdown or Startup(), anchor, offX, offY)
 	end

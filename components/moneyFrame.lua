@@ -80,7 +80,7 @@ function MoneyFrame:OnEnter()
 	for name in Cache:IterateOwners() do
 		local player = Cache:GetOwnerInfo(name)
 		if not player.isguild and player.money then
-			local color = Addon:GetPlayerColor(player)
+			local color = Addon:GetCharacterColor(player)
 			local coins = GetMoneyString(player.money, true)
 
 			GameTooltip:AddDoubleLine(name, coins, color.r, color.g, color.b, 1,1,1)
@@ -98,7 +98,7 @@ end
 --[[ Update ]]--
 
 function MoneyFrame:RegisterEvents()
-	self:RegisterFrameMessage('PLAYER_CHANGED', 'Update')
+	self:RegisterFrameMessage('OWNER_CHANGED', 'Update')
 	self:RegisterEvent('PLAYER_MONEY', 'Update')
 	self:Update()
 end
@@ -112,7 +112,7 @@ end
 --[[ API ]]--
 
 function MoneyFrame:GetMoney()
-	return Cache:GetOwnerInfo(self:GetPlayer()).money or 0
+	return self:GetOwnerInfo().money or 0
 end
 
 function MoneyFrame:GetCoins(money)

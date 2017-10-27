@@ -33,13 +33,13 @@ function BagToggle:OnClick(button)
 		self:SendFrameMessage('BAG_FRAME_TOGGLED')
 	else
 		local menu = {}
-		local function addLine(id, name, addon)
+		local function addLine(id, name, addon, owner)
 			if id ~= self:GetFrameID() and (not addon or GetAddOnEnableState(UnitName('player'), addon) >= 2) then
 				tinsert(menu, {
 					text = name,
 					notCheckable = 1,
 					func = function()
-						self:OpenFrame(id, addon)
+						self:OpenFrame(id, addon, owner)
 					end
 				})
 			end
@@ -49,9 +49,9 @@ function BagToggle:OnClick(button)
 		addLine('bank', BANK)
 		addLine('vault', VOID_STORAGE, ADDON .. '_VoidStorage')
 
-		local player = LibStub('LibItemCache-2.0'):GetOwnerInfo(self:GetPlayer())
-		if player.guild then
-			addLine('guild', GUILD_BANK, ADDON .. '_GuildBank')
+		local guild = self:GetOwnerInfo().guild
+		if guild then
+			addLine('guild', GUILD_BANK, ADDON .. '_GuildBank', guild)
 		end
 
 		if #menu > 1 then
@@ -87,9 +87,9 @@ end
 
 --[[ API ]]--
 
-function BagToggle:OpenFrame(id, addon)
+function BagToggle:OpenFrame(id, addon, owner)
 	if not addon or LoadAddOn(addon) then
-		Addon:CreateFrame(id):SetPlayer(self:GetPlayer())
+		Addon:CreateFrame(id):SetOwner(owner or self:GetOwner())
 		Addon:ShowFrame(id)
 	end
 end

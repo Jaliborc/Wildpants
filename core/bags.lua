@@ -33,32 +33,6 @@ function Addon:IsBankBag(bag)
 end
 
 
---[[ Bag State ]]--
-
-function Addon:GetBagInfo(...)
- 	return Cache:GetBagInfo(...)
-end
-
-function Addon:GetBagSize(...)
-  	return self:GetBagInfo(...).count or 0
-end
-
-function Addon:GetBagInventorySlot(...)
-  return self:GetBagInfo(...).slot
-end
-
-function Addon:IsBagCached(...)
-  return self:GetBagInfo(...).cached
-end
-
-function Addon:IsBagLocked(player, bag)
-	if not self:IsBackpack(bag) and not self:IsBank(bag) then
-    local slot, size, cached = select(4, self:GetBagInfo(player, bag))
-		return not cached and IsInventoryItemLocked(slot)
-	end
-end
-
-
 --[[ Bag Type ]]--
 
 Addon.BAG_TYPES = {
@@ -87,4 +61,8 @@ function Addon:GetBagFamily(player, bag)
 
 	local link = self:GetBagInfo(player, bag)
 	return link and GetItemFamily(link) or 0
+end
+
+function Addon:GetBagInfo(...)
+ 	return Cache:GetBagInfo(...)
 end
