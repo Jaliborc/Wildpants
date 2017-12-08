@@ -24,7 +24,6 @@ L.Updated = 'Updated to v%s'
 --frame titles
 L.TitleBags = '%s\'s Inventory'
 L.TitleBank = '%s\'s Bank'
-L.TitleGuild = '%s\'s Guild Bank'
 L.TitleVault = '%s\'s Void Storage'
 
 --tooltips
