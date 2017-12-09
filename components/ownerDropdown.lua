@@ -1,19 +1,28 @@
 --[[
-  playerDropdown.lua
-	A player selector dropdown
+  ownerDropdown.lua
+		A owner selector dropdown
 --]]
 
 local ADDON, Addon = ...
 local Cache = LibStub('LibItemCache-2.0')
-local CurrentFrame
-local Dropdown
+local Dropdown, CurrentFrame
 
-local function SetPlayer(self)
-	CurrentFrame:SetOwner(self.value)
+local function OpenOwner(self)
+	local name = self.value
+	local info = Cache:GetOwnerInfo(name)
+	if info.isguild then
+		if LoadAddOn(ADDON .. '_GuildBank') then
+			Addon:CreateFrame('guild'):SetOwner(name)
+			Addon:ShowFrame('guild')
+		end
+	else
+		CurrentFrame:SetOwner(name)
+	end
+
 	CloseDropDownMenus()
 end
 
-local function DeletePlayer(self)
+local function DeleteOwner(self)
 	for i, frame in Addon:IterateFrames() do
 		if self.value == frame:GetOwner() then
 			frame.owner = nil
@@ -21,18 +30,18 @@ local function DeletePlayer(self)
 		end
 	end
 
-	--Cache:DeleteOwner(self.value)
+	Cache:DeleteOwner(self.value)
 	CloseDropDownMenus()
 end
 
-local function ListPlayer(name)
-	local owner = Cache:GetOwnerInfo(name)
-	if not owner.isguild then
+local function ListOwner(name)
+	local info = Cache:GetOwnerInfo(name)
+	if not info.guild or GetAddOnEnableState(UnitName('player'), ADDON .. '_GuildBank') >= 2 then
 		UIDropDownMenu_AddButton {
-			text = format('|T%s:14:14:-3:0|t', Addon:GetCharacterIcon(owner)) .. Addon:GetCharacterColorString(owner):format(name),
+			text = format('|T%s:14:14:-5:0|t', Addon:GetOwnerIcon(info)) .. Addon:GetOwnerColorString(info):format(info.name),
 	    checked = name == CurrentFrame:GetOwner(),
-			hasArrow = owner.cached,
-			func = SetPlayer,
+			hasArrow = info.cached,
+			func = OpenOwner,
 			value = name
 		}
 	end
@@ -44,21 +53,21 @@ local function UpdateDropdown(self, level)
 			text = REMOVE,
 			notCheckable = true,
 			value = UIDROPDOWNMENU_MENU_VALUE,
-			func = DeletePlayer
+			func = DeleteOwner
 		}, 2)
 	else
-		ListPlayer(UnitName('player'))
+		ListOwner(UnitName('player'))
 
 		for name in Cache:IterateOwners() do
 			if name ~= UnitName('player') then
-				ListPlayer(name)
+				ListOwner(name)
 		  end
 		end
 	end
 end
 
 local function Startup()
-	Dropdown = CreateFrame('Frame', 'BagnonPlayerDropdown', UIParent, 'UIDropDownMenuTemplate')
+	Dropdown = CreateFrame('Frame', ADDON .. 'OwnerDropdown', UIParent, 'UIDropDownMenuTemplate')
   Dropdown.initialize = UpdateDropdown
   Dropdown.displayMode = 'MENU'
   Dropdown:SetID(1)
@@ -69,7 +78,7 @@ end
 
 --[[ Public Method ]]--
 
-function Addon:TogglePlayerDropdown(anchor, frame, offX, offY)
+function Addon:ToggleOwnerDropdown(anchor, frame, offX, offY)
 	if self:MultipleOwnersFound() then
 		CurrentFrame = frame
 		ToggleDropDownMenu(1, nil, Dropdown or Startup(), anchor, offX, offY)

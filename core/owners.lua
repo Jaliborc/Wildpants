@@ -1,6 +1,6 @@
 --[[
-	players.lua
-		Utility methods for player display operations
+	owners.lua
+		Utility methods for owner display operations
 --]]
 
 local ADDON, Addon = ...
@@ -9,17 +9,20 @@ local ICONS = 'Interface/Icons/Achievement_Character_%s_%s'
 local CLASS_COLOR = '|cff%02x%02x%02x'
 
 function Addon:MultipleOwnersFound()
-	local players = LibStub('LibItemCache-2.0'):IterateOwners()
-	return players() and players() -- more than one
+	local owners = LibStub('LibItemCache-2.0'):IterateOwners()
+	return owners() and owners() -- more than one
 end
 
-function Addon:GetCharacterIcon(player)
-	if not player.race then
-		return
+function Addon:GetOwnerIcon(owner)
+	if owner.isguild then
+		return owner.faction == 'Alliance' and 'Interface/Icons/inv_bannerpvp_02' or 'Interface/Icons/inv_bannerpvp_01'
 	end
 
-	local gender = player.gender == 3 and 'Female' or 'Male'
-	local race = player.race
+	local gender = owner.gender == 3 and 'Female' or 'Male'
+	local race = owner.race
+	if not race then
+		return ''
+	end
 
 	if race ~= 'Worgen' and race ~= 'Goblin' and (race ~= 'Pandaren' or player.gender == 3) then
 		if race == 'Scourge' then
@@ -32,14 +35,14 @@ function Addon:GetCharacterIcon(player)
 	return ALTERNATIVE_ICONS:format(gender, race)
 end
 
-function Addon:GetCharacterColorString(player)
-	local color = self:GetCharacterColor(player)
+function Addon:GetOwnerColorString(owner)
+	local color = self:GetOwnerColor(owner)
 	local brightness = color.r + color.g + color.b
 	local scale = max(1.8 / brightness, 1.0) * 255
 
 	return CLASS_COLOR:format(min(color.r * scale, 255), min(color.g * scale, 255), min(color.b * scale, 255)) .. '%s|r'
 end
 
-function Addon:GetCharacterColor(player)
-	return (CUSTOM_CLASS_COLORS or RAID_CLASS_COLORS)[player.class or 'PRIEST']
+function Addon:GetOwnerColor(owner)
+	return owner.isguild and PASSIVE_SPELL_FONT_COLOR or (CUSTOM_CLASS_COLORS or RAID_CLASS_COLORS)[owner.class or 'PRIEST']
 end

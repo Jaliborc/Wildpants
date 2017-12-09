@@ -55,7 +55,7 @@ local function AddOwners(tooltip, link)
 
 	for name in Cache:IterateOwners() do
 		local player = Cache:GetOwnerInfo(name)
-		local color = Addon:GetCharacterColorString(player)
+		local color = Addon:GetOwnerColorString(player)
 		local countText = ItemText[name][id]
 		local count = ItemCount[name][id]
 

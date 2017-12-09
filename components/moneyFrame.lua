@@ -80,7 +80,7 @@ function MoneyFrame:OnEnter()
 	for name in Cache:IterateOwners() do
 		local player = Cache:GetOwnerInfo(name)
 		if not player.isguild and player.money then
-			local color = Addon:GetCharacterColor(player)
+			local color = Addon:GetOwnerColor(player)
 			local coins = GetMoneyString(player.money, true)
 
 			GameTooltip:AddDoubleLine(name, coins, color.r, color.g, color.b, 1,1,1)
