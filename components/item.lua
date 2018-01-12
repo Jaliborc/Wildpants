@@ -146,14 +146,14 @@ end
 function ItemSlot:OnPreClick(button)
 	if not IsModifiedClick() and button == 'RightButton' then
 		if Cache.AtBank and IsReagentBankUnlocked() and GetContainerNumFreeSlots(REAGENTBANK_CONTAINER) > 0 then
-			if not Addon:IsReagents(self:GetBag()) and ItemSearch:TooltipPhrase(self.info.id, PROFESSIONS_USED_IN_COOKING) then
-				local stack = select(8, GetItemInfo(self.info.id))
+			if not Addon:IsReagents(self:GetBag()) and ItemSearch:TooltipPhrase(self.info.link, PROFESSIONS_USED_IN_COOKING) then
+				local maxstack = select(8, GetItemInfo(self.info.id))
 
 				for _, bag in ipairs {BANK_CONTAINER, 5, 6, 7, 8, 9, 10, 11} do
 					for slot = 1, GetContainerNumSlots(bag) do
 						if GetContainerItemID(bag, slot) == self.info.id then
 							local _,count = GetContainerItemInfo(bag, slot)
-							local free = stack - count
+							local free = maxstack - count
 
 							if (free > 0) then
 								SplitContainerItem(self:GetBag(), self:GetID(), min(self.count, free))
@@ -225,7 +225,7 @@ end
 function ItemSlot:Update()
 	local info = self:GetInfo()
 
-	self.info, self.hasItem, self.readable = info, info.link, info.readable
+	self.info, self.hasItem, self.readable = info, info.id and true, info.readable
 	self:After(0.1, 'SecondaryUpdate')
 	self:SetLocked(info.locked)
 	self:UpdateCooldown()
@@ -449,6 +449,10 @@ end
 
 function ItemSlot:GetBagType()
 	return Addon:GetBagType(self:GetOwner(), self:GetBag())
+end
+
+function ItemSlot:GetItem() -- for legacy purposes
+	return self.info.link
 end
 
 function ItemSlot:GetBag()

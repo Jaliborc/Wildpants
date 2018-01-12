@@ -52,14 +52,14 @@ function Addon:GetBagType(...)
 	return Addon.BAG_TYPES[self:GetBagFamily(...)] or 'normal'
 end
 
-function Addon:GetBagFamily(player, bag)
+function Addon:GetBagFamily(owner, bag)
 	if self:IsBank(bag) or self:IsBackpack(bag) then
 		return 0
 	elseif self:IsReagents(bag) then
 		return -1
 	end
 
-	local link = self:GetBagInfo(player, bag)
+	local link = self:GetBagInfo(owner, bag)
 	return link and GetItemFamily(link) or 0
 end
 

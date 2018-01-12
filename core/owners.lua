@@ -24,7 +24,7 @@ function Addon:GetOwnerIcon(owner)
 		return ''
 	end
 
-	if race ~= 'Worgen' and race ~= 'Goblin' and (race ~= 'Pandaren' or player.gender == 3) then
+	if race ~= 'Worgen' and race ~= 'Goblin' and (race ~= 'Pandaren' or owner.gender == 3) then
 		if race == 'Scourge' then
 			race = 'Undead'
 		end
