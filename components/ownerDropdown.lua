@@ -25,12 +25,11 @@ end
 local function DeleteOwner(self)
 	for i, frame in Addon:IterateFrames() do
 		if self.value == frame:GetOwner() then
-			frame.owner = nil
-			frame:SendFrameMessage('OWNER_CHANGED')
+			frame:SetOwner(nil)
 		end
 	end
 
-	Cache:DeleteOwner(self.value)
+	Cache:DeleteOwnerInfo(self.value)
 	CloseDropDownMenus()
 end
 
