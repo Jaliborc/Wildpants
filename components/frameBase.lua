@@ -87,7 +87,7 @@ function Frame:GetPosition()
 	return self.profile.point or 'CENTER', self.profile.x, self.profile.y
 end
 
-function Frame:UpdateRules()
+function Frame:FindRules()
 	local sorted = {}
 	for i, id in ipairs(self.profile.rules) do
 		sorted[id] = true
@@ -148,6 +148,10 @@ end
 
 function Frame:GetProfile()
 	return Addon:GetProfile(self:GetOwner())[self.frameID]
+end
+
+function Frame:GetBaseProfile()
+	return Addon.profile[self.frameID]
 end
 
 function Frame:SetOwner(owner)

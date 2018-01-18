@@ -81,6 +81,11 @@ function Addon:NewClass(name, type, parent)
 			return frame and frame:GetProfile()
 		end
 
+		class.GetBaseProfile = function(self)
+			local frame = self:GetFrame()
+			return frame and frame:GetBaseProfile()
+		end
+
 		class.GetOwner = function(self)
 			local frame = self:GetFrame()
 			return frame and frame:GetOwner()

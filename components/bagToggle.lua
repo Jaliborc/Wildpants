@@ -13,10 +13,11 @@ local Dropdown = CreateFrame('Frame', ADDON .. 'BagToggleDropdown', nil, 'UIDrop
 
 function BagToggle:New(parent)
 	local b = self:Bind(CreateFrame('CheckButton', nil, parent, ADDON .. self.Name .. 'Template'))
+	b:SetScript('OnHide', b.UnregisterMessages)
 	b:SetScript('OnClick', b.OnClick)
 	b:SetScript('OnEnter', b.OnEnter)
 	b:SetScript('OnLeave', b.OnLeave)
-	b:SetScript('OnShow', b.Update)
+	b:SetScript('OnShow', b.OnShow)
 	b:RegisterForClicks('anyUp')
 	b:Update()
 
@@ -25,6 +26,11 @@ end
 
 
 --[[ Events ]]--
+
+function BagToggle:OnShow()
+	self:RegisterFrameMessage('OWNER_CHANGED', 'Update')
+	self:Update()
+end
 
 function BagToggle:OnClick(button)
 	if button == 'LeftButton' then

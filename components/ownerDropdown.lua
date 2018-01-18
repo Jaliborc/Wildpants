@@ -34,8 +34,9 @@ local function DeleteOwner(self)
 end
 
 local function ListOwner(name)
+	local canguild = GetAddOnEnableState(UnitName('player'), ADDON .. '_GuildBank') >= 2
 	local info = Cache:GetOwnerInfo(name)
-	if not info.guild or GetAddOnEnableState(UnitName('player'), ADDON .. '_GuildBank') >= 2 then
+	if not info.isguild or canguild then
 		UIDropDownMenu_AddButton {
 			text = format('|T%s:14:14:-5:0|t', Addon:GetOwnerIcon(info)) .. Addon:GetOwnerColorString(info):format(info.name),
 	    checked = name == CurrentFrame:GetOwner(),

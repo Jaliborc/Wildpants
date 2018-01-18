@@ -97,7 +97,7 @@ function Addon:StartupSettings()
 	_G[SETS] = SetDefaults(_G[SETS] or {}, {
 		version = CURRENT_VERSION,
 		global = SetDefaults({}, ProfileDefaults),
-		owners = {},
+		profiles = {},
 
 		resetPlayer = true,
 		displayBank = true, closeBank = true, displayAuction = true, displayGuild = true, displayMail = true, displayTrade = true, displayCraft = true,
@@ -123,7 +123,7 @@ function Addon:StartupSettings()
 	self.sets = _G[SETS]
 	self:UpdateSettings()
 
-	for owner, profile in pairs(self.sets.owners) do
+	for owner, profile in pairs(self.sets.profiles) do
 		SetDefaults(profile, ProfileDefaults)
 	end
 
@@ -131,16 +131,6 @@ function Addon:StartupSettings()
 end
 
 function Addon:UpdateSettings()
-	if self.sets.players then
-		for realm, players in pairs(self.sets.players) do
-			for player, profile in pairs(players) do
-				self.sets.owners[player .. ' - ' .. realm] = profile
-			end
-		end
-
-		self.sets.players = nil
-	end
-
 	if self.sets.frames then
 		for frame, sets in pairs(self.sets.frames) do
 			self.sets.global[frame] = SetDefaults(sets, self.sets.global[frame])
@@ -149,6 +139,7 @@ function Addon:UpdateSettings()
 		self.sets.frames = nil
 	end
 
+	self.sets.players, self.sets.owners = nil
 	if self.sets.version ~= CURRENT_VERSION then
 		self.sets.version = CURRENT_VERSION
 		self:Print(format(L.Updated, self.sets.version))
@@ -158,10 +149,11 @@ end
 
 --[[ Profiles ]]--
 
-function Addon:SetProfile(owner, profile)
-	self.sets.owners[Cache:GetOwnerID(owner)] = profile and SetDefaults(profile, ProfileDefaults)
+function Addon:SetCurrentProfile(profile)
+	self.sets.profiles[Cache:GetOwnerID()] = profile and SetDefaults(profile, ProfileDefaults)
+	self.profile = self:GetProfile()
 end
 
 function Addon:GetProfile(owner)
-	return self.sets.owners[Cache:GetOwnerID(owner)] or self.sets.global
+	return self.sets.profiles[Cache:GetOwnerID(owner)] or self.sets.global
 end
