@@ -392,8 +392,17 @@ function ItemSlot:ShowTooltip()
 
 	if getSlot then
 		self:AnchorTooltip()
-		GameTooltip:SetInventoryItem('player', getSlot(self:GetID()))
-		GameTooltip:Show()
+
+		local _, _, _, speciesID, level, breedQuality, maxHealth, power, speed, name = GameTooltip:SetInventoryItem('player', getSlot(self:GetID()))
+		if speciesID and speciesID > 0 then
+			BattlePetToolTip_Show(speciesID, level, breedQuality, maxHealth, power, speed, name)
+		else
+			if BattlePetTooltip then
+				BattlePetTooltip:Hide()
+			end
+			GameTooltip:Show()
+		end
+
 		CursorUpdate(self)
 	else
 		ContainerFrameItemButton_OnEnter(self)
