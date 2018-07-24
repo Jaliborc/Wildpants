@@ -117,17 +117,16 @@ function Frame:IsShowingBag(bag)
 end
 
 function Frame:IsShowingItem(bag, slot)
-	local icon, count, locked, quality, readable, lootable, itemLink = self:GetItemInfo(bag, slot)
+	local info = self:GetItemInfo(bag, slot)
 	local rule = Addon.Rules:Get(self.subrule or self.rule)
 
 	if rule and rule.func then
-		local bagLink = self:GetBagInfo(bag)
-		if not rule.func(self.owner, bag, slot, bagLink, itemLink, count) then
+		if not rule.func(self.owner, bag, slot, self:GetBagInfo(bag), info) then
 			return
 		end
 	end
 
-	return self:IsShowingQuality(quality)
+	return self:IsShowingQuality(info.quality)
 end
 
 function Frame:IsShowingQuality(quality)
