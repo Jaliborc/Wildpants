@@ -8,6 +8,15 @@ local ALTERNATIVE_ICONS = 'Interface/CharacterFrame/TEMPORARYPORTRAIT-%s-%s'
 local ICONS = 'Interface/Icons/Achievement_Character_%s_%s'
 local CLASS_COLOR = '|cff%02x%02x%02x'
 
+local ICONLESS_RACES = {
+	['Worgen'] = true,
+	['Goblin'] = true,
+	['VoidElf'] = true,
+	['Nightborne'] = true,
+	['LightforgedDraenei'] = true,
+	['HighmountainTauren'] = true,
+}
+
 function Addon:MultipleOwnersFound()
 	local owners = LibStub('LibItemCache-2.0'):IterateOwners()
 	return owners() and owners() -- more than one
@@ -24,7 +33,7 @@ function Addon:GetOwnerIcon(owner)
 		return ''
 	end
 
-	if race ~= 'Worgen' and race ~= 'Goblin' and (race ~= 'Pandaren' or owner.gender == 3) then
+	if not ICONLESS_RACES[race] and (race ~= 'Pandaren' or owner.gender == 3) then
 		if race == 'Scourge' then
 			race = 'Undead'
 		end
