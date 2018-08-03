@@ -57,8 +57,6 @@ function Events:BANKFRAME_OPENED()
 		self:UpdateSize(REAGENTBANK_CONTAINER)
 		self:UpdateBankBags()
 	end
-
-	self:SendMessage('BANK_OPENED')
 end
 
 
