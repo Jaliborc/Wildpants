@@ -53,7 +53,7 @@ function ItemFrame:RegisterEvents()
 		self:RegisterEvent('PLAYER_SPECIALIZATION_CHANGED', 'ForAll', 'UpdateUpgradeIcon')
 		self:RegisterEvent('UNIT_INVENTORY_CHANGED', 'ForAll', 'UpdateUpgradeIcon')
 	else
-		self:RegisterMessage('BANK_OPENED', 'RegisterEvents')
+		self:RegisterMessage('CACHE_BANK_OPENED', 'RegisterEvents')
 	end
 end
 

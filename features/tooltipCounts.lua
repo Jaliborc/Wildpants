@@ -22,9 +22,9 @@ local function FindItemCount(owner, bag, itemID)
 	local info = Cache:GetBagInfo(owner, bag)
 
 	for slot = 1, (info.count or 0) do
-		local stack = Cache:GetItemInfo(owner, bag, slot)
-		if stack.id == itemID then
-			count = count + (stack.count or 1)
+		local id = Cache:GetItemID(owner, bag, slot)
+		if id == itemID then
+			count = count + (Cache:GetItemInfo(owner, bag, slot).count or 1)
 		end
 	end
 
