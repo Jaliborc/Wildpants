@@ -5,6 +5,7 @@
 
 local ADDON, Addon = ...
 local L = LibStub('AceLocale-3.0'):GetLocale(ADDON)
+local TooltipCounts = Addon:NewModule('TooltipCounts')
 
 local SILVER = '|cffc7c7cf%s|r'
 local LAST_BANK_SLOT = NUM_BAG_SLOTS + NUM_BANKBAGSLOTS
@@ -163,10 +164,10 @@ local function HookTip(tooltip)
 end
 
 
---[[ Public Methods ]]--
+--[[ Startup ]]--
 
-function Addon:HookTooltips()
-	if self:MultipleOwnersFound() and self.sets.tipCount then
+function TooltipCounts:OnEnable()
+	if Addon:MultipleOwnersFound() and Addon.sets.tipCount then
 		if not Hooked then
 			for owner in Cache:IterateOwners() do
 				ItemCount[owner] = {}
