@@ -15,6 +15,10 @@ local ICONLESS_RACES = {
 	['Nightborne'] = true,
 	['LightforgedDraenei'] = true,
 	['HighmountainTauren'] = true,
+	['DarkIronDwarf'] = true,
+	['KulTiran'] = true,
+	['MagharOrc'] = true,
+	['ZandalariTroll'] = true,
 }
 
 function Addon:MultipleOwnersFound()
