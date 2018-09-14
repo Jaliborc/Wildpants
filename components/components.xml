@@ -2,6 +2,7 @@
 	<Script file="bag.lua"/>
 	<Script file="bagFrame.lua"/>
 	<Script file="bagToggle.lua"/>
+	<Script file="reagentbankToggle.lua"/>
 
 	<Script file="sortButton.lua"/>
 	<Script file="moneyFrame.lua"/>
