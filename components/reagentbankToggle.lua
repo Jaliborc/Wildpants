@@ -19,6 +19,7 @@ function ReagentbankToggle:New(parent)
 	b:SetScript('OnShow', b.OnShow)
 	b:RegisterForClicks('anyUp')
 	b:Update()
+
 	return b
 end
 
@@ -32,9 +33,13 @@ function ReagentbankToggle:OnShow()
 end
 
 function ReagentbankToggle:OnClick(button)
-	local reagentBagButton = _G[(ADDON .. "Bag" .. REAGENTBANK_CONTAINER)]
-	reagentBagButton:Click(button)
-	self:Update()
+	if button == 'LeftButton' then
+		local reagentBagButton = _G[(ADDON .. "Bag" .. REAGENTBANK_CONTAINER)]
+		reagentBagButton:Click(button)
+		self:Update()
+	else
+		DepositReagentBank()
+	end
 end
 
 function ReagentbankToggle:OnEnter()
@@ -47,8 +52,9 @@ function ReagentbankToggle:OnEnter()
 		GameTooltip:AddLine(L.TipPurchaseBag)
 		SetTooltipMoney(GameTooltip, reagentBagButton:GetCost())
 	else
-    GameTooltip:AddLine(reagentBagButton:IsHidden() and L.TipShowBag or L.TipHideBag)
-  end
+		GameTooltip:AddLine(reagentBagButton:IsHidden() and L.TipShowBag or L.TipHideBag)
+		GameTooltip:AddLine(L.TipDepositReagents, 1,1,1)
+	end
 
 	GameTooltip:Show()
 end
@@ -78,10 +84,10 @@ function ReagentbankToggle:Update()
 	local reagentBagButton = _G[(ADDON .. "Bag" .. REAGENTBANK_CONTAINER)]
 	-- Unfortunately, LibItemCache-2.0 does not yet allow to check 'owned' status of cached bags.
 	-- So we assume cached bags as owned like the rest of Bagnon does.
-	if IsReagentBankUnlocked() or reagentBagButton and reagentBagButton:GetInfo().cached then
-		self.BagnonReagentbankToggleTexture:SetVertexColor(1,1,1)
-	else
+	if reagentBagButton and reagentBagButton:IsPurchasable() then
 		self.BagnonReagentbankToggleTexture:SetVertexColor(1,0.1,0.1)
+	else
+		self.BagnonReagentbankToggleTexture:SetVertexColor(1,1,1)
 	end
 end
 
