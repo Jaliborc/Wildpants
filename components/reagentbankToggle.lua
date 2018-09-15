@@ -39,6 +39,7 @@ function ReagentbankToggle:OnClick(button)
 		self:Update()
 	else
 		DepositReagentBank()
+		self:Update()
 	end
 end
 
