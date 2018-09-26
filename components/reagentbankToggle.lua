@@ -36,16 +36,25 @@ function ReagentbankToggle:OnClick(button)
 	if button == 'LeftButton' then
 		local reagentBagButton = _G[(ADDON .. "Bag" .. REAGENTBANK_CONTAINER)]
 		reagentBagButton:Click(button)
-		self:Update()
+
+		local profile = self:GetProfile()
+		if profile.exclusiveReagent then
+			reagentBagButton:SetFocus(false)
+		end
 	else
 		DepositReagentBank()
-		self:Update()
 	end
+	self:Update()
+
 end
 
 function ReagentbankToggle:OnEnter()
 	local reagentBagButton = _G[(ADDON .. "Bag" .. REAGENTBANK_CONTAINER)]
-	reagentBagButton:SetFocus(true)
+
+	local profile = self:GetProfile()
+	if not profile.exclusiveReagent then
+		reagentBagButton:SetFocus(true)
+	end
 
 	GameTooltip:SetOwner(self, self:GetRight() > (GetScreenWidth() / 2) and 'ANCHOR_LEFT' or 'ANCHOR_RIGHT')
 	GameTooltip:SetText(REAGENT_BANK, 1, 1, 1)
