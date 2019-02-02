@@ -106,13 +106,15 @@ local function AddOwners(tooltip, link)
 				end
 
 				count, text = FormatCounts(color, L.TipCountGuild, guild)
+			else
+				count = 0
 			end
 
 			if info.cached then
 				ItemText[owner] = ItemText[owner] or {}
 				ItemText[owner][itemID] = text
 				ItemCount[owner] = ItemCount[owner] or {}
-				ItemCount[owner][itemID] = count or 0
+				ItemCount[owner][itemID] = count
 			end
 		end
 
