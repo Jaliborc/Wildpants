@@ -23,8 +23,10 @@ function Events:OnEnable()
 
 	self:RegisterEvent('BAG_UPDATE')
 	self:RegisterEvent('PLAYERBANKSLOTS_CHANGED')
-	self:RegisterEvent('PLAYERREAGENTBANKSLOTS_CHANGED')
-	self:RegisterEvent('REAGENTBANK_PURCHASED')
+	if not Addon.IsClassic then
+		self:RegisterEvent('PLAYERREAGENTBANKSLOTS_CHANGED')
+		self:RegisterEvent('REAGENTBANK_PURCHASED')
+	end
 	self:RegisterMessage('CACHE_BANK_OPENED')
 	self:UpdateSize(BACKPACK_CONTAINER)
 	self:UpdateBags()
