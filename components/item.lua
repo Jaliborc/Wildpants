@@ -172,7 +172,7 @@ function ItemSlot:OnPreClick(button)
 
 		if not self.canDeposit then
 			for i = 1,9 do
-				if not GetVoidTransferDepositInfo(i) then
+				if not Addon.IsClassic and not GetVoidTransferDepositInfo(i) then
 					self.depositSlot = i
 					return
 				end
@@ -186,7 +186,7 @@ function ItemSlot:OnClick(button)
 		if Addon.sets.flashFind and self.info.id then
 			self:SendSignal('FLASH_ITEM', self.info.id)
 		end
-	elseif GetNumVoidTransferDeposit() > 0 and button == 'RightButton' then
+	elseif not Addon.IsClassic and GetNumVoidTransferDeposit() > 0 and button == 'RightButton' then
 		if self.canDeposit and self.depositSlot then
 			ClickVoidTransferDepositSlot(self.depositSlot, true)
 		end
