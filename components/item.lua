@@ -141,41 +141,43 @@ function ItemSlot:OnDragStart()
 	ItemSlot.Cursor = self
 end
 
-if Addon.IsRetail then
-	function ItemSlot:OnPreClick(button)
-		if not IsModifiedClick() and button == 'RightButton' then
-			if Cache.AtBank and IsReagentBankUnlocked() and GetContainerNumFreeSlots(REAGENTBANK_CONTAINER) > 0 then
-				if not Addon:IsReagents(self:GetBag()) and ItemSearch:TooltipPhrase(self.info.link, PROFESSIONS_USED_IN_COOKING) then
-					local maxstack = select(8, GetItemInfo(self.info.id))
+function ItemSlot:OnPreClick(button)
+	if IsModifiedClick() or button ~= 'RightButton' then
+		return
+	end
 
-					for _, bag in ipairs {BANK_CONTAINER, 5, 6, 7, 8, 9, 10, 11} do
-						for slot = 1, GetContainerNumSlots(bag) do
-							if GetContainerItemID(bag, slot) == self.info.id then
-								local _,count = GetContainerItemInfo(bag, slot)
-								local free = maxstack - count
+	if REAGENTBANK_CONTAINER and Cache.AtBank then
+		if IsReagentBankUnlocked() and GetContainerNumFreeSlots(REAGENTBANK_CONTAINER) > 0 then
+			if not Addon:IsReagents(self:GetBag()) and ItemSearch:TooltipPhrase(self.info.link, PROFESSIONS_USED_IN_COOKING) then
+				local maxstack = select(8, GetItemInfo(self.info.id))
 
-								if (free > 0) then
-									SplitContainerItem(self:GetBag(), self:GetID(), min(self.count, free))
-									PickupContainerItem(bag, slot)
-								end
+				for _, bag in ipairs {BANK_CONTAINER, 5, 6, 7, 8, 9, 10, 11} do
+					for slot = 1, GetContainerNumSlots(bag) do
+						if GetContainerItemID(bag, slot) == self.info.id then
+							local _,count = GetContainerItemInfo(bag, slot)
+							local free = maxstack - count
+
+							if (free > 0) then
+								SplitContainerItem(self:GetBag(), self:GetID(), min(self.count, free))
+								PickupContainerItem(bag, slot)
 							end
 						end
 					end
-
-					return UseContainerItem(self:GetBag(), self:GetID(), nil, true)
 				end
-			end
 
-			for i = 1,9 do
-				if not GetVoidTransferDepositInfo(i) then
-					self.depositSlot = i
-					return
-				end
+				return UseContainerItem(self:GetBag(), self:GetID(), nil, true)
 			end
 		end
 	end
-else
-	function ItemSlot:OnPreClick() end
+
+	if Addon.HasVault then
+		for i = 1,9 do
+			if not GetVoidTransferDepositInfo(i) then
+				self.depositSlot = i
+				return
+			end
+		end
+	end
 end
 
 function ItemSlot:OnClick(button)

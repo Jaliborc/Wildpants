@@ -21,7 +21,7 @@ function Events:OnEnable()
 	self.firstVisit = true
 	self.sizes, self.types = {}, {}
 
-	if Addon.IsRetail then
+	if REAGENTBANK_CONTAINER then
 		self:RegisterEvent('PLAYERREAGENTBANKSLOTS_CHANGED')
 		self:RegisterEvent('REAGENTBANK_PURCHASED')
 	end
