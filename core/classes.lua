@@ -11,6 +11,7 @@ local Mixins = {
 }
 
 LibStub('AceAddon-3.0'):NewAddon(Addon, ADDON, 'AceEvent-3.0')
+Addon.IsRetail = WOW_PROJECT_ID == WOW_PROJECT_MAINLINE
 _G[ADDON] = Addon
 
 
