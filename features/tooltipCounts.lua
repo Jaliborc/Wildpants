@@ -162,9 +162,10 @@ end
 local function HookTip(tooltip)
 	tooltip:HookScript('OnTooltipCleared', OnClear)
 	tooltip:HookScript('OnTooltipSetItem', OnItem)
-
-  hooksecurefunc(tooltip, 'SetRecipeReagentItem', OnTradeSkill)
-  hooksecurefunc(tooltip, 'SetRecipeResultItem', OnTradeSkill)
+	if not Addon.IsClassic then
+		hooksecurefunc(tooltip, 'SetRecipeReagentItem', OnTradeSkill)
+		hooksecurefunc(tooltip, 'SetRecipeResultItem', OnTradeSkill)
+	end
 	hooksecurefunc(tooltip, 'SetQuestItem', OnQuest)
 	hooksecurefunc(tooltip, 'SetQuestLogItem', OnQuest)
 end

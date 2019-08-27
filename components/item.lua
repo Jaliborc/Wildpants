@@ -5,7 +5,12 @@
 
 local ADDON, Addon = ...
 local Cache = LibStub('LibItemCache-2.0')
-local ItemSlot = Addon:NewClass('ItemSlot', 'ItemButton')
+local ItemSlot = nil
+if not Addon.IsClassic then
+	ItemSlot = Addon:NewClass('ItemSlot', 'ItemButton')
+else
+	ItemSlot = Addon:NewClass('ItemSlot', 'Button')
+end
 ItemSlot.unused = {}
 ItemSlot.nextID = 0
 
@@ -167,7 +172,7 @@ function ItemSlot:OnPreClick(button)
 
 		if not self.canDeposit then
 			for i = 1,9 do
-				if not GetVoidTransferDepositInfo(i) then
+				if not Addon.IsClassic and not GetVoidTransferDepositInfo(i) then
 					self.depositSlot = i
 					return
 				end
@@ -181,7 +186,7 @@ function ItemSlot:OnClick(button)
 		if Addon.sets.flashFind and self.info.id then
 			self:SendSignal('FLASH_ITEM', self.info.id)
 		end
-	elseif GetNumVoidTransferDeposit() > 0 and button == 'RightButton' then
+	elseif not Addon.IsClassic and GetNumVoidTransferDeposit() > 0 and button == 'RightButton' then
 		if self.canDeposit and self.depositSlot then
 			ClickVoidTransferDepositSlot(self.depositSlot, true)
 		end
@@ -213,7 +218,9 @@ end
 
 function ItemSlot:OnLeave()
 	GameTooltip:Hide()
-	BattlePetTooltip:Hide()
+	if not Addon.IsClassic then
+		BattlePetTooltip:Hide()
+	end
 	ResetCursor()
 end
 
@@ -275,7 +282,9 @@ function ItemSlot:UpdateBorder()
 		end
 	end
 
-	self.IconBorder:SetTexture(id and C_ArtifactUI.GetRelicInfoByItemID(id) and 'Interface\\Artifacts\\RelicIconFrame' or 'Interface\\Common\\WhiteIconFrame')
+	if not Addon.IsClassic then		--[[ TODO: ]]
+		self.IconBorder:SetTexture(id and C_ArtifactUI.GetRelicInfoByItemID(id) and 'Interface\\Artifacts\\RelicIconFrame' or 'Interface\\Common\\WhiteIconFrame')
+	end
 	self.IconBorder:SetVertexColor(r, g, b)
 	self.IconBorder:SetShown(r)
 
@@ -285,7 +294,9 @@ function ItemSlot:UpdateBorder()
 	self.NewItemTexture:SetAtlas(quality and NEW_ITEM_ATLAS_BY_QUALITY[quality] or 'bags-glow-white')
 	self.NewItemTexture:SetShown(new and not paid)
 
-	self.IconOverlay:SetShown(id and C_AzeriteEmpoweredItem.IsAzeriteEmpoweredItemByID(id))
+	if not Addon.IsClassic then		--[[ TODO: ]]
+		self.IconOverlay:SetShown(id and C_AzeriteEmpoweredItem.IsAzeriteEmpoweredItemByID(id))
+	end
 	self.BattlepayItemTexture:SetShown(new and paid)
 	self.QuestBorder:SetShown(questID)
 end
@@ -299,7 +310,7 @@ function ItemSlot:UpdateSlotColor()
 end
 
 function ItemSlot:UpdateUpgradeIcon()
-	local isUpgrade = self:IsUpgrade()
+	local isUpgrade = not Addon.IsClassic and self:IsUpgrade() or nil
 	if isUpgrade == nil then
 		self:After(0.5, 'UpdateUpgradeIcon')
 	else
@@ -388,6 +399,9 @@ end
 --[[ Data ]]--
 
 function ItemSlot:IsQuestItem()
+	if Addon.IsClassic then
+		return false, nil		--[[ TODO: can we know this without calling GetContainerItemQuestInfo()? ]]
+	end
 	if self.info.id then
 		if self.info.cached then
 			return select(12, GetItemInfo(self.info.id)) == LE_ITEM_CLASS_QUESTITEM or ItemSearch:Tooltip(self.info.link, QUEST_LOWER), false
