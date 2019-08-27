@@ -23,12 +23,13 @@ function Frame:OnHide()
 end
 
 function Frame:HighlightMainMenu(checked)
-	if Addon.IsClassic then return end		--[[ TOOD: ]]
 	for i, button in pairs(self.MainMenuButtons) do
-		if checked then
-			button.SlotHighlightTexture:Show()
+		if button.SlotHighlightTexture then
+			button.SlotHighlightTexture:SetShown(checked)
 		else
-			button.SlotHighlightTexture:Hide()
+			C_Timer.After(0, function()
+				button:SetChecked(checked)
+			end)
 		end
 	end
 end

@@ -21,12 +21,13 @@ function Events:OnEnable()
 	self.firstVisit = true
 	self.sizes, self.types = {}, {}
 
-	self:RegisterEvent('BAG_UPDATE')
-	self:RegisterEvent('PLAYERBANKSLOTS_CHANGED')
-	if not Addon.IsClassic then
+	if Addon.IsRetail then
 		self:RegisterEvent('PLAYERREAGENTBANKSLOTS_CHANGED')
 		self:RegisterEvent('REAGENTBANK_PURCHASED')
 	end
+
+	self:RegisterEvent('BAG_UPDATE')
+	self:RegisterEvent('PLAYERBANKSLOTS_CHANGED')
 	self:RegisterMessage('CACHE_BANK_OPENED')
 	self:UpdateSize(BACKPACK_CONTAINER)
 	self:UpdateBags()
@@ -54,8 +55,11 @@ function Events:CACHE_BANK_OPENED()
 	if self.firstVisit then
 		self.firstVisit = nil
 		self:UpdateSize(BANK_CONTAINER)
-		self:UpdateSize(REAGENTBANK_CONTAINER)
 		self:UpdateBankBags()
+
+		if REAGENTBANK_CONTAINER then
+			self:UpdateSize(REAGENTBANK_CONTAINER)
+		end
 	end
 end
 
@@ -71,7 +75,7 @@ function Events:UpdateBags()
 end
 
 function Events:UpdateBankBags()
-	for bag = 1, NUM_BAG_SLOTS + GetNumBankSlots() do
+	for bag = 1, NUM_BAG_SLOTS + NUM_BANKBAGSLOTS do
 		if not self:UpdateSize(bag) then
 			self:UpdateType(bag)
 		end

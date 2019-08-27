@@ -5,12 +5,7 @@
 
 local ADDON, Addon = ...
 local Cache = LibStub('LibItemCache-2.0')
-local ItemSlot = nil
-if not Addon.IsClassic then
-	ItemSlot = Addon:NewClass('ItemSlot', 'ItemButton')
-else
-	ItemSlot = Addon:NewClass('ItemSlot', 'Button')
-end
+local ItemSlot = Addon:NewClass('ItemSlot', Addon.IsRetail and 'ItemButton' or 'Button')
 ItemSlot.unused = {}
 ItemSlot.nextID = 0
 
@@ -146,39 +141,41 @@ function ItemSlot:OnDragStart()
 	ItemSlot.Cursor = self
 end
 
-function ItemSlot:OnPreClick(button)
-	if not IsModifiedClick() and button == 'RightButton' then
-		if Cache.AtBank and IsReagentBankUnlocked() and GetContainerNumFreeSlots(REAGENTBANK_CONTAINER) > 0 then
-			if not Addon:IsReagents(self:GetBag()) and ItemSearch:TooltipPhrase(self.info.link, PROFESSIONS_USED_IN_COOKING) then
-				local maxstack = select(8, GetItemInfo(self.info.id))
+if Addon.IsRetail then
+	function ItemSlot:OnPreClick(button)
+		if not IsModifiedClick() and button == 'RightButton' then
+			if Cache.AtBank and IsReagentBankUnlocked() and GetContainerNumFreeSlots(REAGENTBANK_CONTAINER) > 0 then
+				if not Addon:IsReagents(self:GetBag()) and ItemSearch:TooltipPhrase(self.info.link, PROFESSIONS_USED_IN_COOKING) then
+					local maxstack = select(8, GetItemInfo(self.info.id))
 
-				for _, bag in ipairs {BANK_CONTAINER, 5, 6, 7, 8, 9, 10, 11} do
-					for slot = 1, GetContainerNumSlots(bag) do
-						if GetContainerItemID(bag, slot) == self.info.id then
-							local _,count = GetContainerItemInfo(bag, slot)
-							local free = maxstack - count
+					for _, bag in ipairs {BANK_CONTAINER, 5, 6, 7, 8, 9, 10, 11} do
+						for slot = 1, GetContainerNumSlots(bag) do
+							if GetContainerItemID(bag, slot) == self.info.id then
+								local _,count = GetContainerItemInfo(bag, slot)
+								local free = maxstack - count
 
-							if (free > 0) then
-								SplitContainerItem(self:GetBag(), self:GetID(), min(self.count, free))
-								PickupContainerItem(bag, slot)
+								if (free > 0) then
+									SplitContainerItem(self:GetBag(), self:GetID(), min(self.count, free))
+									PickupContainerItem(bag, slot)
+								end
 							end
 						end
 					end
+
+					return UseContainerItem(self:GetBag(), self:GetID(), nil, true)
 				end
-
-				return UseContainerItem(self:GetBag(), self:GetID(), nil, true)
 			end
-		end
 
-		if not self.canDeposit then
 			for i = 1,9 do
-				if not Addon.IsClassic and not GetVoidTransferDepositInfo(i) then
+				if not GetVoidTransferDepositInfo(i) then
 					self.depositSlot = i
 					return
 				end
 			end
 		end
 	end
+else
+	function ItemSlot:OnPreClick() end
 end
 
 function ItemSlot:OnClick(button)
@@ -186,7 +183,7 @@ function ItemSlot:OnClick(button)
 		if Addon.sets.flashFind and self.info.id then
 			self:SendSignal('FLASH_ITEM', self.info.id)
 		end
-	elseif not Addon.IsClassic and GetNumVoidTransferDeposit() > 0 and button == 'RightButton' then
+	elseif GetNumVoidTransferDeposit and GetNumVoidTransferDeposit() > 0 and button == 'RightButton' then
 		if self.canDeposit and self.depositSlot then
 			ClickVoidTransferDepositSlot(self.depositSlot, true)
 		end
@@ -217,10 +214,11 @@ function ItemSlot:OnEnter()
 end
 
 function ItemSlot:OnLeave()
-	GameTooltip:Hide()
-	if not Addon.IsClassic then
+	if BattlePetTooltip then
 		BattlePetTooltip:Hide()
 	end
+
+	GameTooltip:Hide()
 	ResetCursor()
 end
 
@@ -282,9 +280,7 @@ function ItemSlot:UpdateBorder()
 		end
 	end
 
-	if not Addon.IsClassic then		--[[ TODO: ]]
-		self.IconBorder:SetTexture(id and C_ArtifactUI.GetRelicInfoByItemID(id) and 'Interface\\Artifacts\\RelicIconFrame' or 'Interface\\Common\\WhiteIconFrame')
-	end
+	self.IconBorder:SetTexture(id and C_ArtifactUI and C_ArtifactUI.GetRelicInfoByItemID(id) and 'Interface\\Artifacts\\RelicIconFrame' or 'Interface\\Common\\WhiteIconFrame')
 	self.IconBorder:SetVertexColor(r, g, b)
 	self.IconBorder:SetShown(r)
 
@@ -294,9 +290,7 @@ function ItemSlot:UpdateBorder()
 	self.NewItemTexture:SetAtlas(quality and NEW_ITEM_ATLAS_BY_QUALITY[quality] or 'bags-glow-white')
 	self.NewItemTexture:SetShown(new and not paid)
 
-	if not Addon.IsClassic then		--[[ TODO: ]]
-		self.IconOverlay:SetShown(id and C_AzeriteEmpoweredItem.IsAzeriteEmpoweredItemByID(id))
-	end
+	self.IconOverlay:SetShown(id and C_AzeriteEmpoweredItem and C_AzeriteEmpoweredItem.IsAzeriteEmpoweredItemByID(id))
 	self.BattlepayItemTexture:SetShown(new and paid)
 	self.QuestBorder:SetShown(questID)
 end
@@ -310,7 +304,7 @@ function ItemSlot:UpdateSlotColor()
 end
 
 function ItemSlot:UpdateUpgradeIcon()
-	local isUpgrade = not Addon.IsClassic and self:IsUpgrade() or nil
+	local isUpgrade = self:IsUpgrade()
 	if isUpgrade == nil then
 		self:After(0.5, 'UpdateUpgradeIcon')
 	else
@@ -399,15 +393,12 @@ end
 --[[ Data ]]--
 
 function ItemSlot:IsQuestItem()
-	if Addon.IsClassic then
-		return false, nil		--[[ TODO: can we know this without calling GetContainerItemQuestInfo()? ]]
-	end
 	if self.info.id then
-		if self.info.cached then
-			return select(12, GetItemInfo(self.info.id)) == LE_ITEM_CLASS_QUESTITEM or ItemSearch:Tooltip(self.info.link, QUEST_LOWER), false
-		else
+		if not self.info.cached and GetContainerItemQuestInfo then
 			local isQuest, questID, isActive = GetContainerItemQuestInfo(self:GetBag(), self:GetID())
 			return isQuest, (questID and not isActive)
+		else
+			return select(12, GetItemInfo(self.info.id)) == LE_ITEM_CLASS_QUESTITEM or ItemSearch:Tooltip(self.info.link, QUEST_LOWER), false
 		end
 	end
 end
@@ -421,7 +412,7 @@ function ItemSlot:IsPaid()
 end
 
 function ItemSlot:IsUpgrade()
-	return IsContainerItemAnUpgrade(self:GetBag(), self:GetID())
+	return IsContainerItemAnUpgrade and IsContainerItemAnUpgrade(self:GetBag(), self:GetID())
 end
 
 function ItemSlot:IsSlot(bag, slot)

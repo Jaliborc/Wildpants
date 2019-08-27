@@ -45,15 +45,15 @@ function ItemFrame:RegisterEvents()
 		self:RegisterEvent('UNIT_QUEST_LOG_CHANGED')
 		self:RegisterEvent('ITEM_LOCK_CHANGED')
 
+		self:RegisterEvent('UNIT_INVENTORY_CHANGED', 'ForAll', 'UpdateUpgradeIcon')
 		self:RegisterEvent('BAG_UPDATE_COOLDOWN', 'ForAll', 'UpdateCooldown')
 		self:RegisterEvent('BAG_NEW_ITEMS_UPDATED', 'ForAll', 'UpdateBorder')
-		if not Addon.IsClassic then
-			self:RegisterEvent('EQUIPMENT_SETS_CHANGED', 'ForAll', 'UpdateBorder')
-			self:RegisterEvent('PLAYER_SPECIALIZATION_CHANGED', 'ForAll', 'UpdateUpgradeIcon')
-		end
 		self:RegisterEvent('QUEST_ACCEPTED', 'ForAll', 'UpdateBorder')
 
-		self:RegisterEvent('UNIT_INVENTORY_CHANGED', 'ForAll', 'UpdateUpgradeIcon')
+		if Addon.IsRetail then
+			self:RegisterEvent('PLAYER_SPECIALIZATION_CHANGED', 'ForAll', 'UpdateUpgradeIcon')
+			self:RegisterEvent('EQUIPMENT_SETS_CHANGED', 'ForAll', 'UpdateBorder')
+		end
 	else
 		self:RegisterMessage('CACHE_BANK_OPENED', 'RegisterEvents')
 	end
