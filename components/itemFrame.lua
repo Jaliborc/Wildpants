@@ -50,9 +50,11 @@ function ItemFrame:RegisterEvents()
 		self:RegisterEvent('BAG_NEW_ITEMS_UPDATED', 'ForAll', 'UpdateBorder')
 		self:RegisterEvent('QUEST_ACCEPTED', 'ForAll', 'UpdateBorder')
 
-		if Addon.IsRetail then
-			self:RegisterEvent('PLAYER_SPECIALIZATION_CHANGED', 'ForAll', 'UpdateUpgradeIcon')
+		if C_EquipmentSet then
 			self:RegisterEvent('EQUIPMENT_SETS_CHANGED', 'ForAll', 'UpdateBorder')
+		end
+		if C_SpecializationInfo then
+			self:RegisterEvent('PLAYER_SPECIALIZATION_CHANGED', 'ForAll', 'UpdateUpgradeIcon')
 		end
 	else
 		self:RegisterMessage('CACHE_BANK_OPENED', 'RegisterEvents')

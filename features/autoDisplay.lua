@@ -34,9 +34,12 @@ function AutoDisplay:RegisterGameEvents()
 	self:RegisterDisplayEvents('closeVehicle', nil, 'UNIT_ENTERED_VEHICLE')
 	self:RegisterDisplayEvents('closeVendor', nil, 'MERCHANT_CLOSED')
 
-	if Addon.IsRetail then
-		self:RegisterDisplayEvents('displayScrapping', 'SCRAPPING_MACHINE_SHOW', 'SCRAPPING_MACHINE_CLOSE')
+	if CanGuildBankRepair then
 		self:RegisterDisplayEvents('displayGuild', 'GUILDBANKFRAME_OPENED', 'GUILDBANKFRAME_CLOSED')
+	end
+
+	if C_ScrappingMachineUI then
+		self:RegisterDisplayEvents('displayScrapping', 'SCRAPPING_MACHINE_SHOW', 'SCRAPPING_MACHINE_CLOSE')
 	end
 
 	if not Addon.sets.displayMail then

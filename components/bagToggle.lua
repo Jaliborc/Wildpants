@@ -70,13 +70,11 @@ end
 function BagToggle:ToggleDropdown()
 	local menu = {}
 	local function addLine(id, name, addon, owner)
-		if id ~= self:GetFrameID() and (not addon or GetAddOnEnableState(UnitName('player'), addon) >= 2) then
+		if id ~= self:GetFrameID() then
 			tinsert(menu, {
 				text = name,
 				notCheckable = 1,
-				func = function()
-					self:OpenFrame(id, addon, owner)
-				end
+				func = function() self:OpenFrame(id, addon, owner) end
 			})
 		end
 	end
@@ -84,13 +82,13 @@ function BagToggle:ToggleDropdown()
 	addLine('inventory', INVENTORY_TOOLTIP)
 	addLine('bank', BANK)
 
-	if Addon.IsRetail then
+	if Addon.HasVault then
 		addLine('vault', VOID_STORAGE, ADDON .. '_VoidStorage')
+	end
 
-		local guild = self:GetOwnerInfo().guild
-		if guild then
-			addLine('guild', GUILD_BANK, ADDON .. '_GuildBank', guild)
-		end
+	local guild = Addon.HasGuild and self:GetOwnerInfo().guild
+	if guild then
+		addLine('guild', GUILD_BANK, ADDON .. '_GuildBank', guild)
 	end
 
 	if #menu > 1 then
