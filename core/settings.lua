@@ -107,6 +107,9 @@ function Addon:StartupSettings()
 		glowQuality = true, glowNew = true, glowQuest = true, glowSets = true, glowUnusable = true,
 
 		emptySlots = true, colorSlots = true,
+		normalColor = {1, 1, 1},
+		ammoColor = {1, .87, .68},
+		reagentColor = {1, .87, .68},
 		leatherColor = {1, .6, .45},
 		enchantColor = {0.64, 0.83, 1},
 		inscribeColor = {.64, 1, .82},
@@ -116,8 +119,6 @@ function Addon:StartupSettings()
 		gemColor = {1, .65, .98},
 		mineColor = {1, .81, .38},
 		herbColor = {.5, 1, .5},
-		reagentColor = {1, .87, .68},
-		normalColor = {1, 1, 1},
 	})
 
 	self.sets = _G[SETS]
