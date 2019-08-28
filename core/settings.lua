@@ -48,10 +48,10 @@ local FrameDefaults = {
 	hiddenBags = {},
 
 	rules = AsArray({
-		'all', 'all/all', 'all/normal', 'all/trade', 'all/reagent',
-		'equip', 'equip/all', 'equip/armor', 'equip/weapon', 'equip/trinket',
-		'use', 'use/all', 'use/consume', 'use/enhance',
-		'trade', 'trade/all', 'trade/goods', 'trade/gem', 'trade/glyph', 'trade/recipe',
+		'all', 'all/normal', 'all/trade', 'all/reagent', 'all/keys', 'all/quiver',
+		'equip', 'equip/armor', 'equip/weapon', 'equip/trinket',
+		'use', 'use/consume', 'use/enhance',
+		'trade', 'trade/goods', 'trade/gem', 'trade/glyph', 'trade/recipe',
 		'quest', 'misc',
 	}),
 }
@@ -108,7 +108,7 @@ function Addon:StartupSettings()
 
 		emptySlots = true, colorSlots = true,
 		normalColor = {1, 1, 1},
-		ammoColor = {1, .87, .68},
+		quiverColor = {1, .87, .68},
 		reagentColor = {1, .87, .68},
 		leatherColor = {1, .6, .45},
 		enchantColor = {0.64, 0.83, 1},
