@@ -79,7 +79,7 @@ local ProfileDefaults = {
 	vault = SetDefaults({
 		borderColor = {1, 0, 0.98, 1},
 		point = 'LEFT',
-		columns = 8,
+		columns = 10,
 		x = 95
 	}, FrameDefaults),
 
