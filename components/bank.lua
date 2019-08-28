@@ -17,8 +17,8 @@ function Frame:IsBank()
 	return true
 end
 
-for slot = NUM_BAG_SLOTS, NUM_BAG_SLOTS + NUM_BANKBAGSLOTS do
-	tinsert(Frame.Bags, slot)
+for slot = 1, NUM_BANKBAGSLOTS do
+	tinsert(Frame.Bags, slot + NUM_BAG_SLOTS)
 end
 
 if REAGENTBANK_CONTAINER then
