@@ -58,12 +58,13 @@ end
 
 Addon.Rules:New('all', ALL, 'Interface/Icons/INV_Misc_EngGizmos_17')
 Addon.Rules:New('all/normal', Normal, nil, function(_, bag,_, info,item) return Addon:IsBasicBag(bag) or not Addon:IsReagents(bag) and GetBagFamily(info) == 0 end)
-Addon.Rules:New('all/trade', TRADE, nil, function(_,_,_, info) return GetBagFamily(info) > 1 end)
+Addon.Rules:New('all/trade', TRADE, nil, function(_,_,_, info) return GetBagFamily(info) > 3 end)
 
 if Addon.IsRetail then
 	Addon.Rules:New('all/reagent', Reagents, nil, function(_, bag) return Addon:IsReagents(bag) end)
 else
-	Addon.Rules:New('all/quiver', Quiver, nil, function(_,_,_, info) return GetBagFamily(info) == 1 end)
+	Addon.Rules:New('all/quiver', Quiver, nil, function(_,_,_, info) return Addon.BAG_TYPES[GetBagFamily(info)] == 'quiver' end)
+	Addon.Rules:New('all/souls', SOUL_SHARDS, nil, function(_,_,_, info) return GetBagFamily(info) == 3 end)
 end
 
 
