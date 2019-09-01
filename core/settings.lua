@@ -109,6 +109,7 @@ function Addon:StartupSettings()
 		emptySlots = true, colorSlots = true,
 		normalColor = {1, 1, 1},
 		quiverColor = {1, .87, .68},
+		soulColor = {0.64, 0.39, 1},
 		reagentColor = {1, .87, .68},
 		leatherColor = {1, .6, .45},
 		enchantColor = {0.64, 0.83, 1},
