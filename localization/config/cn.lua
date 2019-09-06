@@ -110,4 +110,3 @@ L.RefrigeColor = '烹饪颜色'
 -- rulesets
 L.RuleSettings = '物品规则'
 L.RuleSettingsDesc = '这项设置允许选择按照类型显示和排列物品的规则。'
-
