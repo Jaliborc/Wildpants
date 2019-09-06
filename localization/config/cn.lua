@@ -31,7 +31,7 @@ L.ActPanelTip = [[
 像标准的一样，如同 |cffffffff法术书|r
 或 |cffffffff团队查找器|r，并不能被移动。]]
 
-L.BagFrame = '背包列表'
+L.BagToggle = '背包切换'
 L.Money = '货币'
 L.Broker = 'Databroker 插件'
 L.Sort = '整理按钮'
@@ -94,6 +94,9 @@ L.GlowAlpha = '发光亮度'
 L.EmptySlots = '显示空格背景材质'
 L.ColorSlots = '按背包类型染色'
 L.NormalColor = '一般颜色'
+L.QuiverColor = '箭袋颜色'
+L.SoulColor = '灵魂袋颜色'
+L.ReagentColor = '材料银行颜色'
 L.LeatherColor = '制皮颜色'
 L.InscribeColor = '铭文颜色'
 L.HerbColor = '草药颜色'
@@ -103,8 +106,8 @@ L.GemColor = '宝石颜色'
 L.MineColor = '矿石颜色'
 L.TackleColor = '工具箱颜色'
 L.RefrigeColor = '烹饪颜色'
-L.ReagentColor = '材料银行颜色'
 
 -- rulesets
 L.RuleSettings = '物品规则'
 L.RuleSettingsDesc = '这项设置允许选择按照类型显示和排列物品的规则。'
+
