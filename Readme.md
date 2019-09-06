@@ -5,6 +5,7 @@ Wildpants includes:
 * Core useful functionality (frame display management, settings setup, custom item events,...)
 * Classes to generate shared UI compoments (item buttons, money display, sort button,...)
 * Common features (tooltip counts, item rulesets, flash find,...)
+* _Load on demand_ configuration menus to control all the aforementioned features
 
 ## For Developers
 Are you a developer? Wildpants provides a rich API for developing plugins or addons that interact with _Bagnon_ or _Combuctor_:

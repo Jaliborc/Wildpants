@@ -71,9 +71,11 @@ local function AddOwners(tooltip, link)
 	for owner in Cache:IterateOwners() do
 		local info = Cache:GetOwnerInfo(owner)
 		local color = Addon:GetOwnerColorString(info)
-		local count, countText = ItemCount[owner][itemID], ItemText[owner][itemID]
+		local count, text = ItemCount[owner] and ItemCount[owner][itemID]
 
-		if countText == nil then
+		if count then
+			text = ItemText[owner][itemID]
+		else
 			if not info.isguild then
 				local equip = FindItemCount(owner, 'equip', itemID)
 				local vault = FindItemCount(owner, 'vault', itemID)
@@ -87,7 +89,10 @@ local function AddOwners(tooltip, link)
 					for i = FIRST_BANK_SLOT, LAST_BANK_SLOT do
 						bank = bank + FindItemCount(owner, i, itemID)
 					end
-					bank = bank + FindItemCount(owner, REAGENTBANK_CONTAINER, itemID)
+
+					if REAGENTBANK_CONTAINER then
+						bank = bank + FindItemCount(owner, REAGENTBANK_CONTAINER, itemID)
+					end
 				else
 					local owned = GetItemCount(itemID, true)
 					local carrying = GetItemCount(itemID)
@@ -96,24 +101,28 @@ local function AddOwners(tooltip, link)
 					bank = owned - carrying
 				end
 
-				count, countText = FormatCounts(color, L.TipCountEquip, equip, L.TipCountBags, bags, L.TipCountBank, bank, L.TipCountVault, vault)
+				count, text = FormatCounts(color, L.TipCountEquip, equip, L.TipCountBags, bags, L.TipCountBank, bank, L.TipCountVault, vault)
 			elseif Addon.sets.countGuild then
 				local guild = 0
 				for i = 1, GetNumGuildBankTabs() do
 					guild = guild + FindItemCount(owner, i, itemID)
 				end
 
-				count, countText = FormatCounts(color, L.TipCountGuild, guild)
+				count, text = FormatCounts(color, L.TipCountGuild, guild)
+			else
+				count = 0
 			end
 
 			if info.cached then
-				ItemText[owner][itemID] = countText or false
+				ItemText[owner] = ItemText[owner] or {}
+				ItemText[owner][itemID] = text
+				ItemCount[owner] = ItemCount[owner] or {}
 				ItemCount[owner][itemID] = count
 			end
 		end
 
-		if countText then
-			tooltip:AddDoubleLine(format('|T%s:12:12|t ', Addon:GetOwnerIcon(info)) .. color:format(info.name), countText)
+		if count > 0 then
+			tooltip:AddDoubleLine(Addon:GetOwnerIconString(info, 12,0,0) .. ' ' .. color:format(info.name), text)
 			total = total + count
 			players = players + 1
 		end
@@ -138,11 +147,7 @@ local function OnItem(tooltip)
 end
 
 local function OnTradeSkill(tooltip, recipe, reagent)
-    if reagent then
-        AddOwners(tooltip, C_TradeSkillUI.GetRecipeReagentItemLink(recipe, reagent))
-    else
-        AddOwners(tooltip, C_TradeSkillUI.GetRecipeItemLink(recipe))
-    end
+    AddOwners(tooltip, reagent and C_TradeSkillUI.GetRecipeReagentItemLink(recipe, reagent) or C_TradeSkillUI.GetRecipeItemLink(recipe))
 end
 
 local function OnQuest(tooltip, type, quest)
@@ -157,23 +162,21 @@ local function HookTip(tooltip)
 	tooltip:HookScript('OnTooltipCleared', OnClear)
 	tooltip:HookScript('OnTooltipSetItem', OnItem)
 
-  hooksecurefunc(tooltip, 'SetRecipeReagentItem', OnTradeSkill)
-  hooksecurefunc(tooltip, 'SetRecipeResultItem', OnTradeSkill)
 	hooksecurefunc(tooltip, 'SetQuestItem', OnQuest)
 	hooksecurefunc(tooltip, 'SetQuestLogItem', OnQuest)
+
+	if C_TradeSkillUI then
+		hooksecurefunc(tooltip, 'SetRecipeReagentItem', OnTradeSkill)
+		hooksecurefunc(tooltip, 'SetRecipeResultItem', OnTradeSkill)
+	end
 end
 
 
 --[[ Startup ]]--
 
 function TooltipCounts:OnEnable()
-	if Addon:MultipleOwnersFound() and Addon.sets.tipCount then
+	if Addon.sets.tipCount then
 		if not Hooked then
-			for owner in Cache:IterateOwners() do
-				ItemCount[owner] = {}
-				ItemText[owner] = {}
-			end
-
 			HookTip(GameTooltip)
 			HookTip(ItemRefTooltip)
 			Hooked = true
