@@ -49,7 +49,7 @@ L.BagBreak = '背包分散'
 L.ReverseBags = '反向背包排列'
 L.ReverseSlots = '反向物品排列'
 
-L.Color = '背景颜色颜色'
+L.Color = '背景颜色'
 L.BorderColor = '边框颜色'
 
 L.Strata = '框架层级'
