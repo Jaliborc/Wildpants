@@ -24,7 +24,7 @@ end
 --[[ Interaction ]]--
 
 function SortButton:OnClick(button)
-	local isBank = self:GetParent():IsBank()
+	--[[local isBank = self:GetParent():IsBank()
 
 	if button == 'RightButton' then
 		if isBank then
@@ -35,19 +35,26 @@ function SortButton:OnClick(button)
 		DepositReagentBank()
 	else
 		SortBags()
+	end--]]
+
+	local frame = self:GetParent()
+	if frame.SortItems then
+		frame:SortItems()
+	else
+		Addon:GetModule('Sort'):Start(frame.Bags)
 	end
 end
 
 function SortButton:OnEnter()
 	GameTooltip:SetOwner(self, self:GetRight() > (GetScreenWidth() / 2) and 'ANCHOR_LEFT' or 'ANCHOR_RIGHT')
 
-	if self:GetParent():IsBank() then
+	--[[if self:GetParent():IsBank() then
 		GameTooltip:SetText(L.TipManageBank)
 		GameTooltip:AddLine(L.TipDepositReagents, 1,1,1)
 		GameTooltip:AddLine(L.TipCleanBank, 1,1,1)
-	else
+	else]]--
 		GameTooltip:SetText(L.TipCleanBags)
-	end
+	--end
 
 	GameTooltip:Show()
 end
