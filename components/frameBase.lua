@@ -109,10 +109,6 @@ end
 
 --[[ Shared ]]--
 
-function Frame:IsBank()
-	return false
-end
-
 function Frame:IsShowingBag(bag)
 	return not self:GetProfile().hiddenBags[bag]
 end

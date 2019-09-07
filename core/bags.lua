@@ -17,7 +17,7 @@ function Addon:IsBackpack(bag)
 end
 
 function Addon:IsBackpackBag(bag)
-  return bag > 0 and bag < (NUM_BAG_SLOTS + 1)
+  return bag > BACKPACK_CONTAINER and bag <= NUM_BAG_SLOTS
 end
 
 function Addon:IsBank(bag)
@@ -29,7 +29,7 @@ function Addon:IsReagents(bag)
 end
 
 function Addon:IsBankBag(bag)
-  return bag > NUM_BAG_SLOTS and bag < (NUM_BAG_SLOTS + NUM_BANKBAGSLOTS + 1)
+  return bag > NUM_BAG_SLOTS and bag <= (NUM_BAG_SLOTS + NUM_BANKBAGSLOTS)
 end
 
 

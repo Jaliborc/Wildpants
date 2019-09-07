@@ -6,15 +6,12 @@
 local ADDON, Addon = ...
 local Frame = Addon:NewClass('BankFrame', 'Frame', Addon.Frame)
 Frame.Title = LibStub('AceLocale-3.0'):GetLocale(ADDON).TitleBank
+Frame.SortItems = SortBankBags
 Frame.Bags = {BANK_CONTAINER}
 
 function Frame:OnHide()
 	CloseBankFrame()
 	Addon.Frame.OnHide(self)
-end
-
-function Frame:IsBank()
-	return true
 end
 
 for slot = 1, NUM_BANKBAGSLOTS do

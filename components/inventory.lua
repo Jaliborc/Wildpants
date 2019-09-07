@@ -7,6 +7,7 @@ local ADDON, Addon = ...
 local Frame = Addon:NewClass('InventoryFrame', 'Frame', Addon.Frame)
 Frame.Title = LibStub('AceLocale-3.0'):GetLocale(ADDON).TitleBags
 Frame.Bags = {BACKPACK_CONTAINER, 1, 2, 3, 4}
+Frame.SortItems = SortBags
 Frame.MainMenuButtons = {
 	MainMenuBarBackpackButton,
 	CharacterBag0Slot, CharacterBag1Slot, CharacterBag2Slot, CharacterBag3Slot
