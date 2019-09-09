@@ -40,6 +40,7 @@ Addon.BAG_TYPES = {
 	[0x00001] = 'quiver',
 	[0x00002] = 'quiver',
 	[0x00003] = 'soul',
+	[0x00004] = 'soul',
 	[0x00006] = 'herb',
 	[0x00007] = 'enchant',
 	[0x00008] = 'leather',
