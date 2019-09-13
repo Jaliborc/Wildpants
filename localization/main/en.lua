@@ -28,8 +28,7 @@ L.TitleVault = '%s\'s Void Storage'
 
 --tooltips
 L.TipChangePlayer = '<Left-Click> to view another character\'s items.'
-L.TipCleanBags = 'Click to clean up bags.'
-L.TipCleanBank = '<Right-Click> to to clean up bank.'
+L.TipCleanBags = 'Click to clean items.'
 L.TipDepositReagents = '<Left-Click> to deposit all reagents.'
 L.TipFrameToggle = '<Right-Click> to toggle other windows.'
 L.TipGoldOnRealm = '%s Totals'

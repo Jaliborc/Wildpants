@@ -5,43 +5,37 @@
 
 local ADDON, Addon = ...
 local L = LibStub('AceLocale-3.0'):GetLocale(ADDON)
-local SortButton = Addon:NewClass('SortButton', 'Button')
+local SortButton = Addon:NewClass('SortButton', 'CheckButton')
 
 
 --[[ Constructor ]]--
 
 function SortButton:New(parent)
-	local b = self:Bind(CreateFrame('Button', nil, parent, ADDON .. self.Name .. 'Template'))
-	b:RegisterForClicks('anyUp')
+	local b = self:Bind(CreateFrame('CheckButton', nil, parent, ADDON .. self.Name .. 'Template'))
+	b:RegisterSignal('SORTING_STATUS')
 	b:SetScript('OnClick', b.OnClick)
 	b:SetScript('OnEnter', b.OnEnter)
 	b:SetScript('OnLeave', b.OnLeave)
+	b:RegisterForClicks('anyUp')
 
 	return b
+end
+
+function SortButton:SORTING_STATUS(_,_, bags)
+	self:SetChecked(self:GetParent().Bags == bags)
 end
 
 
 --[[ Interaction ]]--
 
 function SortButton:OnClick(button)
-	--[[local isBank = self:GetParent():IsBank()
-
-	if button == 'RightButton' then
-		if isBank then
-			self:RegisterEvent('BAG_UPDATE_DELAYED')
-			SortBankBags()
-		end
-	elseif isBank then
-		DepositReagentBank()
-	else
-		SortBags()
-	end--]]
+	if button == 'RightButton' and DepositReagentBank then
+		return DepositReagentBank()
+	end
 
 	local frame = self:GetParent()
-	if frame.SortItems then
+	if not frame:IsCached() then
 		frame:SortItems()
-	else
-		Addon:GetModule('Sort'):Start(frame.Bags)
 	end
 end
 
@@ -52,10 +46,11 @@ function SortButton:OnEnter()
 		GameTooltip:SetText(L.TipManageBank)
 		GameTooltip:AddLine(L.TipDepositReagents, 1,1,1)
 		GameTooltip:AddLine(L.TipCleanBank, 1,1,1)
-	else]]--
+	else
 		GameTooltip:SetText(L.TipCleanBags)
-	--end
+ 	end]]--
 
+	GameTooltip:SetText(L.TipCleanBags)
 	GameTooltip:Show()
 end
 
@@ -63,12 +58,4 @@ function SortButton:OnLeave()
 	if GameTooltip:IsOwned(self) then
 		GameTooltip:Hide()
 	end
-end
-
-
---[[ Events ]]--
-
-function SortButton:BAG_UPDATE_DELAYED()
-	self:UnregisterEvent('BAG_UPDATE_DELAYED')
-	SortReagentBankBags()
 end
