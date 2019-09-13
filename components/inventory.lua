@@ -14,23 +14,21 @@ Frame.MainMenuButtons = {
 }
 
 function Frame:OnShow()
-	Addon.Frame.OnShow(self)
-	self:HighlightMainMenu(true)
+	self.__super.OnShow(self)
+	self:After(0, 'HighlightMainMenu', true)
 end
 
 function Frame:OnHide()
-	Addon.Frame.OnHide(self)
-	self:HighlightMainMenu(false)
+	self.__super.OnHide(self)
+	self:After(0, 'HighlightMainMenu', false)
 end
 
 function Frame:HighlightMainMenu(checked)
-	for i, button in pairs(self.MainMenuButtons) do
+	for _, button in pairs(self.MainMenuButtons) do
 		if button.SlotHighlightTexture then
 			button.SlotHighlightTexture:SetShown(checked)
 		else
-			C_Timer.After(0, function()
-				button:SetChecked(checked)
-			end)
+			button:SetChecked(checked)
 		end
 	end
 end

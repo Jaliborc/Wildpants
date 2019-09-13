@@ -109,6 +109,10 @@ end
 
 --[[ Shared ]]--
 
+function Frame:SortItems()
+	Addon.Sorting:Start(self:GetOwner(), self.Bags)
+end
+
 function Frame:IsShowingBag(bag)
 	return not self:GetProfile().hiddenBags[bag]
 end

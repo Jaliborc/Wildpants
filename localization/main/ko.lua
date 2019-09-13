@@ -1,5 +1,5 @@
 ﻿--[[
-	Bagnon Localization: Korean
+	Korean Localization
 --]]
 
 local ADDON = ...
