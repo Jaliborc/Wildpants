@@ -20,9 +20,19 @@ Sort.Proprieties = {
 --[[ Process ]]--
 
 function Sort:Start(owner, bags)
+  if InCombatLockdown() or UnitIsDead('player') or GetCursorInfo() then
+    return
+  end
+
   self.owner, self.bags = owner, bags
+  self:RegisterEvent('PLAYER_REGEN_DISABLED', 'Stop')
   self:SendSignal('SORTING_STATUS', owner, bags)
   self:Stacking()
+end
+
+function Sort:Stop()
+  self:SendSignal('SORTING_STATUS')
+  self:UnregisterAllEvents()
 end
 
 function Sort:Stacking()
@@ -68,8 +78,7 @@ function Sort:Ordering()
     end
   end
 
-  self:UnregisterEvent('ITEM_UNLOCKED')
-  self:SendSignal('SORTING_STATUS')
+  self:Stop()
 end
 
 
@@ -139,7 +148,7 @@ end
 function Sort:FitsIn(id, family)
   return
     family == 0 or
-    bit.band(GetItemFamily(id), family) > 0 and
+    (Addon.IsRetail and bit.band(GetItemFamily(id), family) > 0 or GetItemFamily(id) == family) and
     select(9, GetItemInfo(id)) ~= 'INVTYPE_BAG'
 end
 
