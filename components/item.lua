@@ -244,13 +244,15 @@ function ItemSlot:UpdateLocked()
 end
 
 function ItemSlot:UpdateSecondary()
-	self:UpdateFocus()
-	self:UpdateSearch()
-	self:UpdateCooldown()
-	self:UpdateUpgradeIcon()
+	if self:GetFrame() then
+		self:UpdateFocus()
+		self:UpdateSearch()
+		self:UpdateCooldown()
+		self:UpdateUpgradeIcon()
 
-	if GameTooltip:IsOwned(self) then
-		self:UpdateTooltip()
+		if GameTooltip:IsOwned(self) then
+			self:UpdateTooltip()
+		end
 	end
 end
 
@@ -404,16 +406,18 @@ function ItemSlot:IsQuestItem()
 	end
 end
 
+function ItemSlot:IsUpgrade()
+	if IsContainerItemAnUpgrade then -- difference bettween nil and false
+		return IsContainerItemAnUpgrade(self:GetBag(), self:GetID())
+	end
+end
+
 function ItemSlot:IsNew()
 	return self:GetBag() and C_NewItems.IsNewItem(self:GetBag(), self:GetID())
 end
 
 function ItemSlot:IsPaid()
 	return IsBattlePayItem(self:GetBag(), self:GetID())
-end
-
-function ItemSlot:IsUpgrade()
-	return IsContainerItemAnUpgrade and IsContainerItemAnUpgrade(self:GetBag(), self:GetID())
 end
 
 function ItemSlot:IsSlot(bag, slot)
