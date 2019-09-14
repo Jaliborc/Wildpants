@@ -78,8 +78,8 @@ end
 --[[ Interaction ]]--
 
 function Bag:OnClick(button)
-	if button == 'RightButton' then
-		if not self:IsReagents() and not self:IsPurchasable() then
+	if button == 'RightButton' and ContainerFrame1FilterDropDown then
+		if not self:IsReagents() and self:GetInfo().owned then
 			ContainerFrame1FilterDropDown:SetParent(self)
 			PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
 			ToggleDropDownMenu(1, nil, ContainerFrame1FilterDropDown, self, 0, 0)
@@ -241,7 +241,7 @@ function Bag:UpdateTooltip()
 
 	-- instructions
 	if self:CanToggle() then
-		GameTooltip:AddLine(self:IsToggled() and L.TipHideBag or L.TipShowBag)
+		GameTooltip:AddLine((self:IsToggled() and L.TipHideBag or L.TipShowBag):format(L.Click))
 	end
 
 	GameTooltip:Show()

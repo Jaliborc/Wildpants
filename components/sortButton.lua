@@ -29,6 +29,8 @@ end
 --[[ Interaction ]]--
 
 function SortButton:OnClick(button)
+	self:SetChecked(nil)
+
 	if button == 'RightButton' and DepositReagentBank then
 		return DepositReagentBank()
 	end
@@ -42,15 +44,14 @@ end
 function SortButton:OnEnter()
 	GameTooltip:SetOwner(self, self:GetRight() > (GetScreenWidth() / 2) and 'ANCHOR_LEFT' or 'ANCHOR_RIGHT')
 
-	--[[if self:GetParent():IsBank() then
-		GameTooltip:SetText(L.TipManageBank)
-		GameTooltip:AddLine(L.TipDepositReagents, 1,1,1)
-		GameTooltip:AddLine(L.TipCleanBank, 1,1,1)
+	if DepositReagentBank then
+		GameTooltip:SetText(BAG_FILTER_CLEANUP)
+		GameTooltip:AddLine(L.TipCleanItems:format(L.LeftClick), 1,1,1)
+		GameTooltip:AddLine(L.TipDepositReagents:format(L.RightClick), 1,1,1)
 	else
-		GameTooltip:SetText(L.TipCleanBags)
- 	end]]--
+		GameTooltip:SetText(L.TipCleanItems:format(L.Click))
+	end
 
-	GameTooltip:SetText(L.TipCleanBags)
 	GameTooltip:Show()
 end
 
