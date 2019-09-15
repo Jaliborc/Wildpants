@@ -19,12 +19,12 @@ Sort.Proprieties = {
 
 --[[ Process ]]--
 
-function Sort:Start(owner, bags)
+function Sort:Start(owner, bags, event)
   if InCombatLockdown() or UnitIsDead('player') or GetCursorInfo() then
     return
   end
 
-  self.owner, self.bags = owner, bags
+  self.owner, self.bags, self.event = owner, bags, event
   self:RegisterEvent('PLAYER_REGEN_DISABLED', 'Stop')
   self:SendSignal('SORTING_STATUS', owner, bags)
   self:Stacking()
@@ -47,7 +47,7 @@ function Sort:Stacking()
 
         if item.id == other.id and (other.count or 1) < other.stack then
           self:Move(from, target)
-          self:RegisterEvent('ITEM_UNLOCKED', function() self:After(0.01, 'Stacking') end)
+          self:RegisterEvent(self.event, function() self:After(0.01, 'Stacking') end)
 
           return
         end
@@ -69,7 +69,7 @@ function Sort:Ordering()
       local goal, item = spaces[index], order[index]
       if item.space ~= goal then
         self:Move(item.space, goal)
-        self:RegisterEvent('ITEM_UNLOCKED', function() self:After(0.01, 'Ordering') end)
+        self:RegisterEvent(self.event, function() self:After(0.01, 'Ordering') end)
 
         return
       else
