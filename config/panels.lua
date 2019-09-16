@@ -150,7 +150,7 @@ end)
 
 Addon.ColorOptions = Addon.Options:NewPanel(ADDON, L.ColorSettings, L.ColorSettingsDesc, function(self)
 	-- Items
-	self:CreateHeader('Items', 'GameFontHighlight', true)
+	self:CreateHeader(ITEMS, 'GameFontHighlight', true)
 	self:CreateRow(35*2, function(row)
 		row:CreateCheck('glowQuality')
 		row:CreateCheck('glowQuest')
@@ -161,7 +161,7 @@ Addon.ColorOptions = Addon.Options:NewPanel(ADDON, L.ColorSettings, L.ColorSetti
 	self:CreatePercentSlider('glowAlpha', 1, 100):SetWidth(585)
 
 	-- Slots
-	self:CreateHeader('Slots', 'GameFontHighlight', true).top = 15
+	self:CreateHeader(TRADESKILL_FILTER_SLOTS, 'GameFontHighlight', true).top = 15
 	self:CreateCheck('emptySlots')
 	self:CreateCheck('colorSlots').bottom = 11
 
