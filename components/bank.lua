@@ -6,7 +6,6 @@
 local ADDON, Addon = ...
 local Frame = Addon:NewClass('BankFrame', 'Frame', Addon.Frame)
 Frame.Title = LibStub('AceLocale-3.0'):GetLocale(ADDON).TitleBank
-Frame.SortItems = SortBankBags
 Frame.Bags = {BANK_CONTAINER}
 
 for slot = 1, NUM_BANKBAGSLOTS do
@@ -18,8 +17,17 @@ function Frame:OnHide()
 	Addon.Frame.OnHide(self)
 end
 
+function Frame:SortItems()
+	if SortReagentBankBags then
+		self:After(.3, 'SortReagents')
+	end
 
---[[ Expansion Dependent ]]--
+	return (SortBankBags or self.__super.SortItems)(self)
+end
+
+function Frame:SortReagents()
+	SortReagentBankBags()
+end
 
 if REAGENTBANK_CONTAINER then
 	tinsert(Frame.Bags, REAGENTBANK_CONTAINER)
@@ -29,17 +37,5 @@ if REAGENTBANK_CONTAINER then
 		if not profile.exclusiveReagent or bag == REAGENTBANK_CONTAINER or profile.hiddenBags[REAGENTBANK_CONTAINER] then
 			return not profile.hiddenBags[bag]
 		end
-	end
-end
-
-if SortBankBags and SortReagentBankBags then
-	function Frame:SortItems()
-		self:RegisterEvent('BAG_UPDATE_DELAYED')
-		SortBankBags()
-	end
-
-	function Frame:BAG_UPDATE_DELAYED()
-		self:UnregisterEvent('BAG_UPDATE_DELAYED')
-		SortReagentBankBags()
 	end
 end
