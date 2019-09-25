@@ -174,55 +174,57 @@ Addon.ColorOptions = Addon.Options:NewPanel(ADDON, L.ColorSettings, L.ColorSetti
 	end
 end)
 
-Addon.RulesOptions = Addon.Options:NewPanel(ADDON, L.RuleSettings, L.RuleSettingsDesc, function(self)
-	self.sets = Addon.profile[self.frameID]
-	self:CreateFramesDropdown()
+if Config.supportRules then
+	Addon.RulesOptions = Addon.Options:NewPanel(ADDON, L.RuleSettings, L.RuleSettingsDesc, function(self)
+		self.sets = Addon.profile[self.frameID]
+		self:CreateFramesDropdown()
 
-	self:CreateFauxScroll(13, 26, function(self)
-		local entries = {}
-		for _,parent in Addon.Rules:IterateParents() do
-			tinsert(entries, parent)
+		self:CreateFauxScroll(13, 26, function(self)
+			local entries = {}
+			for _,parent in Addon.Rules:IterateParents() do
+				tinsert(entries, parent)
 
-			if Expanded[parent.id] then
-				for _,child in pairs(parent.children) do
-					tinsert(entries, child)
-				end
-			end
-		end
-		self:SetNumEntries(#entries)
-
-		for i = self:FirstEntry(), self:LastEntry() do
-			local rule = entries[i]
-			local id, isSub = rule.id, rule.id:find('/')
-
-			local button = self:CreateChild(isSub and 'Check' or 'ExpandCheck')
-			button:SetChecked(not self.sets.hiddenRules[id])
-			button:SetLabel(rule.icon and format('|T%s:%d|t %s', rule.icon, 26, rule.name) or rule.name)
-			button.left = button.left + (isSub and 24 or 0)
-			button:SetCall('OnClick', function()
-				if self.sets.hiddenRules[id] then
-					tinsert(self.sets.rules, id)
-				else
-					for i, rule in ipairs(self.sets.rules) do
-						if rule == id then
-							tremove(self.sets.rules, i)
-						end
+				if Expanded[parent.id] then
+					for _,child in pairs(parent.children) do
+						tinsert(entries, child)
 					end
 				end
-
-			 	self.sets.hiddenRules[id] = not self.sets.hiddenRules[id]
-				Addon:UpdateFrames()
-			end)
-
-			if not isSub then
-				button:SetExpanded(Expanded[rule.id])
-				button:SetCall('OnExpand', function(button, v)
-					Expanded[rule.id] = v
-				end)
 			end
-		end
-	end).top = 10
-end)
+			self:SetNumEntries(#entries)
+
+			for i = self:FirstEntry(), self:LastEntry() do
+				local rule = entries[i]
+				local id, isSub = rule.id, rule.id:find('/')
+
+				local button = self:CreateChild(isSub and 'Check' or 'ExpandCheck')
+				button:SetChecked(not self.sets.hiddenRules[id])
+				button:SetLabel(rule.icon and format('|T%s:%d|t %s', rule.icon, 26, rule.name) or rule.name)
+				button.left = button.left + (isSub and 24 or 0)
+				button:SetCall('OnClick', function()
+					if self.sets.hiddenRules[id] then
+						tinsert(self.sets.rules, id)
+					else
+						for i, rule in ipairs(self.sets.rules) do
+							if rule == id then
+								tremove(self.sets.rules, i)
+							end
+						end
+					end
+
+				 	self.sets.hiddenRules[id] = not self.sets.hiddenRules[id]
+					Addon:UpdateFrames()
+				end)
+
+				if not isSub then
+					button:SetExpanded(Expanded[rule.id])
+					button:SetCall('OnExpand', function(button, v)
+						Expanded[rule.id] = v
+					end)
+				end
+			end
+		end).top = 10
+	end)
+end
 
 Addon.PatronList = SushiCreditsGroup:CreateOptionsCategory(ADDON)
 Addon.PatronList:SetWebsite('http://www.patreon.com/jaliborc')
