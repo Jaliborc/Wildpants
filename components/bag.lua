@@ -222,7 +222,7 @@ function Bag:UpdateTooltip()
 	-- title/item
 	if self:IsPurchasable() then
 		GameTooltip:SetText(self:IsReagents() and REAGENT_BANK or BANK_BAG_PURCHASE, 1, 1, 1)
-		GameTooltip:AddLine(L.TipPurchaseBag)
+		GameTooltip:AddLine(L.TipPurchaseBag:format(L.Click))
 
 		SetTooltipMoney(GameTooltip, self:GetInfo().cost)
 	elseif self:IsBackpack() then
@@ -231,8 +231,10 @@ function Bag:UpdateTooltip()
 		GameTooltip:SetText(BANK, 1,1,1)
 	elseif self:IsReagents() then
 		GameTooltip:SetText(REAGENT_BANK, 1,1,1)
-	elseif self.link then
+	elseif self.link and self:GetInfo().cached then
 		GameTooltip:SetHyperlink(self.link)
+	elseif self.link then
+		GameTooltip:SetInventoryItem('player', ContainerIDToInventoryID(self:GetID()))
 	elseif self:IsBankBag() then
 		GameTooltip:SetText(BANK_BAG, 1, 1, 1)
 	else
