@@ -37,15 +37,18 @@ end
 
 function Sort:Stacking()
   local spaces = self:GetSpaces()
+  local stackable = function(item)
+    return (item.count or 1) < (item.stack or 1)
+  end
 
   for k, target in pairs(spaces) do
     local item = target.item
-    if item.id and (item.count or 1) < item.stack then
+    if item.id and stackable(item) then
       for j = k+1, #spaces do
         local from = spaces[j]
         local other = from.item
 
-        if item.id == other.id and (other.count or 1) < other.stack then
+        if item.id == other.id and stackable(other) then
           self:Move(from, target)
           self:RegisterEvent(self.event, function() self:After(0.01, 'Stacking') end)
 
@@ -159,6 +162,9 @@ function Sort.Rule(a, b)
     end
   end
 
+  if a.space.family ~= b.space.family then
+    return a.space.family > b.space.family
+  end
   return a.space.index < b.space.index
 end
 
