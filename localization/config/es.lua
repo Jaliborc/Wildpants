@@ -1,11 +1,14 @@
 --[[
     Spanish Localization
-		Credits/Blame: Phanx
+		Credits/Blame: Phanx, Woopy
 --]]
 
 local CONFIG, Config = ...
 local L = LibStub('AceLocale-3.0'):NewLocale(CONFIG, 'esES') or LibStub('AceLocale-3.0'):NewLocale(CONFIG, 'esMX')
 if not L then return end
+
+-- global
+L.ConfirmGlobals = '¿Estás seguro de que deseas desactivar configuraciones específicas para este personaje? Se perderán todas las configuraciones específicas.'
 
 -- general
 L.GeneralDesc = 'Funciones generales que se puedan activados o desactivados como tu prefieras.'
@@ -23,6 +26,11 @@ L.Frame = 'Ventana'
 L.Enabled = 'Activar esta ventana'
 L.CharacterSpecific = 'Ajustes del personaje'
 L.ExclusiveReagent = 'Banco de componentes independiente'
+L.ActPanel = 'Actuar como panel estándar'
+L.ActPanelTip = [[
+Si está activado, este panel se posicionará automáticamente
+a sí mismo como lo hacen los estándares, como el |cffffffffLibro de hechizos|r
+o el |cffffffffBuscador de mazmorras|r, y no será movible.]]
 
 L.BagToggle = 'Bolsas'
 L.Money = 'Dinero'
@@ -30,8 +38,13 @@ L.Broker = 'DataBroker'
 L.Sort = 'Botón para ordenar'
 L.Search = 'Botón para buscar'
 L.Options = 'Botón de opciones'
+L.LeftTabs = 'Reglas a la izquierda'
+L.LeftTabsTip = [[
+Si está activado, las pestañas laterales serán
+se muestra en el lado izquierdo del panel.]]
 
-L.Appearance = 'Aparencia'
+
+L.Appearance = 'Apariencia'
 L.Layer = 'Estrato'
 L.BagBreak = 'Descansos entre bolsas'
 L.ReverseBags = 'Bolsas al revés'
@@ -56,6 +69,7 @@ L.CloseInventory = 'Ocultar inventario'
 L.DisplayBank = 'al visitar el banco'
 L.DisplayAuction = 'al visitar a la casa de subastas'
 L.DisplayTrade = 'cuando el comercio'
+L.DisplayScrapping = 'Equipo de basura'
 L.DisplayCraft = 'al abrir la ventana de profesión'
 L.DisplayMail = 'al visitar la buzón'
 L.DisplayGuildbank = 'al visitar el banco de hermandad'
@@ -66,6 +80,7 @@ L.CloseCombat = 'al entrar en combate'
 L.CloseVehicle = 'al entrar en un vehículo'
 L.CloseBank = 'al salir del banco'
 L.CloseVendor = 'al salir de un vendedor'
+L.CloseMap = 'al abrir el mapa del mundo'
 
 -- colors
 L.ColorSettings = 'Opciones de color'
@@ -78,6 +93,8 @@ L.GlowSets = 'Resalte objetos en equipamientos'
 L.ColorSlots = 'Colorear ranuras vacías por tipo de bolsa'
 
 L.NormalColor = 'Bolsas normales'
+L.QuiverColor = 'Bolsas de carcaj'
+L.SoulColor = 'Bolsas de almas'
 L.LeatherColor = 'Bolsas de peletería'
 L.InscribeColor = 'Bolsas de inscripción'
 L.HerbColor = 'Bolsas de hierbas'
@@ -89,3 +106,7 @@ L.TackleColor = 'Caja de aparejos'
 L.RefrigeColor = 'Bolsas de cocina'
 L.ReagentColor = 'Banco de componentes'
 L.GlowAlpha = 'Opacidad del resaltado'
+
+-- rulesets
+L.RuleSettings = 'Reglas de Objetos'
+L.RuleSettingsDesc = 'Esta configuración le permite elegir qué conjuntos de reglas de objetos mostrar y en qué orden.'
