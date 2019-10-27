@@ -29,10 +29,11 @@ L.DoubleClick = '<Doble Clic>'
 L.ShiftClick = '<Shift+Clic>'
 
 --tooltips
-L.TipBags = 'Mochila'
-L.TipBank = 'Banco'
+--L.TipBags = 'Mochila'
+--L.TipBank = 'Banco'
 L.TipBankToggle = '%s para abrir el banco.'
 L.TipChangePlayer = '%s para ver los objetos de tus personajes.'
+L.TipCleanItems = '%s para limpiar objetos.'
 L.TipGoldOnRealm = 'Total en %s'
 L.TipHideBag = '%s para ocultar la bolsa.'
 L.TipHideBags = '%s para ocultar las bolsas.'
@@ -55,7 +56,15 @@ L.TipShowInventory = '%s para abrir la mochila.'
 L.TipShowOptions = '%s para abrir el menú de opciones.'
 
 --itemcount tooltips
-L.TipCount1 = 'Equipado: %d'
-L.TipCount2 = 'Mochila: %d'
-L.TipCount3 = 'Banco: %d'
-L.TipCount4 = 'Cámara: %d'
+L.TipCountEquip = 'Equipado: %d'
+L.TipCountBags = 'Bolsas: %d'
+L.TipCountBank = 'Banco: %d'
+L.TipCountVault = 'Cámara: %d'
+L.TipCountGuild = 'Hermandad: %d'
+L.TipDelimiter = '|'
+
+--dialogs
+L.ConfirmTransfer = 'Depositar estos objetos eliminará todas las modificaciones y las hará no intercambiables y no reembolsables.|n|n¿Desea continuar?'
+L.PurchaseVault = '¿Desea desbloquear el servicio de almacenamiento vacío?|n|n|cffffd200Costo:|r %s'
+L.CannotPurchaseVault = 'No tiene suficiente dinero para desbloquear el servicio de almacenamiento vacío|n|n|cffff2020Costo: %s|r'
+L.AskMafia = 'Pregunta a la Mafia'
