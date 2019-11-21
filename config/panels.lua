@@ -101,6 +101,7 @@ Addon.FrameOptions = Addon.Options:NewPanel(ADDON, L.FrameSettings, L.FrameSetti
 			row:CreateCheck('reverseBags')
 			row:CreateCheck('reverseSlots')
 			row:CreateCheck('bagBreak')
+			row:CreateCheck('emptyOnTop')
 
 			if REAGENTBANK_CONTAINER and self.frameID == 'bank' then
 				row:CreateCheck('exclusiveReagent')

@@ -138,9 +138,24 @@ function ItemFrame:Layout()
 	local revBags, revSlots = profile.reverseBags, profile.reverseSlots
 	local x, y = 0,0
 
+	-- Calculate offset
+	local totalSlots = 0
+	for j = BACKPACK_CONTAINER, NUM_BAG_SLOTS do
+		totalSlots = totalSlots + GetContainerNumSlots(j)
+	end
+	local offset = self:calcOffset(columns,totalSlots)
+
+	if profile.emptyOnTop and not self:BagBreak() then
+		x = offset
+	end
+
 	for k = revBags and #self.bags or 1, revBags and 1 or #self.bags, revBags and -1 or 1 do
 		local bag = self.bags[k]
 		local slots = self.bagSlots[bag]
+
+		if profile.emptyOnTop and self:BagBreak() then
+			x = self:calcOffset(columns,GetContainerNumSlots(k-1))
+		end
 
 		if slots then
 			local numSlots = self:NumSlots(bag)
@@ -162,7 +177,11 @@ function ItemFrame:Layout()
 
 			if self:BagBreak() and x > 0 then
 				y = y + 1
-				x = 0
+				if profile.emptyOnTop and self:BagBreak() then
+					x = self:calcOffset(columns,GetContainerNumSlots(k-1))
+				else
+					x = 0
+				end
 			end
 		end
 	end
@@ -175,6 +194,14 @@ function ItemFrame:Layout()
 	local width, height = max(columns * size * scale, 1), max(y * size * scale, 1)
 	self:SetSize(self.Transposed and height or width, self.Transposed and width or height)
 	self:SendFrameSignal('ITEM_FRAME_RESIZED')
+end
+
+function ItemFrame:calcOffset(columns,slots)
+	local offset = columns - (slots % columns)
+	if offset == columns then
+		offset = 0
+	end
+	return offset
 end
 
 function ItemFrame:ForAll(method, ...)
