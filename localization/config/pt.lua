@@ -3,12 +3,12 @@
 		***
 --]]
 
-local CONFIG, Config = ...
+local CONFIG = ...
 local L = LibStub('AceLocale-3.0'):NewLocale(CONFIG, 'ptBR')
 if not L then return end
 
 -- general
-L.GeneralDesc = 'Configuração geral de ADDON'
+L.GeneralOptionsDesc = 'Configuração geral de %s'
 L.Locked = 'Bloquear posição das janelas'
 L.Fading = 'Efeitos de desvanecimento'
 L.TipCount = 'Ativar contagem de itens nas dicas'
@@ -17,8 +17,8 @@ L.EmptySlots = 'Mostrar fundo em espaços para itens vazios'
 L.DisplayBlizzard = 'Mostrar janelas da Blizzard para sacos desligados'
 
 -- frame
-L.FrameSettings = 'Preferências de Janela'
-L.FrameSettingsDesc = 'Configuração específica para uma janela de ADDON'
+L.FrameOptions = 'Preferências de Janela'
+L.FrameOptionsDesc = 'Configuração específica para uma janela de %s'
 L.Frame = 'Janela'
 L.Enabled = 'Ativar'
 L.CharacterSpecific = 'Preferências Específicas por Personagem'
@@ -48,8 +48,8 @@ L.Spacing = 'Espaçamento'
 L.Alpha = 'Transparência'
 
 -- auto display
-L.DisplaySettings = 'Exibição Automática'
-L.DisplaySettingsDesc = 'Pereferências de exibição automática'
+L.DisplayOptions = 'Exibição Automática'
+L.DisplayOptionsDesc = 'Pereferências de exibição automática'
 L.DisplayInventory = 'Mostrar mochila'
 L.CloseInventory = 'Fechar mochila'
 
@@ -68,10 +68,10 @@ L.CloseBank = 'quando abandonar o banco'
 L.CloseVendor = 'quando abandonar um vendedor'
 
 -- colors
-L.ColorSettings = 'Preferências de Cor'
-L.ColorSettingsDesc = 'Preferências de cor para os compartimentos para itens'
-L.GlowQuality = 'Realçar itens por qualidade' 
-L.GlowNew = 'Realçar novos itens' 
+L.ColorOptions = 'Preferências de Cor'
+L.ColorOptionsDesc = 'Preferências de cor para os compartimentos para itens'
+L.GlowQuality = 'Realçar itens por qualidade'
+L.GlowNew = 'Realçar novos itens'
 L.GlowQuest = 'Realçar itens de missão'
 L.GlowUnusable = 'Realçar itens inutilizáveis'
 L.GlowSets = 'Realçar itens de conjunto'

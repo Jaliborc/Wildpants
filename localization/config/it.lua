@@ -3,12 +3,12 @@
 		***
 ]]--
 
-local CONFIG, Config = ...
+local CONFIG = ...
 local L = LibStub('AceLocale-3.0'):NewLocale(CONFIG, 'itIT')
 if not L then return end
 
 -- general
-L.GeneralDesc = 'Impostazioni generali di configurazioni per ADDON.'
+L.GeneralOptionsDesc = 'Impostazioni generali di configurazioni per %s.'
 L.Locked = 'Blocca la posizione della finestra.'
 L.Fading = 'Attiva opacità finestra.'
 L.TipCount = 'Attiva conteggio degli oggetti.'
@@ -17,8 +17,8 @@ L.DisplayBlizzard = 'Mostra le finestre di Blizzard per le borse disabilitate.'
 L.EmptySlots = 'Mostra uno sfondo per gli scomparti vuoti.'
 
 -- frame
-L.FrameSettings = 'Impostazioni finestre'
-L.FrameSettingsDesc = 'Configurazioni specifiche per le finestre di ADDON.'
+L.FrameOptions = 'Impostazioni finestre'
+L.FrameOptionsDesc = 'Configurazioni specifiche per le finestre di %s.'
 L.Frame = 'Finestra'
 L.Enabled = 'Attiva la finestra'
 --L.CharacterSpecific = 'Character Specific Settings'
@@ -26,7 +26,7 @@ L.Enabled = 'Attiva la finestra'
 
 L.BagToggle = 'Attiva riquadro borse'
 L.Money = 'Riquadro delle monete'
-L.Broker = 'Riquadro degli addon (Data Broker)'
+L.Broker = 'Riquadro degli'
 L.Sort = "Bottone per l'ordinamento"
 L.Search = 'Pulsante di ricerca'
 L.Options = 'Pulsante delle opzioni'
@@ -48,8 +48,8 @@ L.Spacing = 'Distanza'
 L.Alpha = 'Opacità'
 
 -- auto display
-L.DisplaySettings = 'Mostra automaticamente'
-L.DisplaySettingsDesc = 'Condizioni per mostrare automaticamente ADDON.'
+L.DisplayOptions = 'Mostra automaticamente'
+L.DisplayOptionsDesc = 'Condizioni per mostrare automaticamente %s.'
 L.DisplayInventory = 'Mostra l\'inventario'
 L.CloseInventory = 'Chiudi l\'Inventario'
 
@@ -68,8 +68,8 @@ L.CloseBank = 'quando sali la Banca'
 L.CloseVendor = "quando ti allontani da un venditore"
 
 -- colors
-L.ColorSettings = 'Impostazioni del colore'
-L.ColorSettingsDesc = 'Impostazione dei colori sui vari oggetti.'
+L.ColorOptions = 'Impostazioni del colore'
+L.ColorOptionsDesc = 'Impostazione dei colori sui vari oggetti.'
 L.GlowQuality = 'Evidenzia oggetti per qualità.'
 L.GlowNew = 'Evidenzia i nuovi oggetti.'
 L.GlowQuest = 'Evidenzia oggetti delle missioni.'

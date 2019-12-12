@@ -10,9 +10,15 @@
 [submodule "libs/CustomSearch-1.0"]
 	path = libs/CustomSearch-1.0
 	url = https://github.com/Jaliborc/CustomSearch-1.0.git
-[submodule "libs/Poncho-1.0"]
-	path = libs/Poncho-1.0
-	url = https://github.com/Jaliborc/Poncho-1.0.git
-[submodule "libs/Sushi-3.0"]
-	path = libs/Sushi-3.0
-	url = https://github.com/Jaliborc/Sushi-3.0.git
+[submodule "libs/Poncho-2.0"]
+	path = libs/Poncho-2.0
+	url = https://github.com/Jaliborc/Poncho-2.0.git
+[submodule "libs/Sushi-3.1"]
+	path = libs/Sushi-3.1
+	url = https://github.com/Jaliborc/Sushi-3.1.git
+[submodule "libs/WildAddon-1.0"]
+	path = libs/WildAddon-1.0
+	url = https://github.com/Jaliborc/WildAddon-1.0.git
+[submodule "libs/MutexDelay-1.0"]
+	path = libs/MutexDelay-1.0
+	url = https://github.com/Jaliborc/MutexDelay-1.0.git
