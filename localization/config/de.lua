@@ -3,12 +3,12 @@
 		Credits/Blame: Phanx
 --]]
 
-local CONFIG, Config = ...
+local CONFIG = ...
 local L = LibStub('AceLocale-3.0'):NewLocale(CONFIG, 'deDE')
 if not L then return end
 
 -- general
-L.GeneralDesc = 'Allgemeine Einstellungen für ADDON anpassen'
+L.GeneralOptionsDesc = 'Allgemeine Einstellungen für %s anpassen'
 L.Locked = 'Fensterpositionen sperren'
 L.Fading = 'Ermögliche Ausblenden des Fensters'
 L.TipCount = 'Ermögliche tooltip item count'
@@ -17,8 +17,8 @@ L.EmptySlots = 'Zeige einen Hintergrund für leere Gegenstandslots'
 L.DisplayBlizzard = 'Blizzard Fenster für die deaktivierten Taschen anzeigen'
 
 -- frame
-L.FrameSettings = 'Fenstereinstellungen'
-L.FrameSettingsDesc = 'Einstellungen für ein bestimmtes ADDON Fenster anpassen'
+L.FrameOptions = 'Fenstereinstellungen'
+L.FrameOptionsDesc = 'Einstellungen für ein bestimmtes %s Fenster anpassen'
 L.Frame = 'Fenster'
 L.Enabled = 'Aktiviert'
 L.CharacterSpecific = 'Charakterspezifische Einstellungen'
@@ -48,8 +48,8 @@ L.Spacing = 'Abstand'
 L.Alpha = 'Transparenz'
 
 -- auto display
-L.DisplaySettings = 'Automatische Anzeige'
-L.DisplaySettingsDesc = 'Einstellungen für das automatische öffnen der Fenster'
+L.DisplayOptions = 'Automatische Anzeige'
+L.DisplayOptionsDesc = 'Einstellungen für das automatische öffnen der Fenster'
 L.DisplayInventory = 'Inventar anzeigen...'
 L.CloseInventory = 'Inventar schließen...'
 
@@ -68,8 +68,8 @@ L.CloseBank = 'beim Verlassen der Bank'
 L.CloseVendor = 'beim Verlassen des Handlers'
 
 -- colors
-L.ColorSettings = 'Farbeinstellungen'
-L.ColorSettingsDesc = 'Einstellungen für das Einfärben der Gegenstandslots'
+L.ColorOptions = 'Farbeinstellungen'
+L.ColorOptionsDesc = 'Einstellungen für das Einfärben der Gegenstandslots'
 L.GlowQuality = 'Gegenstände nach der Seltenheit hervorheben'
 L.GlowNew = 'Neue Gegenstände hervorheben'
 L.GlowQuest = 'Questgegenstände hervorheben'

@@ -3,7 +3,7 @@
 		Credits: Diablohu, yleaf@cwdg, 狂飙@cwdg, 天下牧@萨格拉斯, ananhaid
 --]]
 
-local CONFIG, Config = ...
+local CONFIG = ...
 local L = LibStub('AceLocale-3.0'):NewLocale(CONFIG, 'zhCN')
 if not L then return end
 
@@ -11,7 +11,7 @@ if not L then return end
 L.ConfirmGlobals = '确定要禁用特定此角色的特定设置？所有特定设置将丢失。'
 
 -- general
-L.GeneralDesc = '这些通用功能可以依据配置切换。'
+L.GeneralOptionsDesc = '这些通用功能可以依据配置切换。'
 L.Locked = '锁定框架'
 L.Fading = '渐隐效果'
 L.TipCount = '提示物品数目'
@@ -20,8 +20,8 @@ L.FlashFind = '闪烁搜索'
 L.DisplayBlizzard = '显示暴雪框架隐藏背包'
 
 -- frame
-L.FrameSettings = '框架设置'
-L.FrameSettingsDesc = '此配置设置特定到一个插件框架。'
+L.FrameOptions = '框架设置'
+L.FrameOptionsDesc = '此配置设置特定到一个插件框架。'
 L.Frame = '框架'
 L.Enabled = '启用框架'
 L.CharacterSpecific = '角色特定设置'
@@ -60,8 +60,8 @@ L.Spacing = '间距'
 L.Alpha = '透明度'
 
 -- auto display
-L.DisplaySettings = '自动显示'
-L.DisplaySettingsDesc = '此设置允许配置游戏事件时自动打开或关闭背包。'
+L.DisplayOptions = '自动显示'
+L.DisplayOptionsDesc = '此设置允许配置游戏事件时自动打开或关闭背包。'
 L.DisplayInventory = '打开背包'
 L.CloseInventory = '关闭背包'
 
@@ -82,13 +82,13 @@ L.CloseVendor = '离开商人时'
 L.CloseMap = '打开世界地图时'
 
 -- colors
-L.ColorSettings = '颜色设置'
-L.ColorSettingsDesc = '此设置允许更改物品在插件框架上的染色以便于识别。'
+L.ColorOptions = '颜色设置'
+L.ColorOptionsDesc = '此设置允许更改物品在插件框架上的染色以便于识别。'
 L.GlowQuality = '按物品品质染色'
 L.GlowQuest = '任务物品染色'
 L.GlowUnusable = '无用品染色'
 L.GlowSets = '套装染色'
-L.GlowNew = '新物品发光' 
+L.GlowNew = '新物品发光'
 L.GlowAlpha = '发光亮度'
 
 L.EmptySlots = '显示空格背景材质'
@@ -108,5 +108,5 @@ L.TackleColor = '工具箱颜色'
 L.RefrigeColor = '烹饪颜色'
 
 -- rulesets
-L.RuleSettings = '物品规则'
-L.RuleSettingsDesc = '这项设置允许选择按照类型显示和排列物品的规则。'
+L.RuleOptions = '物品规则'
+L.RuleOptionsDesc = '这项设置允许选择按照类型显示和排列物品的规则。'
