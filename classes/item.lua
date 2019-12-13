@@ -4,7 +4,7 @@
 --]]
 
 local ADDON, Addon = ...
-local Item = Addon.Parented:NewClass('Item', Addon.IsRetail and 'ItemButton' or 'Button', 'ContainerFrameItemButtonTemplate', true)
+local Item = Addon.Tipped:NewClass('Item', Addon.IsRetail and 'ItemButton' or 'Button', 'ContainerFrameItemButtonTemplate', true)
 local Search = LibStub('LibItemSearch-1.2')
 local Unfit = LibStub('Unfit-1.0')
 
@@ -208,10 +208,7 @@ function Item:OnEnter()
 end
 
 function Item:OnLeave()
-	if BattlePetTooltip then
-		BattlePetTooltip:Hide()
-	end
-	GameTooltip:Hide()
+	self:Super(Item):OnLeave()
 	ResetCursor()
 end
 
@@ -351,10 +348,12 @@ end
 
 function Item:ShowTooltip()
 	local bag = self:GetBag()
-	local getSlot = Addon:IsBank(bag) and BankButtonIDToInvSlotID or Addon:IsReagents(bag) and ReagentBankButtonIDToInvSlotID
+	local getSlot = Addon:IsBank(bag) and BankButtonIDToInvSlotID or
+									Addon:IsKeyring(bag) and KeyRingButtonIDToInvSlotID or
+									Addon:IsReagents(bag) and ReagentBankButtonIDToInvSlotID
 
 	if getSlot then
-		self:AnchorTooltip()
+		GameTooltip:SetOwner(self:GetTipAnchor())
 
 		local _, _, _, speciesID, level, breedQuality, maxHealth, power, speed, name = GameTooltip:SetInventoryItem('player', getSlot(self:GetID()))
 		if speciesID and speciesID > 0 then
@@ -369,14 +368,6 @@ function Item:ShowTooltip()
 		CursorUpdate(self)
 	else
 		ContainerFrameItemButton_OnEnter(self)
-	end
-end
-
-function Item:AnchorTooltip()
-	if self:GetRight() >= (GetScreenWidth() / 2) then
-		GameTooltip:SetOwner(self, 'ANCHOR_LEFT')
-	else
-		GameTooltip:SetOwner(self, 'ANCHOR_RIGHT')
 	end
 end
 
@@ -456,7 +447,7 @@ function Item:CreateDummySlot()
 		local item = parent:IsCached() and parent.info.link
 
 		if item then
-			parent.AnchorTooltip(self)
+			GameTooltip:SetOwner(parent.GetTipAnchor(self))
 
 			if item:find('battlepet:') then
 				local _, specie, level, quality, health, power, speed = strsplit(':', item)
