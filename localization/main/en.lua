@@ -26,6 +26,11 @@ L.TitleBags = '%s\'s Inventory'
 L.TitleBank = '%s\'s Bank'
 L.TitleVault = '%s\'s Void Storage'
 
+--dropdowns
+L.TitleFrames = '%s Frames'
+L.SelectCharacter = 'Select Character'
+L.ConfirmDelete = 'Are you sure you want to delete   %s\'s cached data?'
+
 --interactions
 L.Click = 'Click'
 L.Drag = '<Drag>'

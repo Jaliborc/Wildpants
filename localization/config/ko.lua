@@ -1,8 +1,8 @@
 --[[
-	ADDON Config Localization: Korean
+	Config Localization: Korean
 --]]
 
-local CONFIG, Config = ...
+local CONFIG = ...
 local L = LibStub('AceLocale-3.0'):NewLocale(CONFIG, 'koKR')
 if not L then return end
 
@@ -10,7 +10,7 @@ if not L then return end
 L.ConfirmGlobals = '이 캐릭터에 대한 개별 설정을 비활성화 하시겠습니까? 모든 개별 설정을 잃게됩니다.'
 
 -- general
-L.GeneralDesc = '환경 설정에 따라 설정을 전환 할 수 있는 일반적인 기능입니다.'
+L.GeneralOptionsDesc = '환경 설정에 따라 설정을 전환 할 수 있는 일반적인 기능입니다.'
 L.Locked = '창 위치 잠금'
 L.Fading = '창 사라짐 효과 사용'
 L.TipCount = '아이템 갯수를 툴팁에 표시'
@@ -19,8 +19,8 @@ L.FlashFind = '빠른 찾기 사용'
 L.DisplayBlizzard = '숨겨진 가방을 보기 위해 블리자드 프레임을 표시합니다.'
 
 -- frame
-L.FrameSettings = '창 설정'
-L.FrameSettingsDesc = '애드온 창에 특화된 설정'
+L.FrameOptions = '창 설정'
+L.FrameOptionsDesc = '애드온 창에 특화된 설정'
 L.Frame = '창'
 L.Enabled = '애드온 사용'
 L.CharacterSpecific = '캐릭터 개별 설정'
@@ -59,8 +59,8 @@ L.Spacing = '간격'
 L.Alpha = '투명도'
 
 -- auto display
-L.DisplaySettings = '자동 표시'
-L.DisplaySettingsDesc = '이 설정은 게임 이벤트에 따라 가방을 자동으로 열거나 닫게 해줍니다.'
+L.DisplayOptions = '자동 표시'
+L.DisplayOptionsDesc = '이 설정은 게임 이벤트에 따라 가방을 자동으로 열거나 닫게 해줍니다.'
 L.DisplayInventory = '가방 표시'
 L.CloseInventory = '가방 닫기'
 
@@ -81,8 +81,8 @@ L.CloseVendor = '상인을 떠날 때 가방 닫기'
 L.CloseMap = '지도를 열 때 가방 닫기'
 
 -- colors
-L.ColorSettings = '색상 설정'
-L.ColorSettingsDesc = '이 설정은 아이템의 변화 상황을 쉽게 구분할 수 있도록 표시합니다.'
+L.ColorOptions = '색상 설정'
+L.ColorOptionsDesc = '이 설정은 아이템의 변화 상황을 쉽게 구분할 수 있도록 표시합니다.'
 L.GlowQuality = '품질에 따라 아이템 강조'
 L.GlowQuest = '퀘스트 아이템 강조'
 L.GlowUnusable = '사용할 수 없는 아이템 강조'
@@ -107,5 +107,5 @@ L.TackleColor = '낚시상자 칸 색상'
 L.RefrigeColor = '요리 가방 칸 색상'
 
 -- rulesets
-L.RuleSettings = '아이템 규칙'
-L.RuleSettingsDesc = '이 설정으로 표시할 아이템 정리 규칙과 순서를 선택할 수 있습니다.'
+L.RuleOptions = '아이템 규칙'
+L.RuleOptionsDesc = '이 설정으로 표시할 아이템 정리 규칙과 순서를 선택할 수 있습니다.'
