@@ -22,10 +22,15 @@ L.CmdShowVersion = '현재 버전 정보 출력'
 L.CmdShowOptions = '설정메뉴 열기'
 L.Updated = '업데이트 v%s'
 
---frames
-L.TitleBags = '%s\의 가방'
-L.TitleBank = '%s\의 은행'
-L.TitleVault = '%s\의 공허'
+--frame titles
+L.TitleBags = '%s의 가방'
+L.TitleBank = '%s의 은행'
+L.TitleVault = '%s의 공허'
+
+--dropdowns
+L.TitleFrames = '%s 프레임'
+L.SelectCharacter = '캐릭터 선택'
+L.ConfirmDelete = '%s의 캐시된 데이터를 삭제하시겠습니까?'
 
 --interactions
 L.Click = '클릭'
