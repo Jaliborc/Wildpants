@@ -3,7 +3,7 @@
 		***
 --]]
 
-local CONFIG, Config = ...
+local CONFIG = ...
 local L = LibStub('AceLocale-3.0'):NewLocale(CONFIG, 'frFR')
 if not L then return end
 
@@ -11,7 +11,7 @@ if not L then return end
 L.ConfirmGlobals = 'Êtes-vous sûr de vouloir désactiver les paramètres spécifiques à ce personnage ? Tous les paramètres spécifiques seront perdus.'
 
 -- general
-L.GeneralDesc = 'Configuration des options générales de ADDON'
+L.GeneralOptionsDesc = 'Configuration des options générales de %s'
 L.Locked = 'Bloquer la position des fenêtres'
 L.Fading = 'Activer le fading des fenêtres'
 L.TipCount = 'Activer l\'info-bulle du compteur d\'objets'
@@ -21,8 +21,8 @@ L.EmptySlots = 'Afficher un fond sur les emplacements vides'
 L.DisplayBlizzard = 'Afficher les cadres de Blizzard pour les sacs désactivés'
 
 -- frame
-L.FrameSettings = 'Options des fenêtres'
-L.FrameSettingsDesc = 'Configuration des options spécifiques à une fenêtre de ADDON'
+L.FrameOptions = 'Options des fenêtres'
+L.FrameOptionsDesc = 'Configuration des options spécifiques à une fenêtre de %s'
 L.Frame = 'Fenêtre'
 L.Enabled = 'Activer'
 L.CharacterSpecific = 'Paramètres spécifiques au personnage'
@@ -58,8 +58,8 @@ L.Spacing = 'Espacement'
 L.Alpha = 'Opacité'
 
 -- auto display
-L.DisplaySettings = 'Affichage automatique'
-L.DisplaySettingsDesc = 'Options de l\'affichage automatique'
+L.DisplayOptions = 'Affichage automatique'
+L.DisplayOptionsDesc = 'Options de l\'affichage automatique'
 L.DisplayInventory = 'Afficher votre inventaire'
 L.CloseInventory = 'Fermer votre inventaire'
 
@@ -79,9 +79,9 @@ L.CloseVendor = 'quand vous quittez un marchand'
 L.CloseMap = 'quand vous ouvrez la carte du monde'
 
 -- colors
-L.ColorSettings = 'Options de couleur'
-L.ColorSettingsDesc = 'Options de colorisation des emplacements'
-L.GlowQuality = 'Surligner les objets par qualité' 
+L.ColorOptions = 'Options de couleur'
+L.ColorOptionsDesc = 'Options de colorisation des emplacements'
+L.GlowQuality = 'Surligner les objets par qualité'
 L.GlowNew = 'Surligner les nouveaux objets'
 L.GlowQuest = 'Surligner les objets de quête'
 L.GlowUnusable = 'Surligner les objets inutiles'
@@ -102,5 +102,5 @@ L.ReagentColor = 'Banque des composants'
 L.GlowAlpha = 'Contour lumineux des objets'
 
 -- rulesets
-L.RuleSettings = 'Item Rulesets'
-L.RuleSettingsDesc = 'Ces paramètres vous permettent de choisir les item rulesets à afficher et dans quel ordre.'
+L.RuleOptions = 'Item Rulesets'
+L.RuleOptionsDesc = 'Ces paramètres vous permettent de choisir les item rulesets à afficher et dans quel ordre.'
