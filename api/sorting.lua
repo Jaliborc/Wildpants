@@ -89,15 +89,16 @@ end
 
 function Sort:GetSpaces()
   local spaces = {}
-
   for _, bag in pairs(self.bags) do
-    local container = Addon:GetBagInfo(self.owner, bag)
-    for slot = 1, (container.count or 0) do
-      local item = Addon:GetItemInfo(self.owner, bag, slot)
-      tinsert(spaces, {index = #spaces, bag = bag, slot = slot, family = container.family, item = item})
+    if not (bag == KEYRING_CONTAINER) then
+      local container = Addon:GetBagInfo(self.owner, bag)
+      for slot = 1, (container.count or 0) do
+        local item = Addon:GetItemInfo(self.owner, bag, slot)
+        tinsert(spaces, {index = #spaces, bag = bag, slot = slot, family = container.family, item = item})
 
-      item.class = item.link and Search:ForQuest(item.link) and LE_ITEM_CLASS_QUESTITEM or item.class
-      item.space = spaces[#spaces]
+        item.class = item.link and Search:ForQuest(item.link) and LE_ITEM_CLASS_QUESTITEM or item.class
+        item.space = spaces[#spaces]
+      end
     end
   end
 
