@@ -67,5 +67,17 @@ function Frames:Populate()
 				self:AddCheck('exclusiveReagent')
 			end
 		end)
+
+    self:AddRow(150, function()
+      self:AddChoice {arg = 'strata', {key = 'LOW', text = LOW}, {key = 'MEDIUM', text = AUCTION_TIME_LEFT2}, {key = 'HIGH', text = HIGH}}
+      self:AddPercentage('alpha')
+      self:AddPercentage('scale', 20, 300)
+      self:AddPercentage('itemScale', 20, 200)
+      self:AddSlider('spacing', -15, 15)
+
+      if Config.columns then
+        self:AddSlider('columns', 1, 50)
+      end
+    end)
   end
 end

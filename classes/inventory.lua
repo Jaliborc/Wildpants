@@ -12,7 +12,7 @@ Inventory.MainMenuButtons = {
 	CharacterBag0Slot, CharacterBag1Slot, CharacterBag2Slot, CharacterBag3Slot
 }
 
-if not Addon.IsRetail then
+if HasKey then
 	tinsert(Inventory.Bags, KEYRING_CONTAINER)
 	tinsert(Inventory.MainMenuButtons, KeyRingButton)
 end
