@@ -6,7 +6,7 @@
 
 local ADDON, Addon = ...
 local L = LibStub('AceLocale-3.0'):GetLocale(ADDON)
-local Frame = Addon.Base:NewClass('Frame', 'Frame', Addon.FrameTemplate)
+local Frame = Addon.Base:NewClass('Frame', 'Frame', Addon.FrameTemplate, true)
 
 Frame.OpenSound = SOUNDKIT.IG_BACKPACK_OPEN
 Frame.CloseSound = SOUNDKIT.IG_BACKPACK_CLOSE

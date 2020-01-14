@@ -31,6 +31,7 @@ end
 
 function Sort:Run()
   if self:CanRun() then
+    ClearCursor()
     self:Iterate()
   else
     self:Stop()
@@ -141,7 +142,7 @@ end
 --[[ API ]]--
 
 function Sort:CanRun()
-  return not InCombatLockdown() and not UnitIsDead('player') and not GetCursorInfo()
+  return not InCombatLockdown() and not UnitIsDead('player')
 end
 
 function Sort:FitsIn(id, family)

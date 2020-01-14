@@ -16,7 +16,6 @@ function Frames:OnEnable()
 		{id = 'vault', name = VOID_STORAGE, addon = self:NewLoader('VoidStorage', 'VoidStorage_LoadUI')},
 		{id = 'guild', name = GUILD_BANK, addon = self:NewLoader('GuildBank', 'GuildBankFrame_LoadUI')},
 	}
-	self:New('inventory')
 end
 
 function Frames:NewLoader(addon, method)
