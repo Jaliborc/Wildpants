@@ -88,6 +88,7 @@ L.GlowQuest = '퀘스트 아이템 강조'
 L.GlowUnusable = '사용할 수 없는 아이템 강조'
 L.GlowSets = '장비 관리 구성 아이템 강조'
 L.GlowNew = '새로 획득한 아이템 강조'
+L.GlowPoor = '잡템 표식 사용'
 L.GlowAlpha = '강조 색상 밝기'
 
 L.EmptySlots = '빈 칸 배경 표시'
@@ -105,7 +106,7 @@ L.EngineerColor = '기계공학 가방 칸 색상'
 L.GemColor = '보석 가방 칸 색상'
 L.MineColor = '채광 자루 칸 색상'
 L.TackleColor = '낚시상자 칸 색상'
-L.RefrigeColor = '요리 가방 칸 색상'
+L.FridgeColor = '요리 칸 색상'
 
 -- rulesets
 L.RuleOptions = '아이템 규칙'
