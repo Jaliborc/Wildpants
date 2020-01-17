@@ -58,6 +58,10 @@ if Addon.IsRetail then
 		ZANDALARITROLL_FEMALE	= {0.25, 0.375, 0.5, 0.75},
 		KULTIRAN_MALE		= {0, 0.125, 0, 0.25},
 		KULTIRAN_FEMALE		= {0, 0.125, 0.5, 0.75},
+		VULPERA_MALE		= {0.629, 0.750, 0.25, 0.5},
+		VULPERA_FEMALE	= {0.629, 0.750, 0.75, 1.0},
+		MECHAGNOME_MALE		= {0.25, 0.375, 0, 0.25},
+		MECHAGNOME_FEMALE	= {0.25, 0.375, 0.5, 0.75},	
 	}
 else
 	RACE_COORDS = {
@@ -88,7 +92,7 @@ end
 function Owners:GetIconString(owner, size, x, y)
 	local texture, coords = self:GetIcon(owner)
 	local a, b, c, d = unpack(coords)
-	
+
 	return CreateTextureMarkup(texture, 128,128, size,size, a,b,c,d, x,y)
 	--return format('|T%s:%s:%s:%s:%s:128:128:%s:%s:%s:%s|t', texture, size, size, x, y, a*128,b*128,c*128,d*128)
 end
