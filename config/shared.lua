@@ -40,25 +40,34 @@ end
 
 function Group:AddColor(arg)
 	local b = self:AddLabeled('ColorPicker', arg)
-	b:SetCall('OnColor', function(_, v) self.sets[arg] = {v:GetRGB()} end)
-	b:SetValue(CreateColor(self.sets[arg][1], self.sets[arg][2], self.sets[arg][3]))
+	b:SetCall('OnColor', function(_, v) self.sets[arg] = {v:GetRGBA()} end)
+	b:SetValue(CreateColor(self.sets[arg][1], self.sets[arg][2], self.sets[arg][3], self.sets[arg][4]))
 	return b
 end
 
 function Group:AddSlider(arg, min,max)
 	local s = self:AddLabeled('Slider', arg)
 	s:SetCall('OnValue', function(_, v) self.sets[arg] = v end)
+	s:SetRange(min, max)
 	s:SetValue(self.sets[arg])
-	s:SetRange(min,max)
 	return s
 end
 
 function Group:AddPercentage(arg, min,max)
 	local s = self:AddLabeled('Slider', arg)
 	s:SetCall('OnValue', function(_, v) self.sets[arg] = v/100 end)
-	s:SetValue(self.sets[arg] * 100)
 	s:SetRange(min or 1, max or 100)
+	s:SetValue(self.sets[arg] * 100)
+	s:SetPattern('%s%')
 	return s
+end
+
+function Group:AddChoice(data)
+	local choice = self:AddLabeled('DropChoice', data.arg)
+	choice:SetCall('OnValue', function(_, v) self.sets[data.arg] = v end)
+	choice:SetValue(self.sets[data.arg])
+	choice:AddChoices(data)
+	return choice
 end
 
 function Group:AddLabeled(class, id)

@@ -6,9 +6,6 @@ local CONFIG = ...
 local L = LibStub('AceLocale-3.0'):NewLocale(CONFIG, 'koKR')
 if not L then return end
 
--- global
-L.ConfirmGlobals = '이 캐릭터에 대한 개별 설정을 비활성화 하시겠습니까? 모든 개별 설정을 잃게됩니다.'
-
 -- general
 L.GeneralOptionsDesc = '환경 설정에 따라 설정을 전환 할 수 있는 일반적인 기능입니다.'
 L.Locked = '창 위치 잠금'
@@ -16,7 +13,10 @@ L.Fading = '창 사라짐 효과 사용'
 L.TipCount = '아이템 갯수를 툴팁에 표시'
 L.CountGuild = '길드 금고 포함'
 L.FlashFind = '빠른 찾기 사용'
-L.DisplayBlizzard = '숨겨진 가방을 보기 위해 블리자드 프레임을 표시합니다.'
+L.DisplayBlizzard = '숨은 가방 대비책'
+L.DisplayBlizzardTip = '만약 활성화하면 숨긴 가방 또는 은행 저장소에 대해 기본 블리자드 UI 가방 창이 표시됩니다.\n\n|cffff1919UI 리로드가 필요합니다.|r'
+L.ConfirmGlobals = '이 캐릭터에 대한 개별 설정을 비활성화 하시겠습니까? 모든 개별 설정을 잃게됩니다.'
+L.CharacterSpecific = '캐릭터 개별 설정'
 
 -- frame
 L.FrameOptions = '창 설정'
@@ -93,6 +93,7 @@ L.GlowAlpha = '강조 색상 밝기'
 L.EmptySlots = '빈 칸 배경 표시'
 L.ColorSlots = '가방 종류에 따라 빈 칸 색상 표시'
 L.NormalColor = '일반 칸 색상'
+L.KeyColor = '열쇠 칸 색상'
 L.QuiverColor = '화살통/탄환주머니 색상'
 L.SoulColor = '영혼 가방 색상'
 L.ReagentColor = '재료 은행 칸 색상'
