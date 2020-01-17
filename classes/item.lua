@@ -4,13 +4,12 @@
 --]]
 
 local ADDON, Addon = ...
-local Item = Addon.Parented:NewClass('Item', Addon.IsRetail and 'ItemButton' or 'Button', 'ContainerFrameItemButtonTemplate', true)
+local Item = Addon.Tipped:NewClass('Item', Addon.IsRetail and 'ItemButton' or 'Button', 'ContainerFrameItemButtonTemplate', true)
 local Search = LibStub('LibItemSearch-1.2')
 local Unfit = LibStub('Unfit-1.0')
 
 Item.SlotTypes = {
 	[-3] = 'reagent',
-	[-2] = 'key',
 	[0x00001] = 'quiver',
 	[0x00002] = 'quiver',
 	[0x00003] = 'soul',
@@ -18,6 +17,7 @@ Item.SlotTypes = {
 	[0x00006] = 'herb',
 	[0x00007] = 'enchant',
 	[0x00008] = 'leather',
+	[0x00009] = 'key',
 	[0x00010] = 'inscribe',
 	[0x00020] = 'herb',
 	[0x00040] = 'enchant',
@@ -45,14 +45,13 @@ function Item:New(parent, bag, slot)
 end
 
 function Item:Construct()
-	local id = self:NumFrames() + 1
-	local b = self:Bind(self:GetBlizzard(id) or self:Super(Item):Construct())
+	local b = self:GetBlizzard() or self:Super(Item):Construct()
 	local name = b:GetName()
 
-	b.UpdateTooltip = nil
 	b.Flash = b:CreateAnimationGroup()
 	b.IconGlow = b:CreateTexture(nil, 'OVERLAY', nil, -1)
 	b.Cooldown, b.QuestBorder = _G[name .. 'Cooldown'], _G[name .. 'IconQuestTexture']
+	b.UpdateTooltip = self.UpdateTooltip
 
 	b.newitemglowAnim:SetLooping('NONE')
 	b.IconOverlay:SetAtlas('AzeriteIconFrame')
@@ -76,34 +75,40 @@ function Item:Construct()
 		fade:SetToAlpha(.8)
 	end
 
+	b:SetScript('OnEvent', nil)
 	b:SetScript('OnShow', b.OnShow)
 	b:SetScript('OnHide', b.OnHide)
-	b:SetScript('PreClick', b.OnPreClick)
-	b:HookScript('OnDragStart', b.OnDragStart)
-	b:HookScript('OnClick', b.OnClick)
 	b:SetScript('OnEnter', b.OnEnter)
 	b:SetScript('OnLeave', b.OnLeave)
-	b:SetScript('OnEvent', nil)
+	b:SetScript('PreClick', b.OnPreClick)
+	b:HookScript('OnClick', b.OnPostClick)
 	return b
 end
 
 function Item:GetBlizzard(id)
-    if Addon.sets.displayBlizzard or not Addon.Frames:AreBasicsEnabled() then
-        return
-    end
-
-    local bag = ceil(id / MAX_CONTAINER_ITEMS)
-    local slot = (id-1) % MAX_CONTAINER_ITEMS + 1
-    local b = _G[format('ContainerFrame%dItem%d', bag, slot)]
-    if b then
-        b:ClearAllPoints()
-        return b
+    if not Addon.sets.displayBlizzard and Addon.Frames:AreBasicsEnabled() then
+			local id = self:NumFrames() + 1
+			local bag = ceil(id / 36)
+			local slot = (id-1) % 36 + 1
+			local b = _G[format('ContainerFrame%dItem%d', bag, slot)]
+			if b then
+					b:ClearAllPoints()
+					return self:Bind(b)
+			end
     end
 end
 
-function Item:Reset()
-	self:Super(Item):Reset()
-	self.depositSlot = nil
+function Item:Bind(frame)
+	local class = self
+	while class do
+		for k,v in pairs(class) do
+			frame[k] = frame[k] or v
+		end
+
+		class = class:GetSuper()
+	end
+
+	return frame
 end
 
 
@@ -129,89 +134,48 @@ function Item:OnHide()
 	self:UnregisterAll()
 end
 
-function Item:OnDragStart()
-	Item.Cursor = self
-end
-
 function Item:OnPreClick(button)
-	if IsModifiedClick() or button ~= 'RightButton' then
-		return
-	end
-
-	if REAGENTBANK_CONTAINER and Addon:InBank() then
-		if IsReagentBankUnlocked() and GetContainerNumFreeSlots(REAGENTBANK_CONTAINER) > 0 then
+	if not IsModifiedClick() and button == 'RightButton' then
+		if REAGENTBANK_CONTAINER and Addon:InBank() and IsReagentBankUnlocked() and GetContainerNumFreeSlots(REAGENTBANK_CONTAINER) > 0 then
 			if not Addon:IsReagents(self:GetBag()) and Search:IsReagent(self.info.link) then
-				local maxstack = select(8, GetItemInfo(self.info.id))
-
 				for _, bag in ipairs {BANK_CONTAINER, 5, 6, 7, 8, 9, 10, 11} do
 					for slot = 1, GetContainerNumSlots(bag) do
 						if GetContainerItemID(bag, slot) == self.info.id then
-							local _,count = GetContainerItemInfo(bag, slot)
-							local free = maxstack - count
-
-							if (free > 0) then
-								SplitContainerItem(self:GetBag(), self:GetID(), min(self.count, free))
+							local free = self.info.stack - select(2, GetContainerItemInfo(bag, slot))
+							if free > 0 then
+								SplitContainerItem(self:GetBag(), self:GetID(), min(self.info.count, free))
 								PickupContainerItem(bag, slot)
 							end
 						end
 					end
 				end
 
-				return UseContainerItem(self:GetBag(), self:GetID(), nil, true)
+				UseContainerItem(self:GetBag(), self:GetID(), nil, true)
 			end
 		end
 	end
 
-	if Addon.LoadVault then
-		for i = 1,9 do
-			if not GetVoidTransferDepositInfo(i) then
-				self.depositSlot = i
-				return
+	self.locked = self.info.locked
+end
+
+function Item:OnPostClick(button)
+	if self:FlashFind(button) or IsModifiedClick() then
+		return
+	elseif button == 'RightButton' and Addon:InVault() and self.locked then
+		for i = 10, 1, -1 do
+			if GetVoidTransferDepositInfo(i) == self.info.id then
+				ClickVoidTransferDepositSlot(i, true)
 			end
 		end
-	end
-end
-
-function Item:OnClick(button)
-	if IsAltKeyDown() and button == 'LeftButton' then
-		if Addon.sets.flashFind and self.info.id then
-			self:SendSignal('FLASH_ITEM', self.info.id)
-		end
-	elseif GetNumVoidTransferDeposit and GetNumVoidTransferDeposit() > 0 and button == 'RightButton' then
-		if self.canDeposit and self.depositSlot then
-			ClickVoidTransferDepositSlot(self.depositSlot, true)
-		end
-
-		self.canDeposit = not self.canDeposit
-	end
-end
-
-function Item:OnModifiedClick(...)
-	local link = self.info.cached and self.info.link
-	if link and not HandleModifiedItemClick(link) then
-		self:OnClick(...)
 	end
 end
 
 function Item:OnEnter()
-	if self.info.cached then
-		local dummy = Item:GetDummySlot()
-		dummy:SetParent(self)
-		dummy:SetAllPoints(self)
-		dummy:Show()
-	elseif self.info.id then
-		self:ShowTooltip()
-		self:UpdateBorder()
-	else
-		self:OnLeave()
-	end
+	self:UpdateTooltip()
 end
 
 function Item:OnLeave()
-	if BattlePetTooltip then
-		BattlePetTooltip:Hide()
-	end
-	GameTooltip:Hide()
+	self:Super(Item):OnLeave()
 	ResetCursor()
 end
 
@@ -256,7 +220,7 @@ function Item:UpdateBorder()
 	local new = Addon.sets.glowNew and self:IsNew()
 	local quest, questID = self:IsQuestItem()
 	local paid = self:IsPaid()
-	local r, g, b
+	local r,g,b
 
 	if new and not self.flashAnim:IsPlaying() then
 		self.flashAnim:Play()
@@ -265,27 +229,28 @@ function Item:UpdateBorder()
 
 	if id then
 		if Addon.sets.glowQuest and quest then
-			r, g, b = 1, .82, .2
+			r,g,b = 1, .82, .2
 		elseif Addon.sets.glowUnusable and Unfit:IsItemUnusable(id) then
-			r, g, b = RED_FONT_COLOR.r, RED_FONT_COLOR.g, RED_FONT_COLOR.b
+			r,g,b = RED_FONT_COLOR.r, RED_FONT_COLOR.g, RED_FONT_COLOR.b
 		elseif Addon.sets.glowSets and Search:InSet(self.info.link) then
-	  	r, g, b = .1, 1, 1
+	  	r,g,b = .1, 1, 1
 		elseif Addon.sets.glowQuality and quality and quality > 1 then
-			r, g, b = GetItemQualityColor(quality)
+			r,g,b = GetItemQualityColor(quality)
 		end
 	end
 
 	self.IconBorder:SetTexture(id and C_ArtifactUI and C_ArtifactUI.GetRelicInfoByItemID(id) and 'Interface/Artifacts/RelicIconFrame' or 'Interface/Common/WhiteIconFrame')
-	self.IconBorder:SetVertexColor(r, g, b)
+	self.IconBorder:SetVertexColor(r,g,b)
 	self.IconBorder:SetShown(r)
 
-	self.IconGlow:SetVertexColor(r, g, b, Addon.sets.glowAlpha)
+	self.IconGlow:SetVertexColor(r,g,b, Addon.sets.glowAlpha)
 	self.IconGlow:SetShown(r)
 
 	self.NewItemTexture:SetAtlas(quality and NEW_ITEM_ATLAS_BY_QUALITY[quality] or 'bags-glow-white')
 	self.NewItemTexture:SetShown(new and not paid)
 
 	self.IconOverlay:SetShown(id and C_AzeriteEmpoweredItem and C_AzeriteEmpoweredItem.IsAzeriteEmpoweredItemByID(id))
+	self.JunkIcon:SetShown(Addon.sets.glowPoor and quality == LE_ITEM_QUALITY_POOR and not self.info.worthless)
 	self.BattlepayItemTexture:SetShown(new and paid)
 	self.QuestBorder:SetShown(questID)
 end
@@ -339,7 +304,14 @@ function Item:UpdateFocus()
 	end
 end
 
-function Item:OnItemFlashed(_,itemID)
+function Item:FlashFind(button)
+	if IsAltKeyDown() and button == 'LeftButton' and Addon.sets.flashFind and self.info.id then
+		self:SendSignal('FLASH_ITEM', self.info.id)
+		return true
+	end
+end
+
+function Item:OnItemFlashed(_, itemID)
 	self.Flash:Stop()
 	if self.info.id == itemID then
 		self.Flash:Play()
@@ -349,12 +321,27 @@ end
 
 --[[ Tooltip ]]--
 
+function Item:UpdateTooltip()
+	if self.info.link then
+		if self.info.cached then
+			self:ShowCachedTooltip()
+		else
+			self:ShowTooltip()
+			self:UpdateBorder()
+		end
+	else
+		self:OnLeave()
+	end
+end
+
 function Item:ShowTooltip()
 	local bag = self:GetBag()
-	local getSlot = Addon:IsBank(bag) and BankButtonIDToInvSlotID or Addon:IsReagents(bag) and ReagentBankButtonIDToInvSlotID
+	local getSlot = Addon:IsBank(bag) and BankButtonIDToInvSlotID or
+									Addon:IsKeyring(bag) and KeyRingButtonIDToInvSlotID or
+									Addon:IsReagents(bag) and ReagentBankButtonIDToInvSlotID
 
 	if getSlot then
-		self:AnchorTooltip()
+		GameTooltip:SetOwner(self:GetTipAnchor())
 
 		local _, _, _, speciesID, level, breedQuality, maxHealth, power, speed, name = GameTooltip:SetInventoryItem('player', getSlot(self:GetID()))
 		if speciesID and speciesID > 0 then
@@ -372,16 +359,54 @@ function Item:ShowTooltip()
 	end
 end
 
-function Item:AnchorTooltip()
-	if self:GetRight() >= (GetScreenWidth() / 2) then
-		GameTooltip:SetOwner(self, 'ANCHOR_LEFT')
-	else
-		GameTooltip:SetOwner(self, 'ANCHOR_RIGHT')
-	end
+function Item:ShowCachedTooltip()
+	Item.dummy = Item.dummy or Item:CreateDummy()
+	Item.dummy:SetParent(self)
+	Item.dummy:SetAllPoints()
+	Item.dummy:Show()
 end
 
-function Item:UpdateTooltip()
-	self:OnEnter()
+function Item:CreateDummy()
+	local function showTooltip(slot)
+		local parent = slot:GetParent()
+		local link = parent.info.link
+
+		GameTooltip:SetOwner(parent:GetTipAnchor())
+		parent:LockHighlight()
+		CursorUpdate(parent)
+
+		if link:find('battlepet:') then
+			local _, specie, level, quality, health, power, speed = strsplit(':', link)
+			local name = link:match('%[(.-)%]')
+
+			BattlePetToolTip_Show(tonumber(specie), level, tonumber(quality), health, power, speed, name)
+		else
+			GameTooltip:SetHyperlink(link)
+			GameTooltip:Show()
+		end
+	end
+
+	local slot = CreateFrame('Button')
+	slot.UpdateTooltip = showTooltip
+	slot:SetScript('OnEnter', showTooltip)
+	slot:SetScript('OnShow', showTooltip)
+	slot:RegisterForClicks('anyUp')
+	slot:SetToplevel(true)
+
+	slot:SetScript('OnClick', function(slot, button)
+		local parent = slot:GetParent()
+		if not HandleModifiedItemClick(parent.info.link) then
+			parent:FlashFind(button)
+		end
+	end)
+
+	slot:SetScript('OnLeave', function(slot)
+		slot:GetParent():UnlockHighlight()
+		slot:Hide()
+		ResetCursor()
+	end)
+
+	return slot
 end
 
 
@@ -435,65 +460,4 @@ end
 
 function Item:GetEmptyItemIcon()
 	return Addon.sets.emptySlots and 'Interface/PaperDoll/UI-Backpack-EmptySlot'
-end
-
-
---[[ Dummies ]]--
-
-function Item:GetDummySlot()
-	self.dummySlot = self.dummySlot or self:CreateDummySlot()
-	self.dummySlot:Hide()
-	return self.dummySlot
-end
-
-function Item:CreateDummySlot()
-	local slot = CreateFrame('Button')
-	slot:RegisterForClicks('anyUp')
-	slot:SetToplevel(true)
-
-	local function Slot_OnEnter(self)
-		local parent = self:GetParent()
-		local item = parent:IsCached() and parent.info.link
-
-		if item then
-			parent.AnchorTooltip(self)
-
-			if item:find('battlepet:') then
-				local _, specie, level, quality, health, power, speed = strsplit(':', item)
-				local name = item:match('%[(.-)%]')
-
-				BattlePetToolTip_Show(tonumber(specie), level, tonumber(quality), health, power, speed, name)
-			else
-				GameTooltip:SetHyperlink(item)
-				GameTooltip:Show()
-			end
-		end
-
-		parent:LockHighlight()
-		CursorUpdate(parent)
-	end
-
-	local function Slot_OnLeave(self)
-		self:GetParent():OnLeave()
-		self:Hide()
-	end
-
-	local function Slot_OnHide(self)
-		local parent = self:GetParent()
-		if parent then
-			parent:UnlockHighlight()
-		end
-	end
-
-	local function Slot_OnClick(self, button)
-		self:GetParent():OnModifiedClick(button)
-	end
-
-	slot.UpdateTooltip = Slot_OnEnter
-	slot:SetScript('OnClick', Slot_OnClick)
-	slot:SetScript('OnEnter', Slot_OnEnter)
-	slot:SetScript('OnLeave', Slot_OnLeave)
-	slot:SetScript('OnShow', Slot_OnEnter)
-	slot:SetScript('OnHide', Slot_OnHide)
-	return slot
 end

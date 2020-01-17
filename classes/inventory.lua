@@ -12,6 +12,11 @@ Inventory.MainMenuButtons = {
 	CharacterBag0Slot, CharacterBag1Slot, CharacterBag2Slot, CharacterBag3Slot
 }
 
+if HasKey then
+	tinsert(Inventory.Bags, KEYRING_CONTAINER)
+	tinsert(Inventory.MainMenuButtons, KeyRingButton)
+end
+
 function Inventory:OnShow()
 	self:Super(Inventory):OnShow()
 	self:Delay(0, 'HighlightMainMenu', true)
@@ -26,8 +31,12 @@ function Inventory:HighlightMainMenu(checked)
 	for _, button in pairs(self.MainMenuButtons) do
 		if button.SlotHighlightTexture then
 			button.SlotHighlightTexture:SetShown(checked)
-		else
+		elseif button.icon then
 			button:SetChecked(checked)
+		elseif checked then
+			button:SetButtonState('PUSHED', 1)
+		else
+			button:SetButtonState('NORMAL')
 		end
 	end
 end

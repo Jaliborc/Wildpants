@@ -209,7 +209,8 @@ function Items:IsShowingBag(bag)
 end
 
 function Items:NumSlots(bag)
-	return Addon:GetBagInfo(self:GetOwner(), bag).count or 0
+	local info = Addon:GetBagInfo(self:GetOwner(), bag)
+	return info.owned and info.count or 0
 end
 
 function Items:NumButtons()

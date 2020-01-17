@@ -6,10 +6,10 @@
 local ADDON, Addon = ...
 local Addon = LibStub('WildAddon-1.0'):NewAddon(ADDON, Addon, 'LibItemCache-2.0')
 Addon.IsRetail = WOW_PROJECT_ID == WOW_PROJECT_MAINLINE
-Addon.Version = GetAddOnMetadata(Addon.Name, 'Version')
+Addon.Version = GetAddOnMetadata(ADDON, 'Version')
 
-local L = LibStub('AceLocale-3.0'):GetLocale(Addon.Name)
-local SETS = Addon.Name .. '_Sets'
+local L = LibStub('AceLocale-3.0'):GetLocale(ADDON)
+local SETS = ADDON .. '_Sets'
 
 local function AsArray(table)
 	return setmetatable(table, {__metatable = 1})
@@ -154,8 +154,8 @@ end
 
 --[[ Options ]]--
 
-function Addon:ShowOptions(owner)
-	if LoadAddOn(Addon.Name .. '_Config') then
-		Addon.Options:Open()
+function Addon:ShowOptions()
+	if LoadAddOn(ADDON .. '_Config') then
+		Addon.GeneralOptions:Open()
 	end
 end

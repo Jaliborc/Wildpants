@@ -164,6 +164,8 @@ function Bag:Update()
 		self:SetIcon('Interface/Buttons/Button-Backpack-Up')
 	elseif self:IsReagents() then
 		self:SetIcon('Interface/Icons/Achievement_GuildPerk_BountifulBags')
+	elseif self:IsKeyring() then
+		self:SetIcon('Interface/ContainerFrame/KeyRing-Bag-Icon')
 	else
 		self:SetIcon(info.icon or 'Interface/PaperDoll/UI-PaperDoll-Slot-Bag')
 	  self.link = info.link
@@ -222,6 +224,8 @@ function Bag:UpdateTooltip()
 		GameTooltip:SetText(BANK, 1,1,1)
 	elseif self:IsReagents() then
 		GameTooltip:SetText(REAGENT_BANK, 1,1,1)
+	elseif self:IsKeyring() then
+		GameTooltip:SetText(KEYRING, 1,1,1)
 	elseif self.link and self:GetInfo().cached then
 		GameTooltip:SetHyperlink(self.link)
 	elseif self.link then
@@ -299,6 +303,10 @@ end
 
 function Bag:IsReagents()
 	return Addon:IsReagents(self:GetSlot())
+end
+
+function Bag:IsKeyring()
+	return Addon:IsKeyring(self:GetSlot())
 end
 
 function Bag:IsBankBag()

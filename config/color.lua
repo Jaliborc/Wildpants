@@ -18,6 +18,7 @@ function Color:Populate()
 		self:AddCheck('glowSets')
 		self:AddCheck('glowUnusable')
 		self:AddCheck('glowNew')
+		self:AddCheck('glowPoor')
 	end)
 	self:AddPercentage('glowAlpha'):SetWidth(585)
 
