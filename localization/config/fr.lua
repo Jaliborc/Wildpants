@@ -1,6 +1,5 @@
 --[[
 	French Localization
-		***
 --]]
 
 local CONFIG = ...

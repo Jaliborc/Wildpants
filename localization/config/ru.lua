@@ -1,6 +1,5 @@
 --[[
 	Russian Localization
-		***
 --]]
 
 local CONFIG = ...
