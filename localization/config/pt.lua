@@ -1,6 +1,5 @@
 --[[
 	Brasilian Portuguese Localization
-		***
 --]]
 
 local CONFIG = ...
