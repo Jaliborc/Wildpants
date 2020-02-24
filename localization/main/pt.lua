@@ -1,5 +1,5 @@
 --[[
-	Brasilian Portuguese Localization
+	Portuguese Localization
 --]]
 
 local ADDON = ...
