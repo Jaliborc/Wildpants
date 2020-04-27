@@ -141,7 +141,7 @@ function Items:Layout()
     -- Calculate Offset
     local totalSlots = 0
     for j = BACKPACK_CONTAINER, NUM_BAG_SLOTS do
-        totalSlots = totalSlots GetContainerNumSlots(j)
+        totalSlots = totalSlots + GetContainerNumSlots(j)
     end
     local offset = self:calcOffset(columns,totalSlots)
 
@@ -183,7 +183,7 @@ function Items:Layout()
                 -- This should set the offset for each bag individually when displayed with breaks
                 -- I need better documentation on what this one does vs the above
                 if profile.emptyOnTop then
-                    x = self:calcOffset(columns,getContainerNumSlots(k-1))
+                    x = self:calcOffset(columns,GetContainerNumSlots(k-1))
                 else
                     x = 0
                 end
