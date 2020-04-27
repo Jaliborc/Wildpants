@@ -67,6 +67,10 @@ function Frames:Populate()
 				self:AddCheck('exclusiveReagent')
 			end
 		end)
+        --Additional row to support empty slots on top
+        self:AddRow(70, function()
+            self:AddCheck('emptyOnTop')
+        end)
 
     self:AddRow(150, function()
       self:AddChoice {arg = 'strata', {key = 'LOW', text = LOW}, {key = 'MEDIUM', text = AUCTION_TIME_LEFT2}, {key = 'HIGH', text = HIGH}}
