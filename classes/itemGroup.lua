@@ -142,18 +142,16 @@ function Items:Layout()
     totalSlots = 0
     if (self.frame.frameID == "bank") then
         local bankstart = (BACKPACK_CONTAINER + NUM_BAG_SLOTS + 1)
-
         if not profile.hiddenBags[REAGENTBANK_CONTAINER] and profile.exclusiveReagent then
             totalSlots = 0
         else
             totalSlots = GetContainerNumSlots(BANK_CONTAINER)
-            for j = bankstart, bankstart + NUM_BANKBAGSLOTS do
+            for j = bankstart, bankstart - 1 + NUM_BANKBAGSLOTS do
                 if(profile.hiddenBags[j] ~= true) then
                     totalSlots = totalSlots + GetContainerNumSlots(j)
                 end
             end
         end
-
         if REAGENTBANK_CONTAINER and not profile.hiddenBags[REAGENTBANK_CONTAINER] then
             totalSlots = totalSlots + GetContainerNumSlots(REAGENTBANK_CONTAINER)
         end
@@ -164,7 +162,6 @@ function Items:Layout()
             end
         end
     end
-
     local offset = self:calcOffset(columns,totalSlots)
 
     -- This should set the offset when all bags are displayed without breaks
