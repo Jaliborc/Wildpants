@@ -145,20 +145,20 @@ function Items:Layout()
         if not profile.hiddenBags[REAGENTBANK_CONTAINER] and profile.exclusiveReagent then
             totalSlots = 0
         else
-            totalSlots = GetContainerNumSlots(BANK_CONTAINER)
+            totalSlots = self:NumSlots(BANK_CONTAINER)
             for j = bankstart, bankstart - 1 + NUM_BANKBAGSLOTS do
                 if(profile.hiddenBags[j] ~= true) then
-                    totalSlots = totalSlots + GetContainerNumSlots(j)
+                    totalSlots = totalSlots + self:NumSlots(j)
                 end
             end
         end
         if REAGENTBANK_CONTAINER and not profile.hiddenBags[REAGENTBANK_CONTAINER] then
-            totalSlots = totalSlots + GetContainerNumSlots(REAGENTBANK_CONTAINER)
+            totalSlots = totalSlots + self:NumSlots(REAGENTBANK_CONTAINER)
         end
     elseif (self.frame.frameID == "inventory") then
         for j = BACKPACK_CONTAINER, NUM_BAG_SLOTS do
             if (profile.hiddenBags[j] ~= true) then
-                totalSlots = totalSlots + GetContainerNumSlots(j)
+                totalSlots = totalSlots + self:NumSlots(j)
             end
         end
     end
@@ -176,7 +176,7 @@ function Items:Layout()
         -- This should set the offset for each bag individually when displayed with breaks
         -- I need better documentation on what this one does vs the below 
         if profile.emptyOnTop and self:BagBreak() then
-            x = self:calcOffset(columns,GetContainerNumSlots(k-1))
+            x = self:calcOffset(columns,self:NumSlots(k-1))
         end
 
 		if slots then
@@ -202,7 +202,7 @@ function Items:Layout()
                 -- This should set the offset for each bag individually when displayed with breaks
                 -- I need better documentation on what this one does vs the above
                 if profile.emptyOnTop then
-                    x = self:calcOffset(columns,GetContainerNumSlots(k-1))
+                    x = self:calcOffset(columns,self:NumSlots(k-1))
                 else
                     x = 0
                 end
