@@ -17,6 +17,8 @@ local Events = Addon:NewModule('Events')
 
 --[[ Events ]]--
 
+Events.flaggedBags = {};
+
 function Events:OnEnable()
 	self.firstVisit = true
 	self.sizes, self.types = {}, {}
@@ -27,15 +29,24 @@ function Events:OnEnable()
 	end
 
 	self:RegisterEvent('BAG_UPDATE')
+	self:RegisterEvent('BAG_UPDATE_DELAYED')
 	self:RegisterEvent('PLAYERBANKSLOTS_CHANGED')
 	self:RegisterMessage('CACHE_BANK_OPENED')
 	self:UpdateSize(BACKPACK_CONTAINER)
-	self:UpdateBags()
+	self:UpdateAllBags()
 end
 
-function Events:BAG_UPDATE(event, bag)
-	self:UpdateBags()
-	self:UpdateContent(bag)
+function Events:BAG_UPDATE(_, bag)
+	self.flaggedBags[bag] = true
+end
+
+function Events:BAG_UPDATE_DELAYED()
+	for bag in pairs(self.flaggedBags) do
+		self:UpdateBag(bag)
+		self:UpdateContent(bag)
+	end
+
+	self.flaggedBags = {}
 end
 
 function Events:PLAYERBANKSLOTS_CHANGED()
@@ -66,11 +77,15 @@ end
 
 --[[ API ]]--
 
-function Events:UpdateBags()
+function Events:UpdateBag(bag)
+	if not self:UpdateSize(bag) then
+		self:UpdateType(bag)
+	end
+end
+
+function Events:UpdateAllBags()
 	for bag = 1, NUM_BAG_SLOTS do
-		if not self:UpdateSize(bag) then
-			self:UpdateType(bag)
-		end
+		self:UpdateBag(bag)
 	end
 end
 
