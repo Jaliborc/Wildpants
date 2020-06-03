@@ -29,6 +29,7 @@ function Events:OnEnable()
 	end
 
 	self:RegisterEvent('BAG_UPDATE')
+	self:RegisterEvent('BAG_CLOSED', 'BAG_UPDATE')
 	self:RegisterEvent('BAG_UPDATE_DELAYED')
 	self:RegisterEvent('PLAYERBANKSLOTS_CHANGED')
 	self:RegisterMessage('CACHE_BANK_OPENED')
