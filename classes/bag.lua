@@ -119,6 +119,8 @@ end
 
 --[[ Events ]]--
 
+Bag.flaggedBags = {}
+
 function Bag:RegisterEvents()
 	self:Update()
 
@@ -127,6 +129,7 @@ function Bag:RegisterEvents()
 	self:RegisterFrameSignal('FILTERS_CHANGED', 'UpdateToggle')
 	self:RegisterEvent('BAG_CLOSED', 'BAG_UPDATE')
 	self:RegisterEvent('BAG_UPDATE')
+	self:RegisterEvent('BAG_UPDATE_DELAYED')
 
 	if self:IsBank() or self:IsBankBag() or self:IsReagents() then
 		self:RegisterMessage('CACHE_BANK_OPENED', 'RegisterEvents')
@@ -146,9 +149,17 @@ function Bag:RegisterEvents()
 end
 
 function Bag:BAG_UPDATE(_, bag)
-	if bag == self:GetSlot() then
-		self:Update()
+	self.flaggedBags[bag] = true
+end
+
+function Bag:BAG_UPDATE_DELAYED ()
+	for bag in pairs(self.flaggedBags) do
+		if bag == self:GetSlot() then
+			self:Update()
+		end
 	end
+
+	self.flaggedBags = {}
 end
 
 
