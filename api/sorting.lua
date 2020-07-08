@@ -45,6 +45,9 @@ function Sort:Iterate()
   local stackable = function(item)
     return (item.count or 1) < (item.stack or 1)
   end
+  local item_distance = function(item, goal)
+    return math.abs(item.bag - goal.bag) + math.abs(item.slot - goal.slot)
+  end
 
   for k, target in pairs(spaces) do
     local item = target.item
@@ -66,6 +69,22 @@ function Sort:Iterate()
     for index = 1, min(#spaces, #order) do
       local goal, item = spaces[index], order[index]
       if item.space ~= goal then
+        local max_distance = item_distance(item.space, goal)
+        local best_item, best_goal = item, goal
+        for j = index, min(#spaces, #order) do
+          if order[j].id == item.id and order[j].spaces ~= spaces[j] then
+            local new_goal, new_item = spaces[j], order[j]
+            local new_distance = item_distance(new_item.space, new_goal)
+            if new_distance > max_distance then
+              best_item = new_item
+              best_goal = new_goal
+              max_distance = new_distance
+            end
+          end
+        end
+        if best_goal ~= goal and best_item.space ~= goal then
+          item = best_item
+        end
         todo = not self:Move(item.space, goal) or todo
       else
         item.placed = true
