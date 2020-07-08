@@ -216,7 +216,7 @@ end
 --[[ Appearance ]]--
 
 function Item:UpdateBorder()
-	local id, quality = self.info.id, self.info.quality
+	local id, quality, link = self.info.id, self.info.quality, self.info.link
 	local new = Addon.sets.glowNew and self:IsNew()
 	local quest, questID = self:IsQuestItem()
 	local paid = self:IsPaid()
@@ -240,6 +240,7 @@ function Item:UpdateBorder()
 	end
 
 	self.IconBorder:SetTexture(id and C_ArtifactUI and C_ArtifactUI.GetRelicInfoByItemID(id) and 'Interface/Artifacts/RelicIconFrame' or 'Interface/Common/WhiteIconFrame')
+
 	self.IconBorder:SetVertexColor(r,g,b)
 	self.IconBorder:SetShown(r)
 
@@ -249,7 +250,16 @@ function Item:UpdateBorder()
 	self.NewItemTexture:SetAtlas(quality and NEW_ITEM_ATLAS_BY_QUALITY[quality] or 'bags-glow-white')
 	self.NewItemTexture:SetShown(new and not paid)
 
-	self.IconOverlay:SetShown(id and C_AzeriteEmpoweredItem and C_AzeriteEmpoweredItem.IsAzeriteEmpoweredItemByID(id))
+	if id then
+		if link and IsCorruptedItem(link) then
+			self.IconOverlay:SetAtlas('Nzoth-inventory-icon')
+		elseif C_AzeriteEmpoweredItem.IsAzeriteEmpoweredItemByID(id) then
+			self.IconOverlay:SetAtlas('AzeriteIconFrame')
+		end
+	end
+
+	self.IconOverlay:SetShown(id and C_AzeriteEmpoweredItem and C_AzeriteEmpoweredItem.IsAzeriteEmpoweredItemByID(id) or link and IsCorruptedItem(link))
+
 	self.JunkIcon:SetShown(Addon.sets.glowPoor and quality == LE_ITEM_QUALITY_POOR and not self.info.worthless)
 	self.BattlepayItemTexture:SetShown(new and paid)
 	self.QuestBorder:SetShown(questID)
