@@ -217,6 +217,7 @@ end
 
 function Item:UpdateBorder()
 	local id, quality, link = self.info.id, self.info.quality, self.info.link
+	local overlay = (link and IsCorruptedItem and IsCorruptedItem(link) and 'Nzoth-inventory-icon') or (id and C_AzeriteEmpoweredItem and C_AzeriteEmpoweredItem.IsAzeriteEmpoweredItemByID(id) and 'AzeriteIconFrame')
 	local new = Addon.sets.glowNew and self:IsNew()
 	local quest, questID = self:IsQuestItem()
 	local paid = self:IsPaid()
@@ -227,12 +228,16 @@ function Item:UpdateBorder()
 		self.newitemglowAnim:Play()
 	end
 
+	if overlay then
+		self.IconOverlay:SetAtlas(overlay)
+	end
+
 	if id then
 		if Addon.sets.glowQuest and quest then
 			r,g,b = 1, .82, .2
 		elseif Addon.sets.glowUnusable and Unfit:IsItemUnusable(id) then
 			r,g,b = RED_FONT_COLOR.r, RED_FONT_COLOR.g, RED_FONT_COLOR.b
-		elseif Addon.sets.glowSets and Search:InSet(self.info.link) then
+		elseif Addon.sets.glowSets and Search:InSet(link) then
 	  	r,g,b = .1, 1, 1
 		elseif Addon.sets.glowQuality and quality and quality > 1 then
 			r,g,b = GetItemQualityColor(quality)
@@ -240,7 +245,6 @@ function Item:UpdateBorder()
 	end
 
 	self.IconBorder:SetTexture(id and C_ArtifactUI and C_ArtifactUI.GetRelicInfoByItemID(id) and 'Interface/Artifacts/RelicIconFrame' or 'Interface/Common/WhiteIconFrame')
-
 	self.IconBorder:SetVertexColor(r,g,b)
 	self.IconBorder:SetShown(r)
 
@@ -250,19 +254,10 @@ function Item:UpdateBorder()
 	self.NewItemTexture:SetAtlas(quality and NEW_ITEM_ATLAS_BY_QUALITY[quality] or 'bags-glow-white')
 	self.NewItemTexture:SetShown(new and not paid)
 
-	if id then
-		if link and IsCorruptedItem(link) then
-			self.IconOverlay:SetAtlas('Nzoth-inventory-icon')
-		elseif C_AzeriteEmpoweredItem.IsAzeriteEmpoweredItemByID(id) then
-			self.IconOverlay:SetAtlas('AzeriteIconFrame')
-		end
-	end
-
-	self.IconOverlay:SetShown(id and C_AzeriteEmpoweredItem and C_AzeriteEmpoweredItem.IsAzeriteEmpoweredItemByID(id) or link and IsCorruptedItem(link))
-
 	self.JunkIcon:SetShown(Addon.sets.glowPoor and quality == LE_ITEM_QUALITY_POOR and not self.info.worthless)
 	self.BattlepayItemTexture:SetShown(new and paid)
 	self.QuestBorder:SetShown(questID)
+	self.IconOverlay:SetShown(overlay)
 end
 
 function Item:UpdateSlotColor()

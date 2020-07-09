@@ -42,11 +42,9 @@ function Sort:Iterate()
   local todo = false
   local spaces = self:GetSpaces()
   local families = self:GetFamilies(spaces)
+
   local stackable = function(item)
     return (item.count or 1) < (item.stack or 1)
-  end
-  local item_distance = function(item, goal)
-    return math.abs(item.bag - goal.bag) + math.abs(item.slot - goal.slot)
   end
 
   for k, target in pairs(spaces) do
@@ -63,28 +61,30 @@ function Sort:Iterate()
     end
   end
 
-  for _, family in pairs(families) do
-    local spaces, order = self:GetOrder(spaces, family)
+  local moveDistance = function(item, goal)
+    return math.abs(item.space.index - goal.index)
+  end
 
-    for index = 1, min(#spaces, #order) do
-      local goal, item = spaces[index], order[index]
+  for _, family in pairs(families) do
+    local order, spaces = self:GetOrder(spaces, family)
+    local n = min(#order, #spaces)
+
+    for index = 1, n do
+      local item, goal = order[index], spaces[index]
       if item.space ~= goal then
-        local max_distance = item_distance(item.space, goal)
-        local best_item, best_goal = item, goal
-        for j = index, min(#spaces, #order) do
-          if order[j].id == item.id and order[j].spaces ~= spaces[j] then
-            local new_goal, new_item = spaces[j], order[j]
-            local new_distance = item_distance(new_item.space, new_goal)
-            if new_distance > max_distance then
-              best_item = new_item
-              best_goal = new_goal
-              max_distance = new_distance
+        local distance = moveDistance(item, goal)
+
+        for j = index, n do
+          local other = order[j]
+          if other.id == item.id then
+            local d = moveDistance(other, spaces[j])
+            if d > distance then
+              item = other
+              distance = d
             end
           end
         end
-        if best_goal ~= goal and best_item.space ~= goal then
-          item = best_item
-        end
+
         todo = not self:Move(item.space, goal) or todo
       else
         item.placed = true
@@ -140,7 +140,7 @@ function Sort:GetFamilies(spaces)
 end
 
 function Sort:GetOrder(spaces, family)
-  local slots, order = {}, {}
+  local order, slots = {}, {}
 
   for _, space in ipairs(spaces) do
     local item = space.item
@@ -154,7 +154,7 @@ function Sort:GetOrder(spaces, family)
   end
 
   sort(order, self.Rule)
-  return slots, order
+  return order, slots
 end
 
 
