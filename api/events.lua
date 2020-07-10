@@ -19,7 +19,7 @@ local Events = Addon:NewModule('Events')
 
 function Events:OnEnable()
 	self.firstVisit = true
-	self.sizes, self.types = {}, {}
+	self.sizes, self.types, self.queue = {}, {}, {}
 
 	if REAGENTBANK_CONTAINER then
 		self:RegisterEvent('PLAYERREAGENTBANKSLOTS_CHANGED')
@@ -27,6 +27,7 @@ function Events:OnEnable()
 	end
 
 	self:RegisterEvent('BAG_UPDATE')
+	self:RegisterEvent('BAG_UPDATE_DELAYED')
 	self:RegisterEvent('PLAYERBANKSLOTS_CHANGED')
 	self:RegisterMessage('CACHE_BANK_OPENED')
 	self:UpdateSize(BACKPACK_CONTAINER)
@@ -34,8 +35,15 @@ function Events:OnEnable()
 end
 
 function Events:BAG_UPDATE(event, bag)
+	self.queue[bag] = true
+end
+
+function Events:BAG_UPDATE_DELAYED()
 	self:UpdateBags()
-	self:UpdateContent(bag)
+	
+	if self.queue[BACKPACK_CONTAINER] then
+		self:UpdateContent(BACKPACK_CONTAINER)
+	end
 end
 
 function Events:PLAYERBANKSLOTS_CHANGED()
@@ -68,8 +76,8 @@ end
 
 function Events:UpdateBags()
 	for bag = 1, NUM_BAG_SLOTS do
-		if not self:UpdateSize(bag) then
-			self:UpdateType(bag)
+		if not self:UpdateSize(bag) and not self:UpdateType(bag) and self.queue[bag] then
+			self:UpdateContent(bag)
 		end
 	end
 end
@@ -90,7 +98,7 @@ function Events:UpdateSize(bag)
 		local _, kind = GetContainerNumFreeSlots(bag)
 		self.types[bag] = kind
 		self.sizes[bag] = new
-
+		self.queue[bag] = nil
 		self:SendSignal('BAG_UPDATE_SIZE', bag)
 		return true
 	end
@@ -102,10 +110,12 @@ function Events:UpdateType(bag)
 
 	if old ~= new then
 		self.types[bag] = new
-		self:SendSignal('BAG_UPDATE_CONTENT', bag)
+		self:UpdateContent(bag)
+		return true
 	end
 end
 
 function Events:UpdateContent(bag)
+	self.queue[bag] = nil
 	self:SendSignal('BAG_UPDATE_CONTENT', bag)
 end
