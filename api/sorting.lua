@@ -76,7 +76,7 @@ function Sort:Iterate()
 
         for j = index, n do
           local other = order[j]
-          if other.id == item.id then
+          if other.id == item.id and other.count == item.count then
             local d = moveDistance(other, spaces[j])
             if d > distance then
               item = other
