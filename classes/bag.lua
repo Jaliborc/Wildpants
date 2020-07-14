@@ -120,6 +120,8 @@ end
 --[[ Events ]]--
 
 function Bag:RegisterEvents()
+	self.queue = {}
+
 	self:Update()
 
 	self:UnregisterAll()
@@ -146,9 +148,17 @@ function Bag:RegisterEvents()
 end
 
 function Bag:BAG_UPDATE(_, bag)
-	if bag == self:GetSlot() then
-		self:Update()
+	self.queue[bag] = true
+end
+
+function Bag:BAG_UPDATE_DELAYED ()
+	for bag in pairs(self.queue) do
+		if bag == self:GetSlot() then
+			self:Update()
+		end
 	end
+
+	self.queue = {}
 end
 
 
