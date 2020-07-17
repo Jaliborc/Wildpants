@@ -42,6 +42,8 @@ function Events:BAG_UPDATE_DELAYED()
 	for bag in pairs(self.queue) do
 		self:UpdateBag(bag)
 	end
+
+	self.queue = {}
 end
 
 function Events:PLAYERBANKSLOTS_CHANGED()
