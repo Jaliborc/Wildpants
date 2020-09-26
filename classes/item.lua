@@ -99,6 +99,12 @@ function Item:GetBlizzard(id)
 end
 
 function Item:Bind(frame)
+	for k in pairs(frame) do
+		if self[k] then
+			frame[k] = nil
+		end
+	end
+
 	local class = self
 	while class do
 		for k,v in pairs(class) do
