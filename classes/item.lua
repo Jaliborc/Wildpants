@@ -436,10 +436,9 @@ function Item:IsQuestItem()
 end
 
 function Item:IsUpgrade()
-	if PawnIsContainerItemAnUpgrade then -- Temporary fix for Blizzard API taint with IsContainerItemAnUpgrade to add Pawn functionality
-		return PawnIsContainerItemAnUpgrade(self:GetBag(), self:GetID())
-	elseif IsContainerItemAnUpgrade then -- difference bettween nil and false
-		return IsContainerItemAnUpgrade(self:GetBag(), self:GetID())
+	local criteria = PawnIsContainerItemAnUpgrade or IsContainerItemAnUpgrade
+	if criteria then -- difference bettween nil and false
+		return criteria(self:GetBag(), self:GetID())
 	end
 end
 
