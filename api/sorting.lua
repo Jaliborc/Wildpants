@@ -45,6 +45,10 @@ function Sort:Iterate()
   local stackable = function(item)
     return (item.count or 1) < (item.stack or 1)
   end
+	
+	local iskey = function(item)
+		return string.find(item.name, "Key")
+	end
 
   for k, target in pairs(spaces) do
     local item = target.item
@@ -53,7 +57,7 @@ function Sort:Iterate()
         local from = spaces[j]
         local other = from.item
 
-        if item.id == other.id and stackable(other) then
+        if item.id == other.id and stackable(other) and not iskey(item) then
           self:Move(from, target)
           self:Delay(0.05, 'Run')
         end
@@ -71,7 +75,7 @@ function Sort:Iterate()
 
     for index = 1, n do
       local item, goal = order[index], spaces[index]
-      if item.space ~= goal then
+      if item.space ~= goal and not iskey(item) then
         local distance = moveDistance(item, goal)
 
         for j = index, n do
