@@ -155,6 +155,18 @@ local function OnQuest(tooltip, type, quest)
 	AddOwners(tooltip, GetQuestItemLink(type, quest))
 end
 
+local function OnSetTradeSkillItem(tooltip, skill, i)
+	if i then
+		AddOwners(tooltip, GetTradeSkillReagentItemLink(skill, i))
+	else
+		AddOwners(tooltip, GetTradeSkillItemLink(skill))
+	end
+end
+
+local function OnSetCraftItem(tooltip, i, ri)
+	AddOwners(tooltip, GetCraftReagentItemLink(i, ri))
+end
+
 local function OnClear(tooltip)
 	tooltip.__tamedCounts = false
 end
@@ -169,6 +181,9 @@ local function HookTip(tooltip)
 	if C_TradeSkillUI then
 		hooksecurefunc(tooltip, 'SetRecipeReagentItem', OnTradeSkill)
 		hooksecurefunc(tooltip, 'SetRecipeResultItem', OnTradeSkill)
+    else
+		hooksecurefunc(tooltip, 'SetTradeSkillItem', OnSetTradeSkillItem)
+		hooksecurefunc(tooltip, 'SetCraftItem', OnSetCraftItem)
 	end
 end
 
