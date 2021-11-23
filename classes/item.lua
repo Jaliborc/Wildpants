@@ -436,10 +436,15 @@ function Item:IsQuestItem()
 end
 
 function Item:IsUpgrade()
-	local criteria = PawnIsContainerItemAnUpgrade or IsContainerItemAnUpgrade
-	if criteria then -- difference bettween nil and false
-		return criteria(self:GetBag(), self:GetID())
+	if not PawnShouldItemLinkHaveUpgradeArrow then
+		return false
 	end
+
+	local _, Count, _, _, _, _, ItemLink = GetContainerItemInfo(self:GetBag(), self:GetID())
+	if not Count then return false end
+	if not ItemLink then return nil end
+
+	return PawnShouldItemLinkHaveUpgradeArrow(ItemLink, true)
 end
 
 function Item:IsNew()
