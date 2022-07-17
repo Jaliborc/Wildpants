@@ -76,24 +76,37 @@ local function AddOwners(tooltip, link)
 			text = ItemText[owner][itemID]
 		else
 			if not info.isguild then
-				local equip = FindItemCount(owner, 'equip', itemID)
-				local vault = FindItemCount(owner, 'vault', itemID)
+				local equip
+				local vault
 				local bags, bank = 0,0
 
+				if (Addon.GetItemCount) then
+					equip = Addon:GetItemCount(owner, 'equip', itemID)
+					vault = Addon:GetItemCount(owner, 'vault', itemID)
+				else
+					equip = FindItemCount(owner, 'equip', itemID)
+					vault = FindItemCount(owner, 'vault', itemID)
+				end
+
 				if info.cached then
-					for i = BACKPACK_CONTAINER, NUM_BAG_SLOTS do
-						bags = bags + FindItemCount(owner, i, itemID)
-					end
+					if (Addon.GetItemCount) then
+						bags = Addon:GetItemCount(owner, 'bags', itemID)
+						bank = Addon:GetItemCount(owner, 'bank', itemID)
+					else
+						for i = BACKPACK_CONTAINER, NUM_BAG_SLOTS do
+							bags = bags + FindItemCount(owner, i, itemID)
+						end
 
-					for i = FIRST_BANK_SLOT, LAST_BANK_SLOT do
-						bank = bank + FindItemCount(owner, i, itemID)
-					end
+						for i = FIRST_BANK_SLOT, LAST_BANK_SLOT do
+							bank = bank + FindItemCount(owner, i, itemID)
+						end
 
-					if REAGENTBANK_CONTAINER then
-						bank = bank + FindItemCount(owner, REAGENTBANK_CONTAINER, itemID)
-					end
+						if REAGENTBANK_CONTAINER then
+							bank = bank + FindItemCount(owner, REAGENTBANK_CONTAINER, itemID)
+						end
 
-					bank = bank + FindItemCount(owner, BANK_CONTAINER, itemID)
+						bank = bank + FindItemCount(owner, BANK_CONTAINER, itemID)
+					end
 				else
 					local owned = GetItemCount(itemID, true)
 					local carrying = GetItemCount(itemID)
