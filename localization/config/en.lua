@@ -30,6 +30,7 @@ itself as the standard ones do, such as the |cffffffffSpellbook|r
 or the |cffffffffDungeon Finder|r, and will not be movable.]]
 
 L.BagToggle = 'Bags Toggle'
+L.Currency = 'Currencies'
 L.Money = 'Money'
 L.Broker = 'Databroker Plugins'
 L.Sort = 'Sort Button'

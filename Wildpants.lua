@@ -61,19 +61,20 @@ local FrameDefaults = {
 
 local ProfileDefaults = {
 	inventory = SetDefaults({
-		reversedTabs = true,
 		borderColor = {1, 1, 1, 1},
+		currency = true, broker = false, reversedTabs = true,
 		point = 'BOTTOMRIGHT',
 		x = -50, y = 100,
-		columns = 8,
+		columns = 10,
 		width = 384,
 		height = 200,
 	}, FrameDefaults),
 
 	bank = SetDefaults({
 		borderColor = {1, 1, 0, 1},
+		currency = true,
 		point = 'LEFT',
-		columns = 12,
+		columns = 14,
 		width = 600,
 		height = 500,
 		x = 95
