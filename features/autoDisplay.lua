@@ -45,7 +45,7 @@ function AutoDisplay:RegisterGameEvents()
 	end
 
 	if C_ScrappingMachineUI then
-		self:RegisterDisplayEvents('displayScrapping', 'SCRAPPING_MACHINE_SHOW', 'SCRAPPING_MACHINE_CLOSE')
+		--self:RegisterDisplayEvents('displayScrapping', 'SCRAPPING_MACHINE_SHOW', 'SCRAPPING_MACHINE_CLOSE')
 	end
 
 	if not Addon.sets.displayMail then

@@ -41,10 +41,15 @@ end
 
 function MoneyFrame:Update()
   local v = ''
-  for i=1, MAX_WATCHED_TOKENS do
+	local i = 1
+
+  while true do
     local data = C_CurrencyInfo.GetBackpackCurrencyInfo(i)
     if data then
       v = v .. data.quantity .. '|T' .. data.iconFileID .. ':15:15:2:0|t  '
+			i = i + 1
+		else
+			break
     end
   end
 

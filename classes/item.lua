@@ -227,7 +227,7 @@ function Item:UpdateBorder()
 	local new = Addon.sets.glowNew and self:IsNew()
 	local quest, questID = self:IsQuestItem()
 	local paid = self:IsPaid()
-	local r,g,b
+	local r,g,b = 0,0,0
 
 	if new and not self.flashAnim:IsPlaying() then
 		self.flashAnim:Play()
@@ -267,11 +267,15 @@ function Item:UpdateBorder()
 end
 
 function Item:UpdateSlotColor()
-	local color = not self.info.id and Addon.sets.colorSlots and Addon.sets[self:GetSlotType() .. 'Color'] or {}
-	local r,g,b = color[1] or 1, color[2] or 1, color[3] or 1
+	if not self.info.id then
+		local color = Addon.sets.colorSlots and Addon.sets[self:GetSlotType() .. 'Color']
+		local r,g,b = color[1] or 1, color[2] or 1, color[3] or 1
 
-	SetItemButtonTextureVertexColor(self, r,g,b)
-	self:GetNormalTexture():SetVertexColor(r,g,b)
+		SetItemButtonTextureVertexColor(self, r,g,b)
+		self:GetNormalTexture():SetVertexColor(r,g,b)
+	else
+		self:GetNormalTexture():SetVertexColor(1,1,1)
+	end
 end
 
 function Item:UpdateUpgradeIcon()
@@ -289,10 +293,14 @@ end
 
 function Item:UpdateCooldown()
 	if self.info.id and (not self.info.cached) then
-		ContainerFrame_UpdateCooldown(self:GetBag(), self)
+			local start, duration, enable = GetContainerItemCooldown(self:GetBag(), self:GetID())
+			local fade = duration > 0 and 0.4 or 1
+
+			CooldownFrame_Set(self.Cooldown, start, duration, enable)
+			SetItemButtonTextureVertexColor(self, fade,fade,fade)
 	else
+		CooldownFrame_Set(self.Cooldown, 0,0,0)
 		self.Cooldown:Hide()
-		CooldownFrame_Set(self.Cooldown, 0, 0, 0)
 	end
 end
 
@@ -333,7 +341,7 @@ end
 --[[ Tooltip ]]--
 
 function Item:UpdateTooltip()
-	if self.info.link then
+	--[[if self.info.link then
 		if self.info.cached then
 			self:ShowCachedTooltip()
 		else
@@ -342,7 +350,7 @@ function Item:UpdateTooltip()
 		end
 	else
 		self:OnLeave()
-	end
+	end]]--
 end
 
 function Item:ShowTooltip()
