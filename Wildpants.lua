@@ -61,8 +61,9 @@ local FrameDefaults = {
 
 local ProfileDefaults = {
 	inventory = SetDefaults({
+		reversedTabs = true,
 		borderColor = {1, 1, 1, 1},
-		currency = true, broker = false, reversedTabs = true,
+		currency = true, broker = Addon.IsClassic,
 		point = 'BOTTOMRIGHT',
 		x = -50, y = 100,
 		columns = 10,

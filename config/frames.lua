@@ -43,7 +43,7 @@ function Frames:Populate()
 				if self.frame ~= 'vault' then
 					self:AddCheck('money')
 
-          if self.frame ~= 'guild' then
+          if not Addon.IsClassic and self.frame ~= 'guild' then
             self:AddCheck('currency')
           end
 				end
