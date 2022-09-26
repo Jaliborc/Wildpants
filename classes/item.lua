@@ -177,10 +177,16 @@ function Item:OnPostClick(button)
 end
 
 function Item:OnEnter()
-	self:UpdateTooltip()
+	if self.info.cached then
+		self:AttachDummy()
+	else
+		self:SetScript('OnUpdate', self.UpdateTooltip)
+		self:UpdateTooltip()
+	end
 end
 
 function Item:OnLeave()
+	self:SetScript('OnUpdate', nil)
 	self:Super(Item):OnLeave()
 	ResetCursor()
 end
@@ -200,22 +206,18 @@ function Item:Update()
 	SetItemButtonCount(self, self.info.count)
 end
 
-function Item:UpdateLocked()
-	self.info = self:GetInfo()
-	self:SetLocked(self.info.locked)
-end
-
 function Item:UpdateSecondary()
 	if self:GetFrame() then
 		self:UpdateFocus()
 		self:UpdateSearch()
 		self:UpdateCooldown()
 		self:UpdateUpgradeIcon()
-
-		if GameTooltip:IsOwned(self) then
-			self:UpdateTooltip()
-		end
 	end
+end
+
+function Item:UpdateLocked()
+	self.info = self:GetInfo()
+	self:SetLocked(self.info.locked)
 end
 
 
@@ -341,92 +343,56 @@ end
 --[[ Tooltip ]]--
 
 function Item:UpdateTooltip()
-	--[[if self.info.link then
-		if self.info.cached then
-			self:ShowCachedTooltip()
-		else
-			self:ShowTooltip()
-			self:UpdateBorder()
-		end
-	else
-		self:OnLeave()
-	end]]--
-end
-
-function Item:ShowTooltip()
-	local bag = self:GetBag()
-	local getSlot = Addon:IsBank(bag) and BankButtonIDToInvSlotID or
-									Addon:IsKeyring(bag) and KeyRingButtonIDToInvSlotID or
-									Addon:IsReagents(bag) and ReagentBankButtonIDToInvSlotID
-
-	if getSlot then
-		GameTooltip:SetOwner(self:GetTipAnchor())
-
-		local _, _, _, speciesID, level, breedQuality, maxHealth, power, speed, name = GameTooltip:SetInventoryItem('player', getSlot(self:GetID()))
-		if speciesID and speciesID > 0 then
-			BattlePetToolTip_Show(speciesID, level, breedQuality, maxHealth, power, speed, name)
-		else
-			if BattlePetTooltip then
-				BattlePetTooltip:Hide()
-			end
-			GameTooltip:Show()
-		end
-
-		CursorUpdate(self)
-	else
-		ContainerFrameItemButton_OnEnter(self)
+	if not self.info.cached then
+		(self:GetInventorySlot() and BankFrameItemButton_OnEnter or ContainerFrameItemButton_OnEnter or ContainerFrameItemButtonMixin.OnUpdate)(self)
 	end
 end
 
-function Item:ShowCachedTooltip()
-	Item.dummy = Item.dummy or Item:CreateDummy()
-	Item.dummy:SetParent(self)
-	Item.dummy:SetAllPoints()
-	Item.dummy:Show()
-end
+function Item:AttachDummy()
+	if not Item.Dummy then
+		local function updateTip(slot)
+			local parent = slot:GetParent()
+			local link = parent.info.link
+			if link then
+				GameTooltip:SetOwner(parent:GetTipAnchor())
+				parent:LockHighlight()
+				CursorUpdate(parent)
 
-function Item:CreateDummy()
-	local function showTooltip(slot)
-		local parent = slot:GetParent()
-		local link = parent.info.link
-		if link then
-			GameTooltip:SetOwner(parent:GetTipAnchor())
-			parent:LockHighlight()
-			CursorUpdate(parent)
+				if link:find('battlepet:') then
+					local _, specie, level, quality, health, power, speed = strsplit(':', link)
+					local name = link:match('%[(.-)%]')
 
-			if link:find('battlepet:') then
-				local _, specie, level, quality, health, power, speed = strsplit(':', link)
-				local name = link:match('%[(.-)%]')
-
-				BattlePetToolTip_Show(tonumber(specie), level, tonumber(quality), health, power, speed, name)
-			else
-				GameTooltip:SetHyperlink(link)
-				GameTooltip:Show()
+					BattlePetToolTip_Show(tonumber(specie), level, tonumber(quality), health, power, speed, name)
+				else
+					GameTooltip:SetHyperlink(link)
+					GameTooltip:Show()
+				end
 			end
 		end
+
+		Item.Dummy = CreateFrame('Button')
+		Item.Dummy:SetScript('OnEnter', updateTip)
+		Item.Dummy:SetScript('OnShow', updateTip)
+		Item.Dummy:RegisterForClicks('anyUp')
+		Item.Dummy:SetToplevel(true)
+
+		Item.Dummy:SetScript('OnClick', function(dummy, button)
+			local parent = dummy:GetParent()
+			if not HandleModifiedItemClick(parent.info.link) then
+				parent:FlashFind(button)
+			end
+		end)
+
+		Item.Dummy:SetScript('OnLeave', function(dummy)
+			dummy:GetParent():UnlockHighlight()
+			dummy:GetParent():OnLeave()
+			dummy:Hide()
+		end)
 	end
 
-	local slot = CreateFrame('Button')
-	slot.UpdateTooltip = showTooltip
-	slot:SetScript('OnEnter', showTooltip)
-	slot:SetScript('OnShow', showTooltip)
-	slot:RegisterForClicks('anyUp')
-	slot:SetToplevel(true)
-
-	slot:SetScript('OnClick', function(slot, button)
-		local parent = slot:GetParent()
-		if not HandleModifiedItemClick(parent.info.link) then
-			parent:FlashFind(button)
-		end
-	end)
-
-	slot:SetScript('OnLeave', function(slot)
-		slot:GetParent():UnlockHighlight()
-		slot:GetParent():OnLeave()
-		slot:Hide()
-	end)
-
-	return slot
+	Item.Dummy:SetParent(self)
+	Item.Dummy:SetAllPoints()
+	Item.Dummy:Show()
 end
 
 
@@ -445,7 +411,7 @@ end
 
 function Item:IsUpgrade()
 	local criteria = PawnIsContainerItemAnUpgrade or IsContainerItemAnUpgrade
-	if criteria then -- difference bettween nil and false
+	if criteria then
 		return criteria(self:GetBag(), self:GetID())
 	end
 end
@@ -477,6 +443,14 @@ end
 function Item:GetSlotType()
 	local bag = self:GetFrame():GetBagInfo(self:GetBag())
 	return self.SlotTypes[bag.family] or 'normal'
+end
+
+function Item:GetInventorySlot()
+	local bag = self:GetBag()
+	local api = Addon:IsBank(bag) and BankButtonIDToInvSlotID or
+							Addon:IsKeyring(bag) and KeyRingButtonIDToInvSlotID or
+							Addon:IsReagents(bag) and ReagentBankButtonIDToInvSlotID
+	return api and api(self:GetID())
 end
 
 function Item:GetEmptyItemIcon()
