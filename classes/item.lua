@@ -344,7 +344,8 @@ end
 
 function Item:UpdateTooltip()
 	if not self.info.cached then
-		(self:GetInventorySlot() and BankFrameItemButton_OnEnter or ContainerFrameItemButton_OnEnter or ContainerFrameItemButtonMixin.OnUpdate)(self)
+		(self:GetInventorySlot() and BankFrameItemButton_OnEnter or
+		 ContainerFrameItemButtonMixin and ContainerFrameItemButtonMixin.OnUpdate or ContainerFrameItemButton_OnEnter)(self)
 	end
 end
 
