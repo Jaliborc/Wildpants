@@ -74,10 +74,12 @@ function Frames:Update()
 end
 
 function Frames:Toggle(id, owner)
+	print('toggle', id)
 	return not self:IsShown(id) and self:Show(id, owner, true) or self:Hide(id, true)
 end
 
 function Frames:Show(id, owner, manual)
+	print('show', id, manual)
 	local frame = self:New(id)
 	if frame then
 		frame.manualShown = frame.manualShown or manual
@@ -88,6 +90,7 @@ function Frames:Show(id, owner, manual)
 end
 
 function Frames:Hide(id, manual)
+	print('hide', id, manual)
 	local frame = self:Get(id).object
 	if frame and (manual or not frame.manualShown) then
 		frame.manualShown = nil

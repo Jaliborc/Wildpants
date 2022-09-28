@@ -1,11 +1,11 @@
 --[[
-	currencyDisplay.lua
+	currencyTracker.lua
 		Shows tracked currencies
 --]]
 
 local ADDON, Addon = ...
 local L = LibStub('AceLocale-3.0'):GetLocale(ADDON)
-local CurrencyDisplay = Addon.Parented:NewClass('CurrencyDisplay', 'Frame')
+local CurrencyTracker = Addon.Parented:NewClass('CurrencyTracker', 'Frame')
 
 if BackpackTokenFrame then
 	for _,k in ipairs {'SetCurrencyBackpack', 'GetBackpackCurrencyInfo', 'GetCurrencyLink'} do
@@ -20,8 +20,8 @@ end
 
 --[[ Construct ]]--
 
-function CurrencyDisplay:New(parent)
-	local f = self:Super(CurrencyDisplay):New(parent)
+function CurrencyTracker:New(parent)
+	local f = self:Super(CurrencyTracker):New(parent)
 	f.Buttons = {}
 	f:SetScript('OnShow', f.RegisterEvents)
 	f:SetScript('OnHide', f.UnregisterAll)
@@ -36,7 +36,7 @@ function CurrencyDisplay:New(parent)
 	return f
 end
 
-function CurrencyDisplay:RegisterEvents()
+function CurrencyTracker:RegisterEvents()
 	self:RegisterEvent('CURRENCY_DISPLAY_UPDATE', 'Update')
 	self:RegisterFrameSignal('OWNER_CHANGED', 'Layout')
 	self:Layout()
@@ -45,12 +45,12 @@ end
 
 --[[ Update ]]--
 
-function CurrencyDisplay:Update()
+function CurrencyTracker:Update()
 	self:Layout()
 	self:SendFrameSignal('ELEMENT_RESIZED')
 end
 
-function CurrencyDisplay:Layout()
+function CurrencyTracker:Layout()
 	for _,button in ipairs(self.Buttons) do
 		button:Hide()
 	end

@@ -1,5 +1,5 @@
 <Ui>
-	<Script file="frameDisplay.lua"/>
+	<Script file="autoDisplay.lua"/>
 	<Script file="basicRules.lua"/>
 	<Script file="slashCommands.lua"/>
 	<Script file="tooltipCounts.lua"/>
