@@ -5,7 +5,7 @@
 
 local ADDON, Addon = ...
 local AutoDisplay = Addon:NewModule('AutoDisplay')
-local Interactions = Enum.PlayerInteractionType or {}
+local Interactions = Enum.PlayerInteractionType
 
 
 --[[ Startup ]]--
@@ -42,11 +42,17 @@ function AutoDisplay:HookBaseUI()
 	WorldMapFrame:HookScript('OnShow', self:If('closeMap', self:Hide('inventory', true)))
 
 	-- banking frames
-	if C_PlayerInteractionManager then
+	if Interactions then
 		self:StopIf(PlayerInteractionFrameManager, 'ShowFrame', function(manager, type)
 			return type == Interactions.Banker and Addon.Frames:Show('bank') or
 						 type == Interactions.GuildBanker and Addon.Frames:Show('guild') or
 						 type == Interactions.VoidStorageBanker and Addon.Frames:Show('vault')
+		end)
+
+		self:StopIf(PlayerInteractionFrameManager, 'HideFrame', function(manager, type)
+			return type == Interactions.Banker and Addon.Frames:Hide('bank') or
+						 type == Interactions.GuildBanker and Addon.Frames:Hide('guild') or
+						 type == Interactions.VoidStorageBanker and Addon.Frames:Hide('vault')
 		end)
 	end
 end
@@ -77,11 +83,13 @@ function AutoDisplay:RegisterGameEvents()
 	self:RegisterMessage(ADDON .. 'UPDATE_ALL', 'RegisterGameEvents')
 
 	-- essential
-	if C_PlayerInteractionManager then
+	if Interactions then
 		self.Interact = {}
 		self:RegisterEvent('PLAYER_INTERACTION_MANAGER_FRAME_SHOW', function(_, type)
 			if bit.band(self.Interact[type] or 0, 0x1) > 0 then
 				Addon.Frames:Show('inventory')
+			elseif bit.band(self.Interact[type] or 0, 0x4) > 0 then
+				Addon.Frames:Hide('inventory')
 			end
 		end)
 
@@ -103,40 +111,43 @@ function AutoDisplay:RegisterGameEvents()
 	end
 
 	-- optional additions
-	self:RegisterDisplayEvents('closeCombat', nil, 'PLAYER_REGEN_DISABLED')
-	self:RegisterDisplayEvents('displayTrade', 'TRADE_SHOW', 'TRADE_CLOSED')
-	self:RegisterDisplayEvents('displayCraft', 'TRADE_SKILL_SHOW', 'TRADE_SKILL_CLOSE')
-	self:RegisterDisplayEvents(HasVehicleActionBar and 'closeVehicle', nil, 'UNIT_ENTERED_VEHICLE')
-	self:RegisterDisplayEvents(C_ItemSocketInfo and 'displaySocket', 'SOCKET_INFO_UPDATE', 'SOCKET_INFO_CLOSE')
-	self:RegisterDisplayEvents('displayBank', 'BANKFRAME_OPENED', 'BANKFRAME_CLOSED', Interactions.Banker)
+	self:AddInteraction(CanGuildBankRepair and 'GuildBanker', 'GUILDBANKFRAME_OPENED', 'GUILDBANKFRAME_CLOSED')
+	self:AddInteraction(CanUseVoidStorage and 'VoidStorageBanker', 'VOID_STORAGE_OPEN', 'VOID_STORAGE_CLOSE')
+	self:AddInteraction(C_ItemSocketInfo and 'Socket', 'SOCKET_INFO_UPDATE', 'SOCKET_INFO_CLOSE')
+	self:AddInteraction(HasVehicleActionBar and 'Vehicle', nil, 'UNIT_ENTERED_VEHICLE')
+	self:AddInteraction('Banker', 'BANKFRAME_OPENED', 'BANKFRAME_CLOSED')
+	self:AddInteraction('Craft', 'TRADE_SKILL_SHOW', 'TRADE_SKILL_CLOSE')
+	self:AddInteraction('Trade', 'TRADE_SHOW', 'TRADE_CLOSED')
+	self:AddInteraction('Combat', nil, 'PLAYER_REGEN_DISABLED')
 
-
-	--[[self:RegisterDisplayEvents('displayAuction', 'AUCTION_HOUSE_SHOW', 'AUCTION_HOUSE_CLOSED', Interactions.Auctioneer)
-	self:RegisterDisplayEvents(C_ScrappingMachineUI and 'displayScrapping', 'SCRAPPING_MACHINE_SHOW', 'SCRAPPING_MACHINE_CLOSE', Interactions.ScrappingMachine)
-	self:RegisterDisplayEvents(CanUseVoidStorage and 'displayVault', 'VOID_STORAGE_OPEN', 'VOID_STORAGE_CLOSE', Interactions.VoidStorageBanker)
-	self:RegisterDisplayEvents(CanGuildBankRepair and 'displayGuild', 'GUILDBANKFRAME_OPENED', 'GUILDBANKFRAME_CLOSED', Interactions.GuildBanker)
-	self:RegisterBorkenEvents('closeVendor', 'MERCHANT_CLOSED', Interactions.Merchant)
-	self:RegisterBorkenEvents('closeMail', 'MAIL_CLOSED', Interactions.MailInfo)--]]
-
-	-- optional override
-
+	-- optional overrides
+	self:OverrideInteraction(C_ScrappingMachineUI and 'ScrappingMachine', 'SCRAPPING_MACHINE_SHOW')
+	self:OverrideInteraction('Auctioneer', 'AUCTION_HOUSE_SHOW')
+	self:OverrideInteraction('Merchant', 'MERCHANT_SHOW')
+	self:OverrideInteraction('MailInfo', 'MAIL_SHOW')
 end
 
-function AutoDisplay:RegisterDisplayEvents(setting, showEvent, hideEvent, frameType)
-	if setting and Addon.sets[setting] then
-		if C_PlayerInteractionManager and frameType then
-			self.Interact[frameType] = (showEvent and 0x1) + (hideEvent and 0x2)
+function AutoDisplay:AddInteraction(type, showEvent, hideEvent)
+	if type and Addon.sets.display[type:lower()]  then
+		if Interactions and Interactions[type] then
+			self.Interact[Interactions[type]] = (showEvent and 0x1) + (hideEvent and 0x2)
 		else
-			self:RegisterEventIf(showEvent, self:Show('inventory'))
-			self:RegisterEventIf(hideEvent, self:Hide('inventory'))
+			self:RegisterEvent(showEvent, self:Show('inventory'))
+			self:RegisterEvent(hideEvent, self:Hide('inventory', not showEvent))
 		end
 	end
 end
 
-
-
-function AutoDisplay:RegisterEventIf(event, ...)
-	if event then
-		self:RegisterEvent(event, ...)
+function AutoDisplay:OverrideInteraction(type, showEvent)
+	if type and not Addon.sets.display[type:lower()] then
+		if Interactions and Interactions[type] then
+			self.Interact[Interactions[type]] = 0x4
+		else
+			self:RegisterEvent(showEvent, self:Hide('inventory'))
+		end
 	end
+end
+
+function AutoDisplay:RegisterEvent(event, ...)
+	if event then Addon.RegisterEvent(self, event, ...) end
 end
