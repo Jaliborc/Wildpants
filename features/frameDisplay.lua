@@ -1,5 +1,5 @@
 --[[
-	autoDisplay.lua
+	frameDisplay.lua
 		Handles when to display the different mod frames and when to keep the blizzard ones hidden. Not pretty.
 --]]
 
