@@ -62,9 +62,9 @@ function AutoDisplay:HookBaseUI()
 	end)
 
 	-- user frames
-	CharacterFrame:HookScript('OnShow', self:If('displayPlayer', self:Show('inventory')))
-	CharacterFrame:HookScript('OnHide', self:If('displayPlayer', self:Hide('inventory')))
-	WorldMapFrame:HookScript('OnShow', self:If('closeMap', self:Hide('inventory', true)))
+	CharacterFrame:HookScript('OnShow', self:If('playerFrame', self:Show('inventory')))
+	CharacterFrame:HookScript('OnHide', self:If('playerFrame', self:Hide('inventory')))
+	WorldMapFrame:HookScript('OnShow', self:If('mapFrame', self:Hide('inventory', true)))
 end
 
 function AutoDisplay:Bag2Frame(bag)
@@ -72,7 +72,7 @@ function AutoDisplay:Bag2Frame(bag)
 end
 
 function AutoDisplay:If(setting, func)
-	return function(...) if Addon.sets[setting] then return func(...) end end
+	return function(...) if Addon.sets.display[setting] then return func(...) end end
 end
 
 function AutoDisplay:StopIf(domain, name, hook)
@@ -113,11 +113,11 @@ function AutoDisplay:RegisterGameEvents()
 	-- optional additions
 	self:AddInteraction(CanGuildBankRepair and 'GuildBanker', 'GUILDBANKFRAME_OPENED', 'GUILDBANKFRAME_CLOSED')
 	self:AddInteraction(CanUseVoidStorage and 'VoidStorageBanker', 'VOID_STORAGE_OPEN', 'VOID_STORAGE_CLOSE')
-	self:AddInteraction(C_ItemSocketInfo and 'Socket', 'SOCKET_INFO_UPDATE', 'SOCKET_INFO_CLOSE')
+	self:AddInteraction(C_ItemSocketInfo and 'Socketing', 'SOCKET_INFO_UPDATE', 'SOCKET_INFO_CLOSE')
 	self:AddInteraction(HasVehicleActionBar and 'Vehicle', nil, 'UNIT_ENTERED_VEHICLE')
 	self:AddInteraction('Banker', 'BANKFRAME_OPENED', 'BANKFRAME_CLOSED')
-	self:AddInteraction('Craft', 'TRADE_SKILL_SHOW', 'TRADE_SKILL_CLOSE')
-	self:AddInteraction('Trade', 'TRADE_SHOW', 'TRADE_CLOSED')
+	self:AddInteraction('Crafting', 'TRADE_SKILL_SHOW', 'TRADE_SKILL_CLOSE')
+	self:AddInteraction('Trading', 'TRADE_SHOW', 'TRADE_CLOSED')
 	self:AddInteraction('Combat', nil, 'PLAYER_REGEN_DISABLED')
 
 	-- optional overrides
@@ -128,7 +128,7 @@ function AutoDisplay:RegisterGameEvents()
 end
 
 function AutoDisplay:AddInteraction(type, showEvent, hideEvent)
-	if type and Addon.sets.display[type:lower()]  then
+	if type and Addon.sets.display[type:gsub('^.', strlower)]  then
 		if Interactions and Interactions[type] then
 			self.Interact[Interactions[type]] = (showEvent and 0x1) + (hideEvent and 0x2)
 		else
@@ -139,7 +139,7 @@ function AutoDisplay:AddInteraction(type, showEvent, hideEvent)
 end
 
 function AutoDisplay:OverrideInteraction(type, showEvent)
-	if type and not Addon.sets.display[type:lower()] then
+	if type and not Addon.sets.display[type:gsub('^.', strlower)] then
 		if Interactions and Interactions[type] then
 			self.Interact[Interactions[type]] = 0x4
 		else

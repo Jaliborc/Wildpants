@@ -9,7 +9,6 @@ if not L then return end
 -- general
 L.GeneralOptionsDesc = 'Impostazioni generali di configurazioni per %s.'
 L.Locked = 'Blocca la posizione della finestra.'
-L.Fading = 'Attiva opacità finestra.'
 L.TipCount = 'Attiva conteggio degli oggetti.'
 L.CountGuild = 'Includi Banca di Gilda'
 L.FlashFind = 'Attiva Ricerca Veloce.'
@@ -64,21 +63,20 @@ L.DisplayOptionsDesc = 'Queste opzioni ti permettono di configurare quando aprir
 L.DisplayInventory = 'Mostra l\'Inventario'
 L.CloseInventory = 'Chiudi l\'Inventario'
 
-L.DisplayBank = "Quando si visita la Banca"
-L.DisplayGuildbank = "Quando si visita la Banca di Gilda"
-L.DisplayAuction = "Quando si visita la Casa d'Aste"
-L.DisplayMail = "Quando controlli la posta"
-L.DisplayTrade = "Quando scambi degli oggetti"
-L.DisplayScrapping = 'Quando ricicli dell\'equipaggiamento'
-L.DisplayGems = "Quando inserisci una gemma nell'Incavo di un Oggetto"
-L.DisplayCraft = "Durante la creazione di un\'Oggetto"
-L.DisplayPlayer = "Quando apri la Finestra del Giocatore"
+L.Banker = "Quando si visita la Banca"
+L.GuildBanker = "Quando si visita la Banca di Gilda"
+L.Auctioneer = "Quando si visita la Casa d'Aste"
+L.MailInfo = "Quando controlli la posta"
+L.Trading = "Quando scambi degli oggetti"
+L.ScrappingMachine = 'Quando ricicli dell\'equipaggiamento'
+L.Socketing = "Quando inserisci una gemma nell'Incavo di un Oggetto"
+L.Crafting = "Durante la creazione di un\'Oggetto"
+L.PlayerFrame = "Quando apri la Finestra del Giocatore"
+L.Merchant = "Quando ti allontani da un Venditore"
 
-L.CloseCombat = "Quando entri in Combattimento"
-L.CloseVehicle = "Quando entri un Veicolo"
-L.CloseBank = 'Quando chiudi la Banca'
-L.CloseVendor = "Quando ti allontani da un Venditore"
-L.CloseMap = 'Quando apri la Mappa del Mondo'
+L.Combat = "Quando entri in Combattimento"
+L.Vehicle = "Quando entri un Veicolo"
+L.MapFrame = 'Quando apri la Mappa del Mondo'
 
 -- colors
 L.ColorOptions = 'Impostazioni del Colore'

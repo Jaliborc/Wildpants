@@ -108,7 +108,7 @@ function Addon:OnEnable()
 		global = SetDefaults({}, ProfileDefaults),
 		profiles = {},
 
-		display = {banker = true, guildbanker = true, voidstoragebanker = true, craft = true, trade = true, socket = true, auctioneer = true, merchant = true, mailinfo = true, scrappingmachine = true},
+		display = {banker = true, guildBanker = true, voidStorageBanker = true, crafting = true, trading = true, socketing = true, auctioneer = true, merchant = true, mailInfo = true, scrappingMachine = true},
 		resetPlayer = true, flashFind = true, tipCount = true, serverSort = true,
 
 		glowAlpha = 0.5,
