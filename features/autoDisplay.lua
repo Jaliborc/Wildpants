@@ -21,6 +21,7 @@ function AutoDisplay:OnEnable()
 		end
 	end})
 
+	self:RegisterMessage(ADDON .. 'UPDATE_ALL', 'RegisterGameEvents')
 	self:RegisterGameEvents()
 	self:HookBaseUI()
 end
@@ -35,26 +36,35 @@ function AutoDisplay:HookBaseUI()
 	self:StopIf(_G, 'ToggleBackpack', self:ToggleBag('inventory', BACKPACK_CONTAINER))
 	self:StopIf(_G, 'ToggleBag', function(bag) return Addon.Frames:ToggleBag(self:Bag2Frame(bag)) end)
 	self:StopIf(_G, 'OpenBag', function(bag) return Addon.Frames:ShowBag(self:Bag2Frame(bag)) end)
+	self:StopIf(_G, 'CloseBag', function(bag) return Addon.Frames:HideBag(self:Bag2Frame(bag)) end)
+
+	-- banking frames
+	self:StopIf(_G, 'GuildBankFrame_LoadUI', self:Show('guild'))
+	self:StopIf(_G, 'VoidStorage_LoadUI', self:Show('vault'))
+	self:StopIf(_G, 'BankFrame_Open', self:Show('bank'))
+
+	self:StopIf(PlayerInteractionFrameManager, 'ShowFrame', function(manager, type)
+		return type == Interactions.Banker and Addon.Frames:Show('bank') or
+					 type == Interactions.GuildBanker and Addon.Frames:Show('guild') or
+					 type == Interactions.VoidStorageBanker and Addon.Frames:Show('vault')
+	end)
+
+	self:StopIf(PlayerInteractionFrameManager, 'HideFrame', function(manager, type)
+		return type == Interactions.Banker and Addon.Frames:Hide('bank') or
+					 type == Interactions.GuildBanker and Addon.Frames:Hide('guild') or
+					 type == Interactions.VoidStorageBanker and Addon.Frames:Hide('vault')
+	end)
+
+	BankFrame:SetScript('OnEvent', function(frame, event, ...) -- only way in classic
+		if (event ~= 'BANKFRAME_OPENED' or not Addon.Frames:Show('bank')) and (event ~= 'BANKFRAME_CLOSED' or not Addon.Frames:Hide('bank')) then
+			BankFrame_OnEvent(frame, event, ...)
+		end
+	end)
 
 	-- user frames
 	CharacterFrame:HookScript('OnShow', self:If('displayPlayer', self:Show('inventory')))
 	CharacterFrame:HookScript('OnHide', self:If('displayPlayer', self:Hide('inventory')))
 	WorldMapFrame:HookScript('OnShow', self:If('closeMap', self:Hide('inventory', true)))
-
-	-- banking frames
-	if Interactions then
-		self:StopIf(PlayerInteractionFrameManager, 'ShowFrame', function(manager, type)
-			return type == Interactions.Banker and Addon.Frames:Show('bank') or
-						 type == Interactions.GuildBanker and Addon.Frames:Show('guild') or
-						 type == Interactions.VoidStorageBanker and Addon.Frames:Show('vault')
-		end)
-
-		self:StopIf(PlayerInteractionFrameManager, 'HideFrame', function(manager, type)
-			return type == Interactions.Banker and Addon.Frames:Hide('bank') or
-						 type == Interactions.GuildBanker and Addon.Frames:Hide('guild') or
-						 type == Interactions.VoidStorageBanker and Addon.Frames:Hide('vault')
-		end)
-	end
 end
 
 function AutoDisplay:Bag2Frame(bag)
@@ -66,10 +76,12 @@ function AutoDisplay:If(setting, func)
 end
 
 function AutoDisplay:StopIf(domain, name, hook)
-	local original = domain[name]
-	domain[name] = function(...)
-		if not hook(...) then
-			return original(...)
+	local original = domain and domain[name]
+	if original then
+		domain[name] = function(...)
+			if not hook(...) then
+				return original(...)
+			end
 		end
 	end
 end
@@ -79,10 +91,8 @@ end
 
 function AutoDisplay:RegisterGameEvents()
 	self:UnregisterAllEvents()
-	self:UnregisterAllMessages()
-	self:RegisterMessage(ADDON .. 'UPDATE_ALL', 'RegisterGameEvents')
 
-	-- essential
+	-- manager
 	if Interactions then
 		self.Interact = {}
 		self:RegisterEvent('PLAYER_INTERACTION_MANAGER_FRAME_SHOW', function(_, type)
@@ -98,16 +108,6 @@ function AutoDisplay:RegisterGameEvents()
 				Addon.Frames:Hide('inventory')
 			end
 		end)
-	else
-		if Addon.Frames:IsEnabled('bank') then
-			self:RegisterMessage('CACHE_BANK_OPENED', self:Show('bank'))
-			self:RegisterMessage('CACHE_BANK_CLOSED', self:Hide('bank'))
-
-			BankFrame:UnregisterAllEvents()
-		else
-			BankFrame:RegisterEvent('BANKFRAME_OPENED')
-			BankFrame:RegisterEvent('BANKFRAME_CLOSED')
-		end
 	end
 
 	-- optional additions
