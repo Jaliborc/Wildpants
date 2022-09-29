@@ -99,7 +99,7 @@ local ProfileDefaults = {
 --[[ Startup ]]--
 
 function Addon:OnEnable()
-  CreateFrame('Frame', nil, InterfaceOptionsFrame):SetScript('OnShow', function()
+  CreateFrame('Frame', nil, InterfaceOptionsFrame or SettingsPanel):SetScript('OnShow', function()
     LoadAddOn(Addon.Name .. '_Config')
   end)
 
@@ -108,7 +108,7 @@ function Addon:OnEnable()
 		global = SetDefaults({}, ProfileDefaults),
 		profiles = {},
 
-		display = {banker = true, guildBanker = true, voidStorageBanker = true, crafting = true, trading = true, socketing = true, auctioneer = true, merchant = true, mailInfo = true, scrappingMachine = true},
+		display = {banker = true, guildBanker = true, voidStorageBanker = true, crafting = true, tradePartner = true, socketing = true, auctioneer = true, merchant = true, mailInfo = true, scrappingMachine = true},
 		resetPlayer = true, flashFind = true, tipCount = true, serverSort = true,
 
 		glowAlpha = 0.5,

@@ -63,7 +63,7 @@ L.CloseInventory = 'Fermer votre inventaire'
 
 L.Banker = 'quand vous visitez la banque'
 L.Auctioneer = 'quand vous visitez l\'hôtel des ventes'
-L.Trading = 'quand vous parlez à un commerçant'
+L.TradePartner = 'quand vous parlez à un commerçant'
 L.Crafting = 'quand vous craftez'
 L.MailInfo = 'quand vous relevez votre courrier'
 L.GuildBanker = 'quand vous visitez votre banque de guilde'

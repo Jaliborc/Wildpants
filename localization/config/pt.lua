@@ -70,7 +70,7 @@ L.Merchant = 'Enquando Visita um Vendedor'
 L.PlayerFrame = 'Enquando Usa a Janela da Personagem'
 L.ScrappingMachine = 'Enquanto Recicla Equipamento'
 L.Socketing = 'Enquanto Engastar Equipamento'
-L.Trading = 'Enquanto Trocar Itens'
+L.TradePartner = 'Enquanto Trocar Itens'
 L.Vehicle = 'Quando Entrar num Veículo'
 
 -- colors

@@ -12,7 +12,7 @@ function Display:Populate()
 	self.sets = Addon.sets.display
 	self:Add('Header', L.DisplayInventory, 'GameFontHighlight', true)
 	self:AddRow(35*6, function()
-		for i, event in ipairs {'banker', 'guildBanker', 'voidStorageBanker', 'auctioneer', 'mailInfo', 'merchant', 'trading', 'crafting', 'socketing', 'scrappingMachine', 'playerFrame'} do
+		for i, event in ipairs {'banker', 'guildBanker', 'voidStorageBanker', 'auctioneer', 'mailInfo', 'merchant', 'tradePartner', 'crafting', 'socketing', 'scrappingMachine', 'playerFrame'} do
 			self:AddCheck(event):SetWidth(250)
 		end
 	end)

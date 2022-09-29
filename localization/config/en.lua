@@ -75,7 +75,7 @@ L.Merchant = 'Talking to Merchant'
 L.PlayerFrame = 'Opening the Character Info'
 L.ScrappingMachine = 'Scrapping Equipment'
 L.Socketing = 'Socketing Equipment'
-L.Trading = 'Trading'
+L.TradePartner = 'Trading'
 L.Vehicle = 'Entering a Vehicle'
 
 -- colors

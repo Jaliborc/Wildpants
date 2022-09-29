@@ -54,7 +54,7 @@ L.CloseInventory = 'Inventar schließen...'
 
 L.Banker = 'beim Öffnen der Bank'
 L.Auctioneer = 'beim Öffnen des Auktionshauses'
-L.Trading = 'beim Handel von Gegenständen'
+L.TradePartner = 'beim Handel von Gegenständen'
 L.Crafting = 'beim Herstellen'
 L.MailInfo = 'beim Abholen der Post'
 L.GuildBanker = 'beim Öffnen der Gildenbank'

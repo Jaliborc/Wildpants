@@ -56,7 +56,7 @@ L.CloseInventory = '關閉背包'
 
 L.Banker = '訪問銀行'
 L.Auctioneer = '訪問拍賣行'
-L.Trading = '交易物品'
+L.TradePartner = '交易物品'
 L.ScrappingMachine = '銷毀裝備'
 L.Crafting = '製造'
 L.MailInfo = '檢查信箱'

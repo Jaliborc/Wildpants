@@ -115,9 +115,9 @@ function AutoDisplay:RegisterGameEvents()
 	self:AddInteraction(CanUseVoidStorage and 'VoidStorageBanker', 'VOID_STORAGE_OPEN', 'VOID_STORAGE_CLOSE')
 	self:AddInteraction(C_ItemSocketInfo and 'Socketing', 'SOCKET_INFO_UPDATE', 'SOCKET_INFO_CLOSE')
 	self:AddInteraction(HasVehicleActionBar and 'Vehicle', nil, 'UNIT_ENTERED_VEHICLE')
-	self:AddInteraction('Banker', 'BANKFRAME_OPENED', 'BANKFRAME_CLOSED')
 	self:AddInteraction('Crafting', 'TRADE_SKILL_SHOW', 'TRADE_SKILL_CLOSE')
-	self:AddInteraction('Trading', 'TRADE_SHOW', 'TRADE_CLOSED')
+	self:AddInteraction('Banker', 'BANKFRAME_OPENED', 'BANKFRAME_CLOSED')
+	self:AddInteraction('TradePartner', 'TRADE_SHOW', 'TRADE_CLOSED')
 	self:AddInteraction('Combat', nil, 'PLAYER_REGEN_DISABLED')
 
 	-- optional overrides
