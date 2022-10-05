@@ -22,7 +22,7 @@ end
 
 function CurrencyTracker:New(parent)
 	local f = self:Super(CurrencyTracker):New(parent)
-	f.Buttons = {}
+	f.buttons = {}
 	f:SetScript('OnShow', f.RegisterEvents)
 	f:SetScript('OnHide', f.UnregisterAll)
 	f:RegisterEvents()
@@ -51,7 +51,7 @@ function CurrencyTracker:Update()
 end
 
 function CurrencyTracker:Layout()
-	for _,button in ipairs(self.Buttons) do
+	for _,button in ipairs(self.buttons) do
 		button:Hide()
 	end
 
@@ -59,11 +59,11 @@ function CurrencyTracker:Layout()
 	for i = 1, BackpackTokenFrame:GetMaxTokensWatched() do -- safety limit
     local data = C_CurrencyInfo.GetBackpackCurrencyInfo(i)
     if data then
-			self.Buttons[i] = self.Buttons[i] or Addon.Currency(self)
-			self.Buttons[i]:SetPoint('LEFT', self.Buttons[i-1] or self, i > 1 and 'RIGHT' or 'LEFT')
-			self.Buttons[i]:Set(data)
+			self.buttons[i] = self.buttons[i] or Addon.Currency(self)
+			self.buttons[i]:SetPoint('LEFT', self.buttons[i-1] or self, i > 1 and 'RIGHT' or 'LEFT')
+			self.buttons[i]:Set(data)
 
-			w = w + self.Buttons[i]:GetWidth()
+			w = w + self.buttons[i]:GetWidth()
 		else
 			break
     end
