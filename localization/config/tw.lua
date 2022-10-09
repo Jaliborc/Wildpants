@@ -15,6 +15,7 @@ L.CountGuild = '包括工會銀行'
 L.FlashFind = '閃爍找到'
 L.EmptySlots = '在空的槽位顯示背景顏色'
 L.DisplayBlizzard = '隱藏的背包顯示為內建框架'
+L.SortOnlyShowingBags = '不要從停用的袋子中訂購物品'
 
 -- frame
 L.FrameOptions = '框架設定'

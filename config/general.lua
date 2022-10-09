@@ -20,6 +20,7 @@ function General:Populate()
 
 	self:AddCheck('flashFind')
 	self:AddCheck('displayBlizzard')
+	self:AddCheck('sortOnlyShowingBags')
 
 	local global = self:Add('Check', L.CharacterSpecific)
 	global:SetChecked(Addon.profile ~= Addon.sets.global)

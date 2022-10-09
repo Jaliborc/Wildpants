@@ -89,7 +89,13 @@ end
 --[[ Shared ]]--
 
 function Frame:SortItems()
-	Addon.Sorting:Start(self:GetOwner(), self.Bags)
+	local sortingBags = {}
+	for _, bag in pairs(self.Bags) do
+		if self:IsShowingBag(bag) or not Addon.sets.sortOnlyShowingBags then
+			table.insert(sortingBags, bag)
+		end
+	end
+	Addon.Sorting:Start(self:GetOwner(), sortingBags)
 end
 
 function Frame:IsShowingBag(bag)

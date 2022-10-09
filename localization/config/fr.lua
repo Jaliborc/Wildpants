@@ -18,6 +18,7 @@ L.CountGuild = 'Inclure les banques de guilde'
 L.FlashFind = 'Activer résultat éclair'
 L.EmptySlots = 'Afficher un fond sur les emplacements vides'
 L.DisplayBlizzard = 'Afficher les cadres de Blizzard pour les sacs désactivés'
+L.SortOnlyShowingBags = 'НNe commandez pas d\'articles à partir les sacs désactivés'
 
 -- frame
 L.FrameOptions = 'Options des fenêtres'

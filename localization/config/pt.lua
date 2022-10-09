@@ -14,6 +14,7 @@ L.TipCount = 'Ativar contagem de itens nas dicas'
 L.FlashFind = 'Ativar Flash Find'
 L.EmptySlots = 'Mostrar fundo em espaços para itens vazios'
 L.DisplayBlizzard = 'Mostrar janelas da Blizzard para sacos desligados'
+L.SortOnlyShowingBags = 'Não peça itens de sacos desligados'
 
 -- frame
 L.FrameOptions = 'Preferências de Janela'
