@@ -20,7 +20,7 @@ function Currency:New(parent)
 end
 
 function Currency:Set(data)
-	self:SetText(data.quantity .. '|T' .. data.iconFileID .. ':15:15:2:0|t  ')
+	self:SetText(format('%s|T%s:14:14:2:0|t  ', data.quantity or 0, data.iconFileID or 0))
 	self.data = data
 	self:Show()
   self:SetWidth(self:GetTextWidth() + 2)

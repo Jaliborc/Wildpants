@@ -411,9 +411,12 @@ function Item:IsQuestItem()
 end
 
 function Item:IsUpgrade()
-	local criteria = PawnIsContainerItemAnUpgrade or IsContainerItemAnUpgrade
-	if criteria then
-		return criteria(self:GetBag(), self:GetID())
+	if PawnShouldItemLinkHaveUpgradeArrow then
+		return self:GetItem() and PawnShouldItemLinkHaveUpgradeArrow(self:GetItem()) or false
+	elseif IsContainerItemAnUpgrade then
+		return IsContainerItemAnUpgrade(self:GetBag(), self:GetID())
+	else
+		return false
 	end
 end
 
