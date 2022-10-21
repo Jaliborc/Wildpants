@@ -22,7 +22,6 @@ L.CmdShowVersion = '列出当前版本'
 L.CmdShowOptions = '打开配置菜单'
 L.Updated = '已更新到 v%s'
 
-
 --frame titles
 L.TitleBags = '%s的背包'
 L.TitleBank = '%s的银行'
