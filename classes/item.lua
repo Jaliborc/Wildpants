@@ -414,7 +414,7 @@ function Item:IsUpgrade()
 	if PawnShouldItemLinkHaveUpgradeArrow then
 		return self:GetItem() and PawnShouldItemLinkHaveUpgradeArrow(self:GetItem()) or false
 	elseif IsContainerItemAnUpgrade then
-		return IsContainerItemAnUpgrade(self:GetBag(), self:GetID())
+		return not self:IsCached() and IsContainerItemAnUpgrade(self:GetBag(), self:GetID())
 	else
 		return false
 	end
