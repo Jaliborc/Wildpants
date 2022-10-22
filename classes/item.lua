@@ -225,20 +225,11 @@ end
 
 function Item:UpdateBorder()
 	local id, quality, link = self.info.id, self.info.quality, self.info.link
-	local overlay = (link and IsCorruptedItem and IsCorruptedItem(link) and 'Nzoth-inventory-icon') or (id and C_AzeriteEmpoweredItem and C_AzeriteEmpoweredItem.IsAzeriteEmpoweredItemByID(id) and 'AzeriteIconFrame')
 	local new = Addon.sets.glowNew and self:IsNew()
 	local quest, questID = self:IsQuestItem()
+	local overlay = self:GetOverlay()
 	local paid = self:IsPaid()
 	local r,g,b = 0,0,0
-
-	if new and not self.flashAnim:IsPlaying() then
-		self.flashAnim:Play()
-		self.newitemglowAnim:Play()
-	end
-
-	if overlay then
-		self.IconOverlay:SetAtlas(overlay)
-	end
 
 	if id then
 		if Addon.sets.glowQuest and quest then
@@ -250,6 +241,16 @@ function Item:UpdateBorder()
 		elseif Addon.sets.glowQuality and quality and quality > 1 then
 			r,g,b = GetItemQualityColor(quality)
 		end
+	end
+
+	if new and not self.flashAnim:IsPlaying() then
+		self.flashAnim:Play()
+		self.newitemglowAnim:Play()
+	end
+
+	if overlay then
+		self.IconOverlay:SetAtlas(overlay)
+		self.IconOverlay:SetVertexColor(r,g,b)
 	end
 
 	self.IconBorder:SetTexture(id and C_ArtifactUI and C_ArtifactUI.GetRelicInfoByItemID(id) and 'Interface/Artifacts/RelicIconFrame' or 'Interface/Common/WhiteIconFrame')
@@ -418,6 +419,14 @@ function Item:IsUpgrade()
 	else
 		return false
 	end
+end
+
+function Item:GetOverlay()
+	local id, link = self.info.id, self.info.link
+	return id and C_AzeriteEmpoweredItem and C_AzeriteEmpoweredItem.IsAzeriteEmpoweredItemByID(id) and 'AzeriteIconFrame'
+			or id and IsCosmeticItem and IsCosmeticItem(id) and not C_TransmogCollection.PlayerHasTransmogByItemInfo(id) and 'CosmeticIconFrame'
+			or id and C_Soulbinds and C_Soulbinds.IsItemConduitByItemInfo(id) and 'ConduitIconFrame'
+			or link and IsCorruptedItem and IsCorruptedItem(link) and 'Nzoth-inventory-icon'
 end
 
 function Item:IsNew()
