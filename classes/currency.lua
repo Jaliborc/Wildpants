@@ -20,7 +20,7 @@ function Currency:New(parent)
 end
 
 function Currency:Set(data)
-	self:SetText(format('%s|T%s:14:14:2:0|t  ', data.quantity or 0, data.iconFileID or 0))
+	self:SetText(format('%s|T%s:14:14:2:0%s|t  ', data.quantity, data.iconFileID, data.iconArgs or ''))
 	self.data = data
 	self:Show()
   self:SetWidth(self:GetTextWidth() + 2)
@@ -28,7 +28,7 @@ end
 
 function Currency:OnClick()
 	if IsModifiedClick('CHATLINK') then
-		HandleModifiedItemClick(C_CurrencyInfo.GetCurrencyLink(self.data.currencyTypesID))
+		HandleModifiedItemClick((GetCurrencyLink or C_CurrencyInfo.GetCurrencyLink)(self.data.currencyTypesID, self.data.quantity))
 	elseif not self:IsCached() then
 		ToggleCharacter('TokenFrame')
 	end

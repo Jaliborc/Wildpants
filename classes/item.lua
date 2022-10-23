@@ -271,7 +271,7 @@ end
 
 function Item:UpdateSlotColor()
 	if not self.info.id then
-		local color = Addon.sets.colorSlots and Addon.sets[self:GetSlotType() .. 'Color']
+		local color = Addon.sets.colorSlots and Addon.sets[self:GetSlotType() .. 'Color'] or {}
 		local r,g,b = color[1] or 1, color[2] or 1, color[3] or 1
 
 		SetItemButtonTextureVertexColor(self, r,g,b)
