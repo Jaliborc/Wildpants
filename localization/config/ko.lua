@@ -15,6 +15,7 @@ L.CountGuild = '길드 금고 포함'
 L.FlashFind = '빠른 찾기 사용'
 L.DisplayBlizzard = '숨은 가방 대비책'
 L.DisplayBlizzardTip = '만약 활성화하면 숨긴 가방 또는 은행 저장소에 대해 기본 블리자드 UI 가방 창이 표시됩니다.\n\n|cffff1919UI 리로드가 필요합니다.|r'
+L.SortOnlyShowingBags = '비활성화된 가방에서 품목을 주문하지 마십시오.'
 L.ConfirmGlobals = '이 캐릭터에 대한 개별 설정을 비활성화 하시겠습니까? 모든 개별 설정을 잃게됩니다.'
 L.CharacterSpecific = '캐릭터 개별 설정'
 

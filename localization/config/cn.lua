@@ -15,6 +15,7 @@ L.CountGuild = '包含公会银行'
 L.FlashFind = '闪烁搜索'
 L.DisplayBlizzard = '显示暴雪框架隐藏背包'
 L.DisplayBlizzardTip = '如果启用，隐藏背包或银行容器将显示默认暴雪用户界面背包面板。\n\n|cffff1919需要重载用户界面。|r'
+L.SortOnlyShowingBags = '不要从停用的袋子中订购物品'
 L.ConfirmGlobals = '确定要禁用特定此角色的特定设置？所有特定设置将丢失。'
 L.CharacterSpecific = '角色特定设置'
 

@@ -15,6 +15,7 @@ L.CountGuild = 'Includi Banca di Gilda'
 L.FlashFind = 'Attiva Ricerca Veloce.'
 L.DisplayBlizzard = 'Mostra le finestre di Blizzard per le borse disabilitate.'
 L.DisplayBlizzardTip = 'Se abilitato, verrà utilizzata l\'interfaccia Blizzard di base per le sacche o gli inventari di banca nascosti.\n\n|cffff1919Richiede un riavvio dell\'UI.|r'
+L.SortOnlyShowingBags = 'Non ordinare articoli le borse disattivate'
 L.ConfirmGlobals = 'Sei sicuro di voler disabilitare le impostazioni specifiche per questo personaggio? Tutte le impostazioni specifiche verranno perse.'
 L.CharacterSpecific = 'Impostazioni specifiche personaggio'
 
