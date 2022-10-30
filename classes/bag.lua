@@ -185,8 +185,7 @@ function Bag:Update()
 
 	if not self.cached then
 		for i, atlas in ipairs(self.FILTER_ICONS) do
-			local active = C_Container and (id > NUM_BAG_SLOTS and C_Container.GetBankBagSlotFlag(id - NUM_BAG_SLOTS, 2^i) or C_Container.GetBagSlotFlag(id, 2^i)) or
-										 GetBagSlotFlag and (id > NUM_BAG_SLOTS and GetBankBagSlotFlag(id - NUM_BAG_SLOTS, i) or GetBagSlotFlag(id, i))
+			local active = C_Container and (id > 0 and C_Container.GetBagSlotFlag(id, 2^i))
 			if active then
 				return self.FilterIcon.Icon:SetAtlas(atlas)
 			end
