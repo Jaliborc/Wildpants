@@ -10,6 +10,7 @@ local Bag = Addon.Tipped:NewClass('Bag', 'CheckButton')
 Bag.SIZE = 32
 Bag.TEXTURE_SIZE = 64 * (Bag.SIZE/36)
 Bag.FILTER_ICONS = {'bags-icon-equipment', 'bags-icon-consumables', 'bags-icon-tradegoods', 'bags-icon-junk', 'bags-icon-questitem'}
+Bag.GetBagID = Bag.GetID
 Bag.GetSlot = Bag.GetID
 
 
@@ -150,7 +151,7 @@ function Bag:RegisterEvents()
 end
 
 function Bag:BAG_UPDATE(_, bag)
-	if bag == self:GetSlot() then
+	if bag == self:GetID() then
 		self:Update()
 	end
 end
@@ -160,7 +161,6 @@ end
 
 function Bag:Update()
 	local info = self:GetInfo()
-	local id = self:GetSlot()
 
 	self.FilterIcon:SetShown(not info.cached)
 	self.Count:SetText(info.free and info.free > 0 and info.free or '')
@@ -184,9 +184,10 @@ function Bag:Update()
 	end
 
 	if not self.cached then
+		local id = self:GetID()
 		for i, atlas in ipairs(self.FILTER_ICONS) do
-			local active = C_Container and (id > NUM_BAG_SLOTS and C_Container.GetBankBagSlotFlag(id - NUM_BAG_SLOTS, 2^i) or C_Container.GetBagSlotFlag(id, 2^i)) or
-										 GetBagSlotFlag and (id > NUM_BAG_SLOTS and GetBankBagSlotFlag(id - NUM_BAG_SLOTS, i) or GetBagSlotFlag(id, i))
+			local active = C_Container and (id > 0 and C_Container.GetBagSlotFlag(id, 2^i)) or
+										 GetBagSlotFlag and (self:IsBankBag() and GetBankBagSlotFlag(id - NUM_BAG_SLOTS, i) or GetBagSlotFlag(id, i))
 			if active then
 				return self.FilterIcon.Icon:SetAtlas(atlas)
 			end
@@ -295,27 +296,27 @@ end
 --[[ Bag Type ]]--
 
 function Bag:IsBackpack()
-	return Addon:IsBackpack(self:GetSlot())
+	return Addon:IsBackpack(self:GetID())
 end
 
 function Bag:IsBackpackBag()
-  return Addon:IsBackpackBag(self:GetSlot())
+  return Addon:IsBackpackBag(self:GetID())
 end
 
 function Bag:IsBank()
-	return Addon:IsBank(self:GetSlot())
+	return Addon:IsBank(self:GetID())
 end
 
 function Bag:IsReagents()
-	return Addon:IsReagents(self:GetSlot())
+	return Addon:IsReagents(self:GetID())
 end
 
 function Bag:IsKeyring()
-	return Addon:IsKeyring(self:GetSlot())
+	return Addon:IsKeyring(self:GetID())
 end
 
 function Bag:IsBankBag()
-	return Addon:IsBankBag(self:GetSlot())
+	return Addon:IsBankBag(self:GetID())
 end
 
 function Bag:IsCustomSlot()
@@ -335,9 +336,9 @@ function Bag:IsPurchasable()
 end
 
 function Bag:IsToggled()
-	return self:GetFrame():IsShowingBag(self:GetSlot()) and self:GetInfo().owned
+	return self:GetFrame():IsShowingBag(self:GetID()) and self:GetInfo().owned
 end
 
 function Bag:GetInfo()
-	return self:GetFrame():GetBagInfo(self:GetSlot())
+	return self:GetFrame():GetBagInfo(self:GetID())
 end
