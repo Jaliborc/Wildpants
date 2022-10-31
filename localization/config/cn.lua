@@ -31,12 +31,13 @@ L.ActPanelTip = [[
 或 |cffffffff团队查找器|r，并不能被移动。]]
 
 L.BagToggle = '背包切换'
-L.Money = '货币'
 L.Broker = 'Databroker 插件'
+L.Currency = '货币'
+L.ExclusiveReagent = '分离材料银行'
+L.Money = '金钱'
 L.Sort = '整理按钮'
 L.Search = '切换搜索'
 L.Options = '选项按钮'
-L.ExclusiveReagent = '分离材料银行'
 L.LeftTabs = '左侧规则'
 L.LeftTabsTip = [[
 如启用，边框标签将被
@@ -64,23 +65,25 @@ L.DisplayOptionsDesc = '此设置允许配置游戏事件时自动打开或关�
 L.DisplayInventory = '打开背包'
 L.CloseInventory = '关闭背包'
 
-L.Banker = '打开银行时'
-L.GuildBanker = '打开公会银行时'
 L.Auctioneer = '打开拍卖行时'
+L.Banker = '打开银行时'
+L.Combat = '进入战斗时'
+L.Crafting = '制作时'
+L.GuildBanker = '打开公会银行时'
+L.VoidStorageBanker = '打开虚空仓库时'
 L.MailInfo = '打开邮箱时'
-L.TradePartner = '交易时'
+L.MapFrame = '打开世界地图时'
+L.Merchant = '离开商人时'
+L.PlayerFrame = '打开角色信息时'
 L.ScrappingMachine = '摧毁装备时'
 L.Socketing = '镶嵌物品时'
-L.Crafting = '制作时'
-L.PlayerFrame = '打开角色信息时'
-L.Combat = '进入战斗时'
+L.TradePartner = '交易时'
 L.Vehicle = '进入载具时'
-L.Merchant = '离开商人时'
-L.MapFrame = '打开世界地图时'
 
 -- colors
 L.ColorOptions = '颜色设置'
 L.ColorOptionsDesc = '此设置允许更改物品在%s框架上的染色以便于识别。'
+
 L.GlowQuality = '按物品品质染色'
 L.GlowQuest = '任务物品染色'
 L.GlowUnusable = '无用品染色'
