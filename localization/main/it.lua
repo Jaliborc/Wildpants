@@ -30,7 +30,7 @@ L.TitleVault = 'Banca Eterea di %s'
 --dropdowns
 L.TitleFrames = 'Riquadro di %s'
 L.SelectCharacter = 'Seleziona Personaggio'
-L.ConfirmDelete = 'Sei sicuro di eliminare i dati di   %s\?'
+L.ConfirmDelete = 'Sei sicuro di voler eliminare i dati di %s presenti nella cache?'
 
 --interactions
 L.Click = 'Clicca'
