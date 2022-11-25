@@ -5,6 +5,8 @@
 
 local ADDON, Addon = ...
 local Inventory = Addon.Frame:NewClass('InventoryFrame')
+local SortBags = C_Container.SortBags
+
 Inventory.Title = LibStub('AceLocale-3.0'):GetLocale(ADDON).TitleBags
 Inventory.Bags = {}
 Inventory.MainMenuButtons = {

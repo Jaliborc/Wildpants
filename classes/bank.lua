@@ -8,6 +8,9 @@ local Bank = Addon.Frame:NewClass('BankFrame')
 Bank.Title = LibStub('AceLocale-3.0'):GetLocale(ADDON).TitleBank
 Bank.Bags = {BANK_CONTAINER}
 
+local SortBankBags = C_Container.SortBankBags
+local SortReagentBankBags = C_Container.SortReagentBankBags
+
 for slot = 1, NUM_BANKBAGSLOTS do
 	tinsert(Bank.Bags, slot + (NUM_TOTAL_EQUIPPED_BAG_SLOTS or NUM_BAG_SLOTS))
 end

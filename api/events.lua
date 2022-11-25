@@ -14,6 +14,9 @@
 local ADDON, Addon = ...
 local Events = Addon:NewModule('Events')
 
+local GetContainerNumFreeSlots = C_Container.GetContainerNumFreeSlots
+local GetContainerItemInfo = C_Container.GetContainerItemInfo
+local GetContainerNumSlots = C_Container.GetContainerNumSlots
 
 --[[ Events ]]--
 

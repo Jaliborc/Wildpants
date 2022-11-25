@@ -8,6 +8,18 @@ local Item = Addon.Tipped:NewClass('Item', Addon.IsRetail and 'ItemButton' or 'B
 local Search = LibStub('LibItemSearch-1.2')
 local Unfit = LibStub('Unfit-1.0')
 
+local GetContainerNumFreeSlots = C_Container.GetContainerNumFreeSlots
+local GetContainerNumSlots = C_Container.GetContainerNumSlots
+local GetContainerItemInfo = C_Container.GetContainerItemInfo
+local IsBattlePayItem = C_Container.IsBattlePayItem
+local GetContainerItemCooldown = C_Container.GetContainerItemCooldown
+local GetContainerItemID = C_Container.GetContainerItemID
+local GetContainerItemLink = C_Container.GetContainerItemLink
+local GetContainerItemQuestInfo = C_Container.GetContainerItemQuestInfo
+local PickupContainerItem = C_Container.PickupContainerItem
+local SplitContainerItem = C_Container.SplitContainerItem
+local UseContainerItem = C_Container.UseContainerItem
+
 Item.SlotTypes = {
 	[-3] = 'reagent',
 	[0x00001] = 'quiver',
@@ -196,13 +208,27 @@ end
 
 function Item:Update()
 	self.info = self:GetInfo()
-	self.hasItem = self.info.id and true -- for blizzard template
-	self.readable = self.info.readable -- for blizzard template
+	self.hasItem = false -- for blizzard template
+	self.readable = false  -- for blizzard template
+	self.info.count = 1  -- for blizzard template
+	local icon = self:GetEmptyItemIcon() -- for blizzard template
 	self:Delay(0.05, 'UpdateSecondary')
 	self:UpdateSlotColor()
 	self:UpdateBorder()
-
-	SetItemButtonTexture(self, self.info.icon or self:GetEmptyItemIcon())
+	
+	if self.info.id ~= nil then 
+		icon  = self.info.icon or self:GetEmptyItemIcon()
+		self.hasItem = self.info.id or false
+		self.readable = self.info.readable or false
+		self.info.count = self.info.count or 1
+	elseif self.info.icon ~= nil then 
+		icon  = self.info.icon.iconFileID or self:GetEmptyItemIcon()
+		self.hasItem = self.info.icon.itemID or false
+		self.readable = self.info.icon.isReadable or false
+		self.info.count = self.info.icon.stackCount or 1
+	end
+	
+	SetItemButtonTexture(self, icon)
 	SetItemButtonCount(self, self.info.count)
 end
 
@@ -224,7 +250,17 @@ end
 --[[ Appearance ]]--
 
 function Item:UpdateBorder()
-	local id, quality, link = self.info.id, self.info.quality, self.info.link
+	local id, quality, link = 0, 0, ""
+	if self.info.id ~= nil then 
+		id  	= self.info.id
+		quality = self.info.quality
+		link 	= self.info.link		
+	elseif self.info.icon ~= nil then 
+		id  	= self.info.icon.itemID
+		quality = self.info.icon.quality
+		link 	= self.info.icon.hyperlink
+	end
+	
 	local new = Addon.sets.glowNew and self:IsNew()
 	local quest, questID = self:IsQuestItem()
 	local overlay = self:GetOverlay()

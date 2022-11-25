@@ -30,20 +30,21 @@ function TipCounts:OnEnable()
 end
 
 function TipCounts:Hook(tip)
+
 	tip:HookScript('OnTooltipCleared', self.OnClear)
-	tip:HookScript('OnTooltipSetItem', self.OnItem)
+	TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Item, self.OnItem)
 
-	hooksecurefunc(tip, 'SetQuestItem', self.OnQuest)
-	hooksecurefunc(tip, 'SetQuestLogItem', self.OnQuest)
-
-	if C_TradeSkillUI then
-		if C_TradeSkillUI.GetRecipeFixedReagentItemLink then
-			hooksecurefunc(tip, 'SetRecipeReagentItem', self.OnTradeSkill('GetRecipeFixedReagentItemLink'))
-		else
-			hooksecurefunc(tip, 'SetRecipeReagentItem', self.OnTradeSkill('GetRecipeReagentItemLink'))
-			hooksecurefunc(tip, 'SetRecipeResultItem', self.OnTradeSkill('GetRecipeItemLink'))
-		end
-	end
+	--hooksecurefunc(tip, 'SetQuestItem', self.OnQuest)
+	--hooksecurefunc(tip, 'SetQuestLogItem', self.OnQuest)
+	
+	--if C_TradeSkillUI and tip ~= nil then
+	--	if C_TradeSkillUI.GetRecipeFixedReagentItemLink then
+	--		hooksecurefunc(tip, 'SetRecipeReagentItem', self.OnTradeSkill('GetRecipeFixedReagentItemLink'))
+	--	else
+	--		hooksecurefunc(tip, 'SetRecipeReagentItem', self.OnTradeSkill('GetRecipeReagentItemLink'))
+	--		hooksecurefunc(tip, 'SetRecipeResultItem', self.OnTradeSkill('GetRecipeItemLink'))
+	--	end
+	--end
 end
 
 

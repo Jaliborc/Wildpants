@@ -6,6 +6,7 @@
 local ADDON, Addon = ...
 local L = LibStub('AceLocale-3.0'):GetLocale(ADDON)
 local Bag = Addon.Tipped:NewClass('Bag', 'CheckButton')
+local ContainerIDToInventoryID = C_Container.ContainerIDToInventoryID
 
 Bag.SIZE = 32
 Bag.TEXTURE_SIZE = 64 * (Bag.SIZE/36)
@@ -196,6 +197,8 @@ function Bag:Update()
 end
 
 function Bag:UpdateCursor()
+	local info = self:GetInfo()
+	if info.slot == nil then return end 
 	if not self:IsCustomSlot() then
 		if CursorCanGoInSlot(self:GetInfo().slot) then
 			self:LockHighlight()
