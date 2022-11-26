@@ -1,12 +1,6 @@
-[submodule "libs/WildAddon-1.0"]
-	path = libs/WildAddon-1.0
-	url = https://github.com/Jaliborc/WildAddon-1.0.git
 [submodule "libs/MutexDelay-1.0"]
 	path = libs/MutexDelay-1.0
 	url = https://github.com/Jaliborc/MutexDelay-1.0.git
-[submodule "libs/C_Everywhere"]
-	path = libs/C_Everywhere
-	url = https://github.com/Jaliborc/C_Everywhere.git
 [submodule "libs/Unfit-1.0"]
 	path = libs/Unfit-1.0
 	url = https://github.com/Jaliborc/Unfit-1.0.git
