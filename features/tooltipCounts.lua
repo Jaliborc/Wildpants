@@ -56,6 +56,7 @@ end
 
 function TipCounts.OnItem(tip, data)
 	if tip.GetItem == nil then return end
+	local name, link = tip:GetItem()
 	if name ~= '' then
 		TipCounts:AddOwners(tip, link)
 	end
