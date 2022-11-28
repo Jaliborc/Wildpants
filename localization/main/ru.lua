@@ -30,7 +30,7 @@ L.TitleVault = 'Хранилище Бездны |3-1(%s)'
 --dropdowns
 L.TitleFrames = 'Окна %s'
 L.SelectCharacter = 'Выберите персонажа'
-L.ConfirmDelete = 'Уверены, что хотите удалить кэшированные данные персонажа %s?'
+L.ConfirmDelete = 'Удалить кэшированные данные %s?'
 
 --interactions
 L.Click = 'Клик'
