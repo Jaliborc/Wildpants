@@ -181,7 +181,8 @@ function Item:OnEnter()
 	if self.info.cached then
 		self:AttachDummy()
 	else
-		self:SetScript('OnUpdate', self.UpdateTooltip)
+		--OnUpdate seems to fire every 0.2s, so UpdateTooltip fires along with it, which murders framerate especially when holding shift
+		--self:SetScript('OnUpdate', self.UpdateTooltip)
 		self:UpdateTooltip()
 	end
 end
