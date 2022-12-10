@@ -58,7 +58,7 @@ function Frames:Populate()
 
 		-- Appearance
 		self:Add('Header', L.Appearance, 'GameFontHighlight', true)
-		self:AddRow(70, function()
+		self:AddRow(115, function()
 			if Config.colors then
 				self:AddColor('color')
 				self:AddColor('borderColor')
@@ -67,6 +67,10 @@ function Frames:Populate()
 			self:AddCheck('reverseBags')
 			self:AddCheck('reverseSlots')
 			self:AddCheck('bagBreak')
+
+			if self.frame == 'bank' or self.frame == 'inventory' then
+				self:AddCheck('reagentBagBreak')
+			end
 
 			if REAGENTBANK_CONTAINER and self.frame == 'bank' then
 				self:AddCheck('exclusiveReagent')
