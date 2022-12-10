@@ -44,6 +44,7 @@ displayed on the left side of the panel.]]
 L.Appearance = 'Appearance'
 L.Layer = 'Layer'
 L.BagBreak = 'Bag Break'
+L.ReagentBagBreak = 'Reagent Bag Break'
 L.ReverseBags = 'Reverse Bag Order'
 L.ReverseSlots = 'Reverse Slot Order'
 

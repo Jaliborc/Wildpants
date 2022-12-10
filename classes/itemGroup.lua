@@ -143,6 +143,13 @@ function Items:Layout()
 		local slots = self.buttons[bag]
 
 		if slots then
+
+			local bagInfo = self:GetInfo(bag)
+			if bagInfo.family == -3 and self:ReagentBagBreak() and not self:ExclusiveReagentBank() and x > 0 then
+				y = y + 1.5
+				x = 0
+			end
+
 			local numSlots = self:NumSlots(bag)
 			for slot = revSlots and numSlots or 1, revSlots and 1 or numSlots, revSlots and -1 or 1 do
 				local button = slots[slot]
@@ -200,6 +207,10 @@ end
 
 --[[ Proprieties ]]--
 
+function Items:GetInfo(bag)
+	return Addon:GetBagInfo(self:GetOwner(), bag)
+end
+
 function Items:IsShowingItem(bag, slot)
 	return self:GetFrame():IsShowingItem(bag, slot)
 end
@@ -224,3 +235,13 @@ end
 function Items:BagBreak()
 	return self:GetProfile().bagBreak
 end
+
+function Items:ReagentBagBreak()
+	return self:GetProfile().reagentBagBreak
+end
+
+function Items:ExclusiveReagentBank()
+	return self:GetProfile().exclusiveReagent
+end
+
+
