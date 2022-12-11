@@ -138,9 +138,46 @@ function Items:Layout()
 	local revBags, revSlots = profile.reverseBags, profile.reverseSlots
 	local x, y = 0,0
 
+    -- Calculate Offset
+    totalSlots = 0
+    if (self.frame.frameID == "bank") then
+        local bankstart = (BACKPACK_CONTAINER + NUM_BAG_SLOTS + 1)
+        if not profile.hiddenBags[REAGENTBANK_CONTAINER] and profile.exclusiveReagent then
+            totalSlots = 0
+        else
+            totalSlots = self:NumSlots(BANK_CONTAINER)
+            for j = bankstart, bankstart - 1 + NUM_BANKBAGSLOTS do
+                if(profile.hiddenBags[j] ~= true) then
+                    totalSlots = totalSlots + self:NumSlots(j)
+                end
+            end
+        end
+        if REAGENTBANK_CONTAINER and not profile.hiddenBags[REAGENTBANK_CONTAINER] then
+            totalSlots = totalSlots + self:NumSlots(REAGENTBANK_CONTAINER)
+        end
+    elseif (self.frame.frameID == "inventory") then
+        for j = BACKPACK_CONTAINER, NUM_BAG_SLOTS do
+            if (profile.hiddenBags[j] ~= true) then
+                totalSlots = totalSlots + self:NumSlots(j)
+            end
+        end
+    end
+    local offset = self:calcOffset(columns,totalSlots)
+
+    -- This should set the offset when all bags are displayed without breaks
+    if profile.emptyOnTop and not self:BagBreak() then
+        x = offset
+    end
+
 	for k = revBags and #self.bags or 1, revBags and 1 or #self.bags, revBags and -1 or 1 do
 		local bag = self.bags[k].id
 		local slots = self.buttons[bag]
+
+        -- This should set the offset for each bag individually when displayed with breaks
+        -- I need better documentation on what this one does vs the below 
+        if profile.emptyOnTop and self:BagBreak() then
+            x = self:calcOffset(columns,self:NumSlots(k-1))
+        end
 
 		if slots then
 			local numSlots = self:NumSlots(bag)
@@ -162,7 +199,13 @@ function Items:Layout()
 
 			if self:BagBreak() and x > 0 then
 				y = y + 1
-				x = 0
+                -- This should set the offset for each bag individually when displayed with breaks
+                -- I need better documentation on what this one does vs the above
+                if profile.emptyOnTop then
+                    x = self:calcOffset(columns,self:NumSlots(k-1))
+                else
+                    x = 0
+                end
 			end
 		end
 	end
@@ -175,6 +218,16 @@ function Items:Layout()
 	local width, height = max(columns * size * scale, 1), max(y * size * scale, 1)
 	self:SetSize(self.Transposed and height or width, self.Transposed and width or height)
 	self:SendFrameSignal('ELEMENT_RESIZED')
+end
+
+-- This function calculates what the offset should be to put the blanks before the slots
+function Items:calcOffset(columns,slots)
+    local offset = columns - (slots % columns) 
+    if (offset == columns) then
+        return 0
+    else
+        return offset
+    end
 end
 
 function Items:ForAll(method, ...)
