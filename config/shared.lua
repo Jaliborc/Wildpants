@@ -13,8 +13,8 @@ local Group = Addon:NewModule('OptionsGroup', LibStub('Sushi-3.1').OptionsGroup:
 
 function Group:New(id, icons)
 	local parent = self ~= Group and self
-	local f = Addon:NewModule(id, Group:Super(Group):New(parent or (icons .. ' ' .. ADDON), parent and (L[id] .. ' ' .. icons)))
-	f:SetFooter('Copyright 2006-2022 João Cardoso and Jason Greer')
+	local f = Addon:NewModule(id, Group:Super(Group):New(parent or ADDON, parent and (L[id] .. ' ' .. icons)))
+	f:SetFooter('By João Cardoso and Jason Greer')
 	f:SetSubtitle(L[id .. 'Desc']:format(ADDON))
 	f:SetChildren(function() f:Populate() end)
 	f.sets, f.frame = Addon.sets, 'inventory'
@@ -22,10 +22,9 @@ function Group:New(id, icons)
 end
 
 function Group:AddRow(height, children)
-	local group = self:Add('Group')
-	group:SetHeight(height)
+	local group = self:Add('Group', function(row) self.row = row; children(row); self.row = nil end)
 	group:SetResizing('HORIZONTAL')
-	group:SetChildren(function(row) self.row = row; children(row); self.row = nil end)
+	group:SetHeight(height)
 	return group
 end
 

@@ -5,7 +5,6 @@
 
 local ADDON, Addon = ...
 local Addon = LibStub('WildAddon-1.0'):NewAddon(ADDON, Addon, 'LibItemCache-2.0')
-Addon.NumBags = NUM_TOTAL_EQUIPPED_BAG_SLOTS or NUM_BAG_SLOTS
 Addon.IsRetail = WOW_PROJECT_ID == WOW_PROJECT_MAINLINE
 Addon.IsClassic = WOW_PROJECT_ID == WOW_PROJECT_CLASSIC
 Addon.Version = GetAddOnMetadata(ADDON, 'Version')
@@ -64,19 +63,17 @@ local ProfileDefaults = {
 	inventory = SetDefaults({
 		reversedTabs = true,
 		borderColor = {1, 1, 1, 1},
-		currency = true, broker = Addon.IsClassic,
 		point = 'BOTTOMRIGHT',
 		x = -50, y = 100,
-		columns = 10,
+		columns = 8,
 		width = 384,
 		height = 200,
 	}, FrameDefaults),
 
 	bank = SetDefaults({
 		borderColor = {1, 1, 0, 1},
-		currency = true,
 		point = 'LEFT',
-		columns = 14,
+		columns = 12,
 		width = 600,
 		height = 500,
 		x = 95
@@ -100,7 +97,7 @@ local ProfileDefaults = {
 --[[ Startup ]]--
 
 function Addon:OnEnable()
-  CreateFrame('Frame', nil, InterfaceOptionsFrame or SettingsPanel):SetScript('OnShow', function()
+  CreateFrame('Frame', nil, InterfaceOptionsFrame):SetScript('OnShow', function()
     LoadAddOn(Addon.Name .. '_Config')
   end)
 
@@ -109,8 +106,9 @@ function Addon:OnEnable()
 		global = SetDefaults({}, ProfileDefaults),
 		profiles = {},
 
-		display = {banker = true, guildBanker = true, voidStorageBanker = true, crafting = true, tradePartner = true, socketing = true, auctioneer = true, merchant = true, mailInfo = true, scrappingMachine = true},
-		resetPlayer = true, flashFind = true, tipCount = true, serverSort = true,
+		resetPlayer = true,
+		displayBank = true, closeBank = true, displayAuction = true, displayGuild = true, displayMail = true, displayTrade = true, displayCraft = true, displayScrapping = true,
+		flashFind = true, tipCount = true, fading = true, serverSort = true,
 
 		glowAlpha = 0.5,
 		glowQuality = true, glowNew = true, glowQuest = true, glowSets = true, glowUnusable = true,

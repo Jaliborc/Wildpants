@@ -4,18 +4,13 @@
 --]]
 
 local ADDON, Addon = ...
-local C = LibStub('C_Everywhere').Container
 local Inventory = Addon.Frame:NewClass('InventoryFrame')
 Inventory.Title = LibStub('AceLocale-3.0'):GetLocale(ADDON).TitleBags
-Inventory.Bags = {}
+Inventory.Bags = {BACKPACK_CONTAINER, 1, 2, 3, 4}
 Inventory.MainMenuButtons = {
 	MainMenuBarBackpackButton,
 	CharacterBag0Slot, CharacterBag1Slot, CharacterBag2Slot, CharacterBag3Slot
 }
-
-for slot = BACKPACK_CONTAINER, (NUM_TOTAL_EQUIPPED_BAG_SLOTS or NUM_BAG_SLOTS) do
-	tinsert(Inventory.Bags, slot)
-end
 
 if HasKey then
 	tinsert(Inventory.Bags, KEYRING_CONTAINER)
@@ -47,8 +42,8 @@ function Inventory:HighlightMainMenu(checked)
 end
 
 function Inventory:SortItems()
-	if C.SortBags and Addon.sets.serverSort then
-		C.SortBags()
+	if SortBags and Addon.sets.serverSort then
+		SortBags()
 	else
 		self:Super(Inventory):SortItems(self)
 	end

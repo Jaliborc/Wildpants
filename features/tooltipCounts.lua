@@ -5,183 +5,25 @@
 
 local ADDON, Addon = ...
 local L = LibStub('AceLocale-3.0'):GetLocale(ADDON)
-local TipCounts = Addon:NewModule('TooltipCounts')
+local TooltipCounts = Addon:NewModule('TooltipCounts')
 
 local SILVER = '|cffc7c7cf%s|r'
-local LAST_BANK_SLOT = Addon.NumBags + NUM_BANKBAGSLOTS
-local FIRST_BANK_SLOT = Addon.NumBags + 1
+local LAST_BANK_SLOT = NUM_BAG_SLOTS + NUM_BANKBAGSLOTS
+local FIRST_BANK_SLOT = NUM_BAG_SLOTS + 1
 local TOTAL = SILVER:format(L.Total)
 
+local ItemText, ItemCount
 
 
---[[ Startup ]]--
+--[[ Adding Text ]]--
 
-function TipCounts:OnEnable()
-	if Addon.sets.tipCount then
-		if not self.Text then
-			self.Text, self.Counts = {}, {}
-
-			if TooltipDataProcessor then
-				TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Item,  self.OnItem)
-			else
-				for _,frame in pairs {UIParent:GetChildren()} do
-					if not frame:IsForbidden() and frame:GetObjectType() == 'GameTooltip' then
-						self:Hook(frame)
-					end
-				end
-			end
-		end
-	end
-end
-
-function TipCounts:Hook(tip)
-	tip:HookScript('OnTooltipCleared', self.OnClear)
-	tip:HookScript('OnTooltipSetItem', self.OnItem)
-
-	hooksecurefunc(tip, 'SetQuestItem', self.OnQuest)
-	hooksecurefunc(tip, 'SetQuestLogItem', self.OnQuest)
-
-	if C_TradeSkillUI then
-		if C_TradeSkillUI.GetRecipeFixedReagentItemLink then
-			hooksecurefunc(tip, 'SetRecipeReagentItem', self.OnTradeSkill('GetRecipeFixedReagentItemLink'))
-		else
-			hooksecurefunc(tip, 'SetRecipeReagentItem', self.OnTradeSkill('GetRecipeReagentItemLink'))
-			hooksecurefunc(tip, 'SetRecipeResultItem', self.OnTradeSkill('GetRecipeItemLink'))
-		end
-	else
-		hooksecurefunc(tip, 'SetTradeSkillItem', self.OnSetTradeSkillItem)
-		hooksecurefunc(tip, 'SetCraftItem', self.OnSetCraftItem)
-	end
-end
-
-
---[[ Events ]]--
-
-function TipCounts.OnItem(tip)
-	local name, link = (tip.GetItem or TooltipUtil.GetDisplayedItem)(tip)
-	if name ~= '' then
-		TipCounts:AddOwners(tip, link)
-	end
-end
-
-function TipCounts.OnQuest(tip, type, quest)
-	TipCounts:AddOwners(tip, GetQuestItemLink(type, quest))
-end
-
-function TipCounts.OnTradeSkill(api)
-	return function(tip, recipeID, ...)
-		TipCounts:AddOwners(tip, tonumber(recipeID) and C_TradeSkillUI[api](recipeID, ...))
-	end
-end
-
-function TipCounts.OnSetTradeSkillItem(tip, skill, index)
-	if index then
-		TipCounts:AddOwners(tip, GetTradeSkillReagentItemLink(skill, index))
-	else
-		TipCounts:AddOwners(tip, GetTradeSkillItemLink(skill))
-	end
-end
-
-function TipCounts.OnSetCraftItem(tip, ...)
-	TipCounts:AddOwners(tip, GetCraftReagentItemLink(...))
-end
-
-function TipCounts.OnClear(tip)
-	tip.__hasCounters = false
-end
-
-
---[[ API ]]--
-
-function TipCounts:AddOwners(tip, link)
-	if not Addon.sets.tipCount or tip.__hasCounters then
-		return
-	end
-
-	local itemID = tonumber(link and GetItemInfo(link) and link:match('item:(%d+)')) -- Blizzard doing craziness when doing GetItemInfo
-	if not itemID or itemID == HEARTHSTONE_ITEM_ID then
-		return
-	end
-
-	local players = 0
-	local total = 0
-
-	for owner in Addon:IterateOwners() do
-		local info = Addon:GetOwnerInfo(owner)
-		local color = Addon.Owners:GetColorString(info)
-		local count, text = self.Counts[owner] and self.Counts[owner][itemID]
-
-		if count then
-			text = self.Text[owner][itemID]
-		else
-			if not info.isguild then
-				local equip = self:GetCount(owner, 'equip', itemID)
-				local vault = self:GetCount(owner, 'vault', itemID)
-				local bags, bank = 0,0
-
-				if info.cached then
-					for i = BACKPACK_CONTAINER, Addon.NumBags do
-						bags = bags + self:GetCount(owner, i, itemID)
-					end
-
-					for i = FIRST_BANK_SLOT, LAST_BANK_SLOT do
-						bank = bank + self:GetCount(owner, i, itemID)
-					end
-
-					if REAGENTBANK_CONTAINER then
-						bank = bank + self:GetCount(owner, REAGENTBANK_CONTAINER, itemID)
-					end
-
-					bank = bank + self:GetCount(owner, BANK_CONTAINER, itemID)
-				else
-					local owned = GetItemCount(itemID, true)
-					local carrying = GetItemCount(itemID)
-
-					bags = carrying - equip
-					bank = owned - carrying
-				end
-
-				count, text = self:Format(color, L.TipCountEquip, equip, L.TipCountBags, bags, L.TipCountBank, bank, L.TipCountVault, vault)
-			elseif Addon.sets.countGuild then
-				local guild = 0
-				for i = 1, GetNumGuildBankTabs() do
-					guild = guild + self:GetCount(owner, i, itemID)
-				end
-
-				count, text = self:Format(color, L.TipCountGuild, guild)
-			else
-				count = 0
-			end
-
-			if info.cached then
-				self.Text[owner] = self.Text[owner] or {}
-				self.Text[owner][itemID] = text
-				self.Counts[owner] = self.Counts[owner] or {}
-				self.Counts[owner][itemID] = count
-			end
-		end
-
-		if count > 0 then
-			tip:AddDoubleLine(Addon.Owners:GetIconString(info, 12,0,0) .. ' ' .. color:format(info.name), text)
-			total = total + count
-			players = players + 1
-		end
-	end
-
-	if players > 1 and total > 0 then
-		tip:AddDoubleLine(TOTAL, SILVER:format(total))
-	end
-
-	tip.__hasCounters = not TooltipDataProcessor
-	tip:Show()
-end
-
-function TipCounts:GetCount(owner, bag, id)
+local function FindItemCount(owner, bag, itemID)
 	local count = 0
 	local info = Addon:GetBagInfo(owner, bag)
 
 	for slot = 1, (info.count or 0) do
-		if Addon:GetItemID(owner, bag, slot) == id then
+		local id = Addon:GetItemID(owner, bag, slot)
+		if id == itemID then
 			count = count + (Addon:GetItemInfo(owner, bag, slot).count or 1)
 		end
 	end
@@ -189,7 +31,7 @@ function TipCounts:GetCount(owner, bag, id)
 	return count
 end
 
-function TipCounts:Format(color, ...)
+local function FormatCounts(color, ...)
 	local total, places = 0, 0
 	local text = ''
 
@@ -210,4 +52,136 @@ function TipCounts:Format(color, ...)
 	end
 
 	return total, total > 0 and text
+end
+
+local function AddOwners(tooltip, link)
+	if not Addon.sets.tipCount or tooltip.__tamedCounts then
+		return
+	end
+
+	local itemID = tonumber(link and GetItemInfo(link) and link:match('item:(%d+)')) -- Blizzard doing craziness when doing GetItemInfo
+	if not itemID or itemID == HEARTHSTONE_ITEM_ID then
+		return
+	end
+
+	local players = 0
+	local total = 0
+
+	for owner in Addon:IterateOwners() do
+		local info = Addon:GetOwnerInfo(owner)
+		local color = Addon.Owners:GetColorString(info)
+		local count, text = ItemCount[owner] and ItemCount[owner][itemID]
+
+		if count then
+			text = ItemText[owner][itemID]
+		else
+			if not info.isguild then
+				local equip = FindItemCount(owner, 'equip', itemID)
+				local vault = FindItemCount(owner, 'vault', itemID)
+				local bags, bank = 0,0
+
+				if info.cached then
+					for i = BACKPACK_CONTAINER, NUM_BAG_SLOTS do
+						bags = bags + FindItemCount(owner, i, itemID)
+					end
+
+					for i = FIRST_BANK_SLOT, LAST_BANK_SLOT do
+						bank = bank + FindItemCount(owner, i, itemID)
+					end
+
+					if REAGENTBANK_CONTAINER then
+						bank = bank + FindItemCount(owner, REAGENTBANK_CONTAINER, itemID)
+					end
+
+					bank = bank + FindItemCount(owner, BANK_CONTAINER, itemID)
+				else
+					local owned = GetItemCount(itemID, true)
+					local carrying = GetItemCount(itemID)
+
+					bags = carrying - equip
+					bank = owned - carrying
+				end
+
+				count, text = FormatCounts(color, L.TipCountEquip, equip, L.TipCountBags, bags, L.TipCountBank, bank, L.TipCountVault, vault)
+			elseif Addon.sets.countGuild then
+				local guild = 0
+				for i = 1, GetNumGuildBankTabs() do
+					guild = guild + FindItemCount(owner, i, itemID)
+				end
+
+				count, text = FormatCounts(color, L.TipCountGuild, guild)
+			else
+				count = 0
+			end
+
+			if info.cached then
+				ItemText[owner] = ItemText[owner] or {}
+				ItemText[owner][itemID] = text
+				ItemCount[owner] = ItemCount[owner] or {}
+				ItemCount[owner][itemID] = count
+			end
+		end
+
+		if count > 0 then
+			tooltip:AddDoubleLine(Addon.Owners:GetIconString(info, 12,0,0) .. ' ' .. color:format(info.name), text)
+			total = total + count
+			players = players + 1
+		end
+	end
+
+	if players > 1 and total > 0 then
+		tooltip:AddDoubleLine(TOTAL, SILVER:format(total))
+	end
+
+	tooltip.__tamedCounts = true
+	tooltip:Show()
+end
+
+
+--[[ Hooking ]]--
+
+local function OnItem(tooltip)
+	local name, link = tooltip:GetItem()
+	if name ~= '' then
+		AddOwners(tooltip, link)
+	end
+end
+
+local function OnTradeSkill(tooltip, recipe, reagent)
+	AddOwners(tooltip, tonumber(reagent) and C_TradeSkillUI.GetRecipeReagentItemLink(recipe, reagent) or C_TradeSkillUI.GetRecipeItemLink(recipe))
+end
+
+local function OnQuest(tooltip, type, quest)
+	AddOwners(tooltip, GetQuestItemLink(type, quest))
+end
+
+local function OnClear(tooltip)
+	tooltip.__tamedCounts = false
+end
+
+local function HookTip(tooltip)
+	tooltip:HookScript('OnTooltipCleared', OnClear)
+	tooltip:HookScript('OnTooltipSetItem', OnItem)
+
+	hooksecurefunc(tooltip, 'SetQuestItem', OnQuest)
+	hooksecurefunc(tooltip, 'SetQuestLogItem', OnQuest)
+
+	if C_TradeSkillUI then
+		hooksecurefunc(tooltip, 'SetRecipeReagentItem', OnTradeSkill)
+		hooksecurefunc(tooltip, 'SetRecipeResultItem', OnTradeSkill)
+	end
+end
+
+
+--[[ Startup ]]--
+
+function TooltipCounts:OnEnable()
+	if Addon.sets.tipCount then
+		if not ItemText then
+			ItemText, ItemCount = {}, {}
+
+			HookTip(GameTooltip)
+			HookTip(ItemRefTooltip)
+		end
+	end
 end

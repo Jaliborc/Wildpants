@@ -13,7 +13,6 @@
 
 local ADDON, Addon = ...
 local Events = Addon:NewModule('Events')
-local C = LibStub('C_Everywhere').Container
 
 
 --[[ Events ]]--
@@ -68,7 +67,7 @@ end
 --[[ API ]]--
 
 function Events:UpdateBags()
-	for bag = 1, Addon.NumBags do
+	for bag = 1, NUM_BAG_SLOTS do
 		if not self:UpdateSize(bag) then
 			self:UpdateType(bag)
 		end
@@ -80,7 +79,7 @@ function Events:UpdateBags()
 end
 
 function Events:UpdateBankBags()
-	for bag = 1, Addon.NumBags + NUM_BANKBAGSLOTS do
+	for bag = 1, NUM_BAG_SLOTS + NUM_BANKBAGSLOTS do
 		if not self:UpdateSize(bag) then
 			self:UpdateType(bag)
 		end
@@ -89,10 +88,10 @@ end
 
 function Events:UpdateSize(bag)
 	local old = self.sizes[bag]
-	local new = C.GetContainerNumSlots(bag) or 0
+	local new = C_Container.GetContainerNumSlots(bag) or 0
 
 	if old ~= new then
-		local _, kind = C.GetContainerNumFreeSlots(bag)
+		local _, kind = C_Container.GetContainerNumFreeSlots(bag)
 		self.types[bag] = kind
 		self.sizes[bag] = new
 		self.queue[bag] = nil
@@ -103,7 +102,7 @@ end
 
 function Events:UpdateType(bag)
 	local old = self.types[bag]
-	local _, new = C.GetContainerNumFreeSlots(bag)
+	local _, new = C_Container.GetContainerNumFreeSlots(bag)
 
 	if old ~= new then
 		self.types[bag] = new

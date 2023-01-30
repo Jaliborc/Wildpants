@@ -1,6 +1,6 @@
 --[[
 	moneyFrame.lua
-		Displays the player money stack
+		A money frame object
 --]]
 
 local ADDON, Addon = ...
@@ -82,7 +82,7 @@ function MoneyFrame:OnEnter()
 		end
 	end
 
-	GameTooltip:SetOwner(self:GetTipAnchor())
+	GameTooltip:SetOwner(self, self:GetTop() > (GetScreenHeight() / 2) and 'ANCHOR_BOTTOM' or 'ANCHOR_TOP')
 	GameTooltip:AddDoubleLine(L.Total, GetMoneyString(total, true), nil,nil,nil, 1,1,1)
 	GameTooltip:AddLine(' ')
 
