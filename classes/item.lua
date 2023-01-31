@@ -440,7 +440,7 @@ function Item:IsNew()
 end
 
 function Item:IsPaid()
-	return C.IsBattlePayItem(self:GetBag(), self:GetID())
+	return C.IsBattlePayItem
 end
 
 function Item:IsSlot(bag, slot)
