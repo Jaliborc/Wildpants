@@ -37,6 +37,7 @@ end
 
 function Events:BAG_UPDATE(event, bag)
 	self.queue[bag] = true
+  C_Timer.After(0.001, function() self:UpdateBags() end) -- Temporary fix due to missing BAG_UPDATE_DELAYED event
 end
 
 function Events:PLAYERBANKSLOTS_CHANGED()
